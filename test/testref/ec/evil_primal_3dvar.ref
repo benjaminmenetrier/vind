@@ -1,0 +1,33 @@
+CostJo   : Nonlinear Jo = 8.6505697755519694e+04, nobs = 30, Jo/n = 2.8835232585173230e+03, err = 9.9999997764825821e-03
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostFunction: Nonlinear J = 8.6505697755519694e+04
+Accept Ritz pair #1
+Accept Ritz pair #2
+Accept Ritz pair #3
+Accept Ritz pair #4
+Accept Ritz pair #5
+Accept Ritz pair #6
+Accept Ritz pair #7
+Accept Ritz pair #8
+Accept Ritz pair #9
+Accept Ritz pair #10
+Accept Ritz pair #11
+Accept Ritz pair #12
+Accept Ritz pair #13
+Accept Ritz pair #14
+Accept Ritz pair #15
+Accept Ritz pair #16
+Accept Ritz pair #17
+Accept Ritz pair #18
+Accept Ritz pair #19
+Accept Ritz pair #20
+Accept Ritz pair #21
+Dismiss Ritz pair #22
+Dismiss Ritz pair #23
+Dismiss Ritz pair #24
+Dismiss Ritz pair #25
+Dismiss Ritz pair #26
+Dismiss Ritz pair #27
+DRPLanczosEVILMinimizer: reduction in residual norm = 8.3450203279550510e-11
+CostFunction::addIncrement: Analysis norm: 6.3982750384358560e+01
+CostJo   : Nonlinear Jo = 1.7572095735383553e-03, nobs = 30, Jo/n = 5.8573652451278507e-05, err = 9.9999997764825821e-03

@@ -1,0 +1,169 @@
+{
+  "resolution": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+    },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "3"
+      }
+    ],
+    "halo": "1"
+  },
+  "model": {
+    "tstep": "PT6H"
+  },
+  "variables": ["air_temperature"],
+  "cost_function": {
+    "cost_type": "3D-Var",
+    "window_begin": "2010-01-01T12:00:00Z",
+    "window_length": "PT0H",
+    "variables": ["air_temperature"],
+    "Jb": {
+      "Background": {
+        "state": [
+          {
+            "date": "2010-01-01T12:00:00Z",
+            "variables": ["air_temperature"],
+            "filepath": "testdata/evil_bkg_000001"
+          }
+        ]
+      },
+      "Covariance": {
+        "covariance": "SABER",
+        "ensemble": [
+          {
+            "variables": ["air_temperature"],
+            "members": "50",
+            "state from template": {
+              "template": {
+                "date": "2010-01-01T12:00:00Z",
+                "state variables": ["air_temperature"],
+                "filepath": "testdata/evil_ens_%member%"
+              },
+              "pattern": "%member%",
+              "zero padding": "6"
+            }
+          }
+        ],
+        "saber central block": {
+          "saber block name": "Ensemble",
+          "inflation value": 1.0,
+          "localization": {
+            "saber central block": {
+              "saber block name": "BUMP_NICAS",
+              "read": {
+                "drivers": {
+                  "multivariate strategy": "univariate",
+                  "read local nicas": "true"
+                },
+                "io": {
+                   "overriding nicas file": "testdata/evil_nicas"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Jo": {
+      "ObsTypes": [
+        {
+          "ObsType": "default",
+          "ObsData": {
+            "ObsDataInScreened": {
+              "filepath": "testdata/evil_obs"
+            },
+            "obsvalue": "ObsValue.000000"
+          },
+          "Covariance": {
+            "ObsErrorCovariance": {
+              "covariance": "diagonal",
+              "obserror": "ObsError"
+            }
+          },
+          "variables": ["air_temperature"]
+        }
+      ]
+    }
+  },
+  "variational": {
+    "iteration": [
+      {
+        "resolution": {
+          "function space": "StructuredColumns",
+          "grid": {
+            "type": "regular_lonlat",
+            "N": "10"
+          },
+          "groups": [
+            {
+              "variables": ["air_temperature"],
+              "levels": "3"
+            }
+          ],
+          "halo": "1"
+        },
+        "linearmodel": {
+          "version": "default",
+          "tstep": "PT0H",
+          "trajectory": {
+            "tstep": "PT6H",
+            "forcing": {
+              "variables": ["air_temperature"]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "evil": {
+    "filter": "D",
+    "solver space": "primal",
+    "eigenvalues": "testdata/evil_primal_3dvar.eigenvalues.txt",
+    "ritz vectors": {
+      "mpi pattern": "%mpi%",
+      "filepath": "testdata/evil_primal_3dvar.ritz.%pattern%.%iteration%_%mpi%"
+    },
+    "number of ritz pairs": "17"
+  },
+  "analysis": {
+    "date": "2010-01-01T12:00:00Z",
+    "variables": ["air_temperature"],
+    "filepath": "testdata/evil_primal_3dvar"
+  },
+  "ensemble of backgrounds": {
+    "members": "50",
+    "variables": ["air_temperature"],
+    "date": "2010-01-01T12:00:00Z",
+    "state from template": {
+      "template": {
+        "date": "2010-01-01T12:00:00Z",
+        "state variables": ["air_temperature"],
+        "filepath": "testdata/evil_ens_%member%"
+      },
+      "pattern": "%member%",
+      "zero padding": "6"
+    }
+  },
+  "ensemble of analyses": {
+    "state from template": {
+      "template": {
+        "mpi pattern": "%mpi%",
+        "filepath": "testdata/evil_primal_ens_D_%member%_%mpi%"
+      },
+      "pattern": "%member%",
+      "zero padding": "6"
+    }
+  },
+  "variance reduction": {
+    "mpi pattern": "%mpi%",
+    "filepath": "testdata/evil_primal_variance_D_%iteration%_%mpi%"
+  },
+  "test": {
+    "reference filename": "testref/ec/evil_primal_update_D.ref"
+  }
+}

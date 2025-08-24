@@ -1,0 +1,14 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 90
+  groups:
+  - variables:
+    - volume_mixing_ratio_of_no2
+    - volume_mixing_ratio_of_co
+    - air_pressure_thickness
+    levels: 72
+  halo: 1
+test:
+  reference filename: testref/jedi/genint_geometry_regular_lonlat.ref

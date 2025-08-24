@@ -1,0 +1,32 @@
+geometry:
+  function space: StructuredColumns
+  partitioner: "checkerboard"
+  # units: "meters"
+  grid:
+    type : "regional"
+    nx : 222
+    ny : 198
+    dx : 4000.0
+    dy : 4000.0
+    lonlat(centre) : [-75.1618,42.90771]
+    #lonlat(xmin,ymin): [-81.634705,38.214104]
+    projection :
+        type : "lambert_conformal_conic"
+        longitude0 : -97.0
+        latitude0 : 39.0
+        latitude1  : 30.0
+        latitude2  : 60.0
+        radius: 6370000
+  groups:
+  - variables:
+    - no2
+    - co
+    levels: 42
+  - variables:
+    - PSFC
+    levels: 1
+  model data:
+    top pressure: 50
+  halo: 1
+test:
+  reference filename: testref/jedi/genint_geometry_lambertCC.ref

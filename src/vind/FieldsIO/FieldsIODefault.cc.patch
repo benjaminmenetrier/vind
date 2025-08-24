@@ -1,0 +1,11 @@
+--- /home/benjaminm/code/jedi-bundle/vind/src/vind/FieldsIO/FieldsIODefault.cc.tmp.bak	2025-05-20 11:20:17.096440982 +0200
++++ /home/benjaminm/code/jedi-bundle/vind/src/vind/FieldsIO/FieldsIODefault.cc	2025-05-20 11:25:27.533370821 +0200
+@@ -23,7 +23,7 @@
+ // -----------------------------------------------------------------------------
+ 
+ void FieldsIODefault::read(const Geometry & geom,
+-                           const oops::Variables & vars,
++                           const varns::Variables & vars,
+                            const eckit::Configuration & conf,
+                            atlas::FieldSet & fset) const {
+   oops::Log::trace() << classname() << "::read starting" << std::endl;

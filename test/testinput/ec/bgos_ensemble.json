@@ -1,0 +1,57 @@
+{
+  "resolution": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+     },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "3"
+      }
+    ],
+    "halo": "1"
+  },
+  "model": {
+    "tstep": "PT6H"
+  },
+  "Background": {
+    "state": [{
+      "date": "2010-01-01T12:00:00Z",
+      "variables": ["air_temperature"],
+      "filepath": "testdata/bgos_bkg_000001"
+    }]
+  },
+  "Covariance": {
+    "covariance": "SABER",
+    "saber central block": {
+      "saber block name": "BUMP_NICAS",
+      "read": {
+        "drivers": {
+          "multivariate strategy": "univariate",
+          "read local nicas": "true"
+        },
+        "io": {
+           "overriding nicas file": "testdata/bgos_nicas"
+        }
+      }
+    },
+    "saber outer blocks": [{
+      "saber block name": "StdDev",
+      "read": {
+        "model file": {
+          "filepath": "testdata/bgos_stddev"
+        }
+      }
+    }],
+    "randomization size": "50"
+  },
+  "output states": {
+    "date": "2010-01-01T12:00:00Z",
+    "filepath": "testdata/bgos_ens"
+  },
+  "test": {
+    "reference filename": "testref/ec/bgos_ensemble.ref"
+  }
+}

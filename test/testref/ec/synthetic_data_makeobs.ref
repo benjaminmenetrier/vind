@@ -1,0 +1,11 @@
+State: 
+- Valid time: 2010-01-01T12:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+    air_temperature: 5.0199601592044530e+01
+H(x):
+air_temperature nobs= 30 Min=9.9999999999999989e-01, Max=1.0000000000000002e+00, RMS=1.0000000000000000e+00
+End H(x)
+Perturbed H(x):
+air_temperature nobs= 30 Min=9.7605982744002129e-01, Max=1.0228371008323089e+00, RMS=9.9621124555526008e-01
+End Perturbed H(x)

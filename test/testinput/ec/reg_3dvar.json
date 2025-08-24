@@ -1,0 +1,216 @@
+{
+  "resolution": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regional",
+      "nx": "71",
+      "ny": "53",
+      "dx": "2.5e3",
+      "dy": "2.5e3",
+      "lonlat(centre)": ["9.9", "56.3"],
+      "projection": {
+        "type" : "lambert_conformal_conic",
+        "latitude0"  : "56.3",
+        "longitude0" : "0.0"
+      },
+      "y_numbering": "1"
+    },
+    "partitioner": "checkerboard",
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "2"
+      }
+    ],
+    "halo": "1"
+  },
+  "model": {
+    "tstep": "PT6H"
+  },
+  "cost_function": {
+    "cost_type": "3D-Var",
+    "window_begin": "2010-01-01T12:00:00Z",
+    "window_length": "PT0H",
+    "variables": ["air_temperature"],
+    "Jb": {
+      "Background": {
+        "state": [
+          {
+            "date": "2010-01-01T12:00:00Z",
+            "variables": ["air_temperature"],
+            "filepath": "testdata/reg_bkg_12_000001"
+          }
+        ]
+      },
+      "Covariance": {
+        "covariance": "SABER",
+        "saber central block": {
+          "saber block name": "BUMP_NICAS",
+          "calibration": {
+            "drivers": {
+              "multivariate strategy": "univariate",
+              "compute nicas": "true"
+            },
+            "nicas": {
+              "resolution": "4.0",
+              "explicit length-scales": "true",
+              "horizontal length-scale": [
+                {
+                  "groups": ["air_temperature"],
+                  "value": "3.0e4"
+                }
+              ],
+              "vertical length-scale": [
+                {
+                "groups": ["air_temperature"],
+                "value": "3.0"
+                }
+              ]
+            }
+          }
+        },
+        "saber outer blocks": [
+          {
+            "saber block name": "StdDev",
+            "read": {
+              "model file": {
+                "filepath": "testdata/reg_stddev"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "Jo": {
+      "ObsTypes": [
+        {
+          "ObsType": "default",
+          "ObsData": {
+            "ObsDataInScreened": {
+              "filepath": "testdata/reg_obs_12"
+            },
+            "ObsDataOutScreened": {
+              "filepath": "testdata/reg_obs_3dvar"
+            },
+            "obsvalue": "ObsValue"
+          },
+          "Covariance": {
+            "ObsErrorCovariance": {
+              "covariance": "diagonal",
+              "obserror": "ObsError"
+            }
+          },
+          "variables": ["air_temperature"]
+        }
+      ]
+    }
+  },
+  "minimizer": {
+    "algorithm": "DRIPCG"
+  },
+  "output": {
+    "date": "2010-01-01T12:00:00Z",
+    "filepath": "testdata/reg_3dvar"
+  },
+  "variational": {
+    "iteration": [
+      {
+        "resolution": {
+          "function space": "StructuredColumns",
+          "grid": {
+            "type": "regional",
+            "nx": "71",
+            "ny": "53",
+            "dx": "2.5e3",
+            "dy": "2.5e3",
+            "lonlat(centre)": ["9.9", "56.3"],
+            "projection": {
+              "type" : "lambert_conformal_conic",
+              "latitude0"  : "56.3",
+              "longitude0" : "0.0"
+            },
+            "y_numbering": "1"
+          },
+          "partitioner": "checkerboard",
+          "groups": [
+            {
+              "variables": ["air_temperature"],
+              "levels": "2"
+            }
+          ],
+          "halo": "1"
+        },
+        "timeslot": "PT0H",                
+        "linearmodel": {
+          "version": "default",
+          "tstep": "PT0H",
+          "trajectory": {
+            "tstep": "PT6H",
+            "forcing": {
+              "variables": ["air_temperature"]
+            }
+          }
+        },
+        "ninner": "10",
+        "gradient_norm_reduction": "1e-10",
+        "test": "on",
+        "diagnostics": {
+          "departures": {
+            "obsvalue": "ombg"
+          }
+        }
+      },
+      {
+        "resolution": {
+          "function space": "StructuredColumns",
+          "grid": {
+            "type": "regional",
+            "nx": "71",
+            "ny": "53",
+            "dx": "2.5e3",
+            "dy": "2.5e3",
+            "lonlat(centre)": ["9.9", "56.3"],
+            "projection": {
+              "type" : "lambert_conformal_conic",
+              "latitude0"  : "56.3",
+              "longitude0" : "0.0"
+            },
+            "y_numbering": "1"
+          },
+          "partitioner": "checkerboard",
+          "groups": [
+            {
+              "variables": ["air_temperature"],
+              "levels": "2"
+            }
+          ],
+          "halo": "1"
+        },
+        "timeslot": "PT0H",                        
+        "linearmodel": {
+          "version": "default",
+          "tstep": "PT0H",
+          "trajectory": {
+            "tstep": "PT6H",
+            "forcing": {
+              "variables": ["air_temperature"]
+            }
+          }
+        },
+        "ninner": "10",
+        "gradient_norm_reduction": "1e-10",
+        "test": "on"
+      }
+    ]
+  },
+  "final": {
+    "diagnostics": {
+      "departures": {
+        "obsvalue": "oman"
+      }
+    }
+  },
+  "test": {
+    "reference filename": "testref/ec/reg_3dvar.ref"
+  }
+}

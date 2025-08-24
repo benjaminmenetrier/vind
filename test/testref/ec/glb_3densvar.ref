@@ -1,0 +1,11 @@
+CostJo   : Nonlinear Jo = 2.7771222269085030e+01, nobs = 30, Jo/n = 9.2570740896950099e-01, err = 1.0000000149011612e-01
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostFunction: Nonlinear J = 2.7771222269085030e+01
+DRIPCGMinimizer: reduction in residual norm = 1.4456324206034651e-10
+CostFunction::addIncrement: Analysis norm: 4.1199055627800959e+01
+CostJo   : Nonlinear Jo = 1.2063527852036042e+01, nobs = 30, Jo/n = 4.0211759506786809e-01, err = 1.0000000149011612e-01
+CostJb   : Nonlinear Jb = 5.9140158498431283e+00
+CostFunction: Nonlinear J = 1.7977543701879171e+01
+DRIPCGMinimizer: reduction in residual norm = 1.4527598420990693e-10
+CostFunction::addIncrement: Analysis norm: 4.1093198381692950e+01
+CostJo   : Nonlinear Jo = 5.5502956192972830e+00, nobs = 30, Jo/n = 1.8500985397657610e-01, err = 1.0000000149011612e-01

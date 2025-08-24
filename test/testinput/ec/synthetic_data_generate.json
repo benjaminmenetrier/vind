@@ -1,0 +1,140 @@
+{
+  "resolution": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+    },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "3"
+      }
+    ],
+    "halo": "1"
+  },
+  "variables": ["air_temperature"],
+  "model": {
+    "tstep": "PT6H"
+  },
+  "cost_function": {
+    "cost_type": "3D-Var",
+    "window_begin": "2010-01-01T12:00:00Z",
+    "window_length": "PT0H",
+    "variables": ["air_temperature"],
+    "Jb": {
+      "Background": {
+        "state": [
+          {
+            "date": "2010-01-01T12:00:00Z",
+            "variables": ["air_temperature"],
+            "filepath": "testdata/synthetic_data_truth"
+          }
+        ]
+      },
+      "Covariance": {
+        "covariance": "SABER",
+        "saber central block": {
+          "saber block name": "BUMP_NICAS",
+          "calibration": {
+            "general": {
+              "default seed": "12"
+            },
+            "drivers": {
+              "multivariate strategy": "univariate",
+              "compute nicas": "true",
+              "write local nicas": "true"
+            },
+            "io": {
+              "data directory": "testdata",
+              "files prefix": "bgos"
+            },
+            "nicas": {
+              "resolution": "5.0",
+              "explicit length-scales": "true",
+              "horizontal length-scale": [{
+                "groups": ["air_temperature"],
+                "value": "10.0e6"
+              }],
+              "vertical length-scale": [{
+                "groups": ["air_temperature"],
+                "value": "3.0"
+              }]
+            }
+          }
+        },
+        "saber outer blocks": [{
+          "saber block name": "StdDev",
+          "read": {
+            "model file": {
+              "filepath": "testdata/synthetic_data_stddev"
+            }
+          }
+        }]
+      }
+    },
+    "Jo": {
+      "ObsTypes": [
+        {
+          "ObsType": "default",
+          "ObsData": {
+            "ObsDataInScreened": {
+              "filepath": "testdata/synthetic_data_obs"
+            },
+            "ObsDataOutScreened": {
+              "filepath": "testdata/synthetic_data_obs_generate"
+            },
+            "obsvalue": "ObsValue"
+          },
+          "Covariance": {
+            "ObsErrorCovariance": {
+              "covariance": "diagonal",
+              "obserror": "ObsError"
+            }
+          },
+          "variables": ["air_temperature"]
+        }
+      ]
+    }
+  },
+  "variational": {
+    "iteration": [
+      {
+        "resolution": {
+          "function space": "StructuredColumns",
+          "grid": {
+            "type": "regular_lonlat",
+            "N": "10"
+          },
+          "groups": [
+            {
+              "variables": ["air_temperature"],
+              "levels": "3"
+            }
+          ],
+          "halo": "1"
+        },
+        "timeslot": "PT0H",                
+        "linearmodel": {
+          "version": "default",
+          "tstep": "PT0H",
+          "trajectory": {
+            "tstep": "PT6H",
+            "forcing": {
+              "variables": ["air_temperature"]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "background perturbation": {
+    "filepath": "testdata/synthetic_data_background_perturbation"
+  },
+  "first-guess departure": {
+    "obsvalue": "fg_depar@body"
+  },
+  "test": {
+    "reference filename": "testref/ec/synthetic_data_generate.ref"
+  }
+}

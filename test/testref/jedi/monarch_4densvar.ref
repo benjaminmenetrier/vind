@@ -1,0 +1,254 @@
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.3632891011913653e+00, nobs = 1, Jo/n = 1.3632891011913653e+00, err = 1.8144000080155820e-08
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostFunction: Nonlinear J = 1.3632891011913653e+00
+RPLanczosMinimizer: reduction in residual norm = 2.1832876000606229e-16
+CostFunction::addIncrement: Analysis: 
+- Valid time: 2022-07-01T09:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 1.2343998253345488e-07
+    + mean   = 3.7783466706144684e-08
+    + stddev = 1.0888915431088394e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.3828570991754529e-08
+    + max    = 5.0643813610076906e-07
+    + mean   = 9.4347194365029027e-08
+    + stddev = 1.9422796406717771e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 7.1528654643771004e-13
+    + max    = 4.2630626877435831e-08
+    + mean   = 2.0509279177086437e-10
+    + stddev = 6.3694544213550025e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 1.7915283143520355e-07
+    + mean   = 2.4182865926651275e-10
+    + stddev = 7.9018802641745321e-10
+
+  - pm10 (5 levels):
+    + min    = 1.5053577958820674e-12
+    + max    = 2.6263398922310444e-06
+    + mean   = 3.3280742679452974e-08
+    + stddev = 7.0071994212947761e-08
+
+  - pm2p5 (5 levels):
+    + min    = 1.5053577958820674e-12
+    + max    = 2.6025470560853137e-06
+    + mean   = 7.5583323655590554e-09
+    + stddev = 1.6898819482580170e-08
+
+- Valid time: 2022-07-01T10:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 1.1274565011262894e-07
+    + mean   = 3.8295118180450156e-08
+    + stddev = 1.1030007623170048e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.4518964141607281e-08
+    + max    = 4.5914891362190245e-07
+    + mean   = 9.4116872862456167e-08
+    + stddev = 1.9086454451776512e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 1.1682244576149968e-12
+    + max    = 4.7103304026100975e-08
+    + mean   = 1.7539861353270597e-10
+    + stddev = 5.6745123304473834e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 1.2053437530994415e-07
+    + mean   = 2.2946243496346872e-10
+    + stddev = 6.8515649307785553e-10
+
+  - pm10 (5 levels):
+    + min    = 2.0071438001229014e-12
+    + max    = 2.6447421532793669e-06
+    + mean   = 3.3835613186441420e-08
+    + stddev = 7.1062447244745589e-08
+
+  - pm2p5 (5 levels):
+    + min    = 2.0071438001229014e-12
+    + max    = 2.6162172162003117e-06
+    + mean   = 7.5881485350792483e-09
+    + stddev = 1.6541788209900084e-08
+
+- Valid time: 2022-07-01T11:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 9.7922578454017641e-08
+    + mean   = 3.8696198782308805e-08
+    + stddev = 1.1120268465160464e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.3598038852214810e-08
+    + max    = 4.0874800086021421e-07
+    + mean   = 9.3873033234479112e-08
+    + stddev = 1.8851303122708437e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 5.1584981974883701e-13
+    + max    = 5.2100798203413671e-08
+    + mean   = 1.5315870819652363e-10
+    + stddev = 5.1196111800922864e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 7.9417958855628965e-08
+    + mean   = 2.2097556573932433e-10
+    + stddev = 5.9231149416183860e-10
+
+  - pm10 (5 levels):
+    + min    = 2.5089299127839526e-12
+    + max    = 2.6631462333170930e-06
+    + mean   = 3.4175351806555231e-08
+    + stddev = 7.1450961298242127e-08
+
+  - pm2p5 (5 levels):
+    + min    = 2.5089299127839526e-12
+    + max    = 2.6298894226783887e-06
+    + mean   = 7.6310453746801241e-09
+    + stddev = 1.6143041027099090e-08
+
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 9.8462342238610275e-08
+    + mean   = 3.8935746945423630e-08
+    + stddev = 1.1207890826486356e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.3954821079969401e-08
+    + max    = 3.7773072719573970e-07
+    + mean   = 9.3639115352874061e-08
+    + stddev = 1.8668755291800923e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 1.0055721588742017e-13
+    + max    = 5.5385572286238485e-08
+    + mean   = 1.3922286523379731e-10
+    + stddev = 4.7225131283758471e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 5.1429003477096556e-08
+    + mean   = 2.1587788649884439e-10
+    + stddev = 5.2500110126387313e-10
+
+  - pm10 (5 levels):
+    + min    = 8.7928400454781452e-13
+    + max    = 2.6815544060809771e-06
+    + mean   = 3.4975151631585074e-08
+    + stddev = 7.3211659951174379e-08
+
+  - pm2p5 (5 levels):
+    + min    = 8.7928400454781452e-13
+    + max    = 2.6435659492562991e-06
+    + mean   = 7.7089972567337148e-09
+    + stddev = 1.5891050084576232e-08
+
+- Valid time: 2022-07-01T13:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 1.0201043029990677e-07
+    + mean   = 3.9077248255659530e-08
+    + stddev = 1.1270469567181762e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.3980909287929534e-08
+    + max    = 3.3575358986854554e-07
+    + mean   = 9.3468308229596227e-08
+    + stddev = 1.8580693212623952e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 1.2342513855401193e-13
+    + max    = 5.6156535995182674e-08
+    + mean   = 1.3445118457303777e-10
+    + stddev = 4.5157039091514223e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 4.5351251959800717e-08
+    + mean   = 2.1405286951624016e-10
+    + stddev = 4.9885311899199856e-10
+
+  - pm10 (5 levels):
+    + min    = 7.0507263222330252e-12
+    + max    = 2.6567388431431027e-06
+    + mean   = 3.5741159832708386e-08
+    + stddev = 7.4225395997056638e-08
+
+  - pm2p5 (5 levels):
+    + min    = 6.8488214231832156e-12
+    + max    = 2.6242910280416254e-06
+    + mean   = 7.7986273060451016e-09
+    + stddev = 1.5743906084758446e-08
+
+- Valid time: 2022-07-01T14:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 9.7690160216868024e-08
+    + mean   = 3.9102306171849724e-08
+    + stddev = 1.1353322841932552e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.3402759134769438e-08
+    + max    = 3.1875523924827575e-07
+    + mean   = 9.3362711935450042e-08
+    + stddev = 1.8566715019651775e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 1.7937790630639938e-13
+    + max    = 6.5500021421410440e-08
+    + mean   = 1.3839160611769763e-10
+    + stddev = 4.5369162513526043e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 5.4416581988334652e-08
+    + mean   = 2.1377914728287500e-10
+    + stddev = 4.9786871830385121e-10
+
+  - pm10 (5 levels):
+    + min    = 6.4105097098698938e-12
+    + max    = 2.6319200969737722e-06
+    + mean   = 3.6539063047324483e-08
+    + stddev = 7.5522827262251778e-08
+
+  - pm2p5 (5 levels):
+    + min    = 6.1766212804126308e-12
+    + max    = 2.6050131509691710e-06
+    + mean   = 7.8983304009084429e-09
+    + stddev = 1.5706512854600541e-08
+
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.2496932622875478e+00, nobs = 1, Jo/n = 1.2496932622875478e+00, err = 1.8144000080155820e-08
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostFunction: Nonlinear J = 1.2496932622875478e+00

@@ -1,0 +1,665 @@
+Input Dirac increment:
+- Valid time: 2022-07-01T00:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+- Valid time: 2022-07-01T01:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000000e+00
+    + mean   = 6.3131313131313133e-07
+    + stddev = 7.9455215770583973e-04
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+- Valid time: 2022-07-01T02:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+- Valid time: 2022-07-01T03:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+- Valid time: 2022-07-01T04:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000000e+00
+    + mean   = 6.3131313131313133e-07
+    + stddev = 7.9455215770797560e-04
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+- Valid time: 2022-07-01T05:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+Covariance(ensemble) * Increment:
+- Valid time: 2022-07-01T00:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.3122633929972230e-18
+    + max    = 2.0519960460470509e-18
+    + mean   = 4.7194860526930216e-21
+    + stddev = 4.5713625015704790e-20
+
+  - carbon_monoxyde (5 levels):
+    + min    = -3.9196230061212292e-18
+    + max    = 1.3510700337201769e-18
+    + mean   = 3.5803423961495390e-21
+    + stddev = 4.2015392492390824e-20
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -1.7706853050457653e-18
+    + max    = 1.6733508683436583e-18
+    + mean   = -6.4148315564508238e-23
+    + stddev = 1.7524073814554657e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -2.3796786198708079e-19
+    + max    = 1.2403228199638034e-19
+    + mean   = 1.7487173183831091e-23
+    + stddev = 1.3567310209256857e-21
+
+  - pm10 (5 levels):
+    + min    = -2.1495957295141727e-17
+    + max    = 6.8514839236559329e-19
+    + mean   = -2.1489320939704764e-20
+    + stddev = 2.9363147484378262e-19
+
+  - pm2p5 (5 levels):
+    + min    = -1.5262263765343216e-18
+    + max    = 3.1555123174004451e-19
+    + mean   = -1.4707542569241821e-21
+    + stddev = 2.5429428049926434e-20
+
+- Valid time: 2022-07-01T01:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.2585057240287307e-18
+    + max    = 2.0462431867589298e-18
+    + mean   = 4.7991960474516073e-21
+    + stddev = 4.4523598615469576e-20
+
+  - carbon_monoxyde (5 levels):
+    + min    = -3.5325710634807051e-18
+    + max    = 1.4307320639746249e-18
+    + mean   = 3.5980003461525240e-21
+    + stddev = 3.7750718911765825e-20
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -1.4644336134395144e-18
+    + max    = 1.6420312003138385e-18
+    + mean   = -4.3903794445008194e-23
+    + stddev = 1.7470401707990040e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -2.0388905325487384e-19
+    + max    = 1.4121706163067113e-19
+    + mean   = 2.3274849175593372e-23
+    + stddev = 1.2522534366379931e-21
+
+  - pm10 (5 levels):
+    + min    = -1.8147290696180513e-17
+    + max    = 3.8815980615772670e-19
+    + mean   = -2.1636620855487439e-20
+    + stddev = 2.8015095010299742e-19
+
+  - pm2p5 (5 levels):
+    + min    = -1.3587791397512831e-18
+    + max    = 2.9311154151314298e-19
+    + mean   = -1.5165603088041935e-21
+    + stddev = 2.4777485918984872e-20
+
+- Valid time: 2022-07-01T02:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.1842298474891046e-18
+    + max    = 2.2000258333875542e-18
+    + mean   = 4.7875114626724644e-21
+    + stddev = 4.3645303539954183e-20
+
+  - carbon_monoxyde (5 levels):
+    + min    = -3.5203255629208843e-18
+    + max    = 1.5007027192677250e-18
+    + mean   = 3.5934971695351873e-21
+    + stddev = 3.5744834972017272e-20
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -1.8759528715184209e-18
+    + max    = 1.8512313126933534e-18
+    + mean   = -3.4847601011063676e-23
+    + stddev = 1.7930829320376548e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -1.7814829407531958e-19
+    + max    = 1.4333181901000819e-19
+    + mean   = 2.8820410095923072e-23
+    + stddev = 1.1926997394886009e-21
+
+  - pm10 (5 levels):
+    + min    = -1.8360401681337584e-17
+    + max    = 3.7887299300681423e-19
+    + mean   = -2.1456629681676434e-20
+    + stddev = 2.7138523219333026e-19
+
+  - pm2p5 (5 levels):
+    + min    = -1.3525622202296222e-18
+    + max    = 2.7610541836629792e-19
+    + mean   = -1.5255546513910156e-21
+    + stddev = 2.4307461037220622e-20
+
+- Valid time: 2022-07-01T03:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.2151112300846430e-18
+    + max    = 2.1311378701539654e-18
+    + mean   = 4.7909395851915107e-21
+    + stddev = 4.3143447639924165e-20
+
+  - carbon_monoxyde (5 levels):
+    + min    = -3.4080695412035300e-18
+    + max    = 1.5343723716698902e-18
+    + mean   = 3.5730790692109223e-21
+    + stddev = 3.4180800334731081e-20
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -1.9302905703330650e-18
+    + max    = 2.0015750690586798e-18
+    + mean   = -3.4119161119582054e-23
+    + stddev = 1.8450460951662172e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -2.0244963577074876e-19
+    + max    = 1.5621854497456461e-19
+    + mean   = 3.1501013720214796e-23
+    + stddev = 1.1938223380683253e-21
+
+  - pm10 (5 levels):
+    + min    = -1.9122543979575226e-17
+    + max    = 3.4997157434683033e-19
+    + mean   = -2.1422013733773419e-20
+    + stddev = 2.6577173063555603e-19
+
+  - pm2p5 (5 levels):
+    + min    = -1.4201032994347404e-18
+    + max    = 2.8515230591051665e-19
+    + mean   = -1.5374176530391972e-21
+    + stddev = 2.3863780631473420e-20
+
+- Valid time: 2022-07-01T04:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.3092778595341415e-18
+    + max    = 2.1500081111861128e-18
+    + mean   = 4.7557211492193655e-21
+    + stddev = 4.2404851211971682e-20
+
+  - carbon_monoxyde (5 levels):
+    + min    = -3.2226929099008497e-18
+    + max    = 1.5793061259015679e-18
+    + mean   = 3.5479102995825821e-21
+    + stddev = 3.3059041500453624e-20
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -1.9923500547859700e-18
+    + max    = 2.0710919143085595e-18
+    + mean   = -2.1727294081450266e-23
+    + stddev = 1.8754345947983923e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -2.1273128659179911e-19
+    + max    = 1.5714857399441711e-19
+    + mean   = 3.2579049578893589e-23
+    + stddev = 1.1753811192315538e-21
+
+  - pm10 (5 levels):
+    + min    = -1.7792703187507750e-17
+    + max    = 4.2971838311902413e-19
+    + mean   = -2.1214288715179346e-20
+    + stddev = 2.6112751076844696e-19
+
+  - pm2p5 (5 levels):
+    + min    = -1.3606322969508975e-18
+    + max    = 2.4118753017670817e-19
+    + mean   = -1.5525676772009034e-21
+    + stddev = 2.3557587823473170e-20
+
+- Valid time: 2022-07-01T05:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.2912030101680120e-18
+    + max    = 2.1459221614262228e-18
+    + mean   = 4.6932863681859582e-21
+    + stddev = 4.1408790902884707e-20
+
+  - carbon_monoxyde (5 levels):
+    + min    = -2.9263882870821009e-18
+    + max    = 1.6765635133955271e-18
+    + mean   = 3.5034876909547439e-21
+    + stddev = 3.3049039696271570e-20
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -2.0801786807215523e-18
+    + max    = 1.9657577649526379e-18
+    + mean   = 6.5120698571349166e-24
+    + stddev = 1.9122785372868649e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -1.8617390848038191e-19
+    + max    = 8.2594069825752687e-20
+    + mean   = 3.3235279647324495e-23
+    + stddev = 1.1438069932266853e-21
+
+  - pm10 (5 levels):
+    + min    = -1.6413235494939394e-17
+    + max    = 3.6452882157004763e-19
+    + mean   = -2.1219012827515638e-20
+    + stddev = 2.6064228922711752e-19
+
+  - pm2p5 (5 levels):
+    + min    = -1.2914543046733827e-18
+    + max    = 1.7165520312157585e-19
+    + mean   = -1.5790149523979982e-21
+    + stddev = 2.3526277883203719e-20
+
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+Localization(ensemble_localization) diagnostics:
+- Localization at zero separation:
+  + Value for variable ozone, subwindow 1, at (longitude, latitude, vertical index) point (-10.05000, 60.05000, 5): 1.0000000000000002e+00
+  + Value for variable carbon_monoxyde, subwindow 4, at (longitude, latitude, vertical index) point (7.95000, 38.35000, 5): 9.9999999999999989e-01
+Localization(ensemble) * Increment:
+- Valid time: 2022-07-01T00:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+- Valid time: 2022-07-01T01:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+- Valid time: 2022-07-01T02:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+- Valid time: 2022-07-01T03:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+- Valid time: 2022-07-01T04:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+- Valid time: 2022-07-01T05:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 1.6332893741398104e-02
+    + stddev = 7.9050322080423424e-02
+

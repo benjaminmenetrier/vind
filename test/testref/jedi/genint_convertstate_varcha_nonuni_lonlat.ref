@@ -1,0 +1,70 @@
+Input state: 
+- Valid time: 2021-08-01T00:00:00Z
+  Geometry: L30x20 [600]
+  Fields:
+  - volume_mixing_ratio_of_no2 (56 levels):
+    + min    = 9.8055109839073923e-20
+    + max    = 3.5046183499114122e-08
+    + mean   = 1.6253131825214082e-09
+    + stddev = 3.4807979608073757e-09
+  - volume_mixing_ratio_of_co (56 levels):
+    + min    = 8.1711940325135398e-09
+    + max    = 9.4416090309766157e-07
+    + mean   = 4.5915201565916118e-08
+    + stddev = 3.0904292225874687e-08
+  - air_pressure_at_surface (1 levels):
+    + min    = 5.5681172574013151e+04
+    + max    = 1.0368176957236843e+05
+    + mean   = 9.5990777176055373e+04
+    + stddev = 1.0625160769008982e+04
+Variable transform: VariableChange
+Variable change from: 3 variables: volume_mixing_ratio_of_no2, volume_mixing_ratio_of_co, air_pressure_at_surface
+Variable change to: 1 variables: air_pressure_levels
+State after variable transform: 
+- Valid time: 2021-08-01T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - volume_mixing_ratio_of_no2 (56 levels):
+    + min    = 1.2487224314153652e-19
+    + max    = 2.0266769726767478e-08
+    + mean   = 1.5653841982993009e-09
+    + stddev = 3.4183907671828988e-09
+  - volume_mixing_ratio_of_co (56 levels):
+    + min    = 8.2591927601651687e-09
+    + max    = 5.3956628373397541e-07
+    + mean   = 4.6019663831105531e-08
+    + stddev = 2.8790590150677511e-08
+  - air_pressure_at_surface (1 levels):
+    + min    = 5.7414762795172719e+04
+    + max    = 1.0319030916246402e+05
+    + mean   = 9.5989604820191700e+04
+    + stddev = 1.0113075611350825e+04
+  - air_pressure_levels (57 levels):
+    + min    = 1.6507899900000001e+02
+    + max    = 1.0319030916246402e+05
+    + mean   = 3.8239791587756721e+04
+    + stddev = 3.5658382304745923e+04
+Output state: 
+- Valid time: 2021-08-01T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - volume_mixing_ratio_of_no2 (56 levels):
+    + min    = 1.2487224314153652e-19
+    + max    = 2.0266769726767478e-08
+    + mean   = 1.5653841982993009e-09
+    + stddev = 3.4183907671828988e-09
+  - volume_mixing_ratio_of_co (56 levels):
+    + min    = 8.2591927601651687e-09
+    + max    = 5.3956628373397541e-07
+    + mean   = 4.6019663831105531e-08
+    + stddev = 2.8790590150677511e-08
+  - air_pressure_at_surface (1 levels):
+    + min    = 5.7414762795172719e+04
+    + max    = 1.0319030916246402e+05
+    + mean   = 9.5989604820191700e+04
+    + stddev = 1.0113075611350825e+04
+  - air_pressure_levels (57 levels):
+    + min    = 1.6507899900000001e+02
+    + max    = 1.0319030916246402e+05
+    + mean   = 3.8239791587756721e+04
+    + stddev = 3.5658382304745923e+04

@@ -1,0 +1,183 @@
+# (C) Copyright 2022 UCAR.
+# (C) Copyright 2025 Meteorologisk Institutt
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+message( STATUS "Found vind I/O formats:" )
+message( STATUS "- AROME-NetCDF" )
+message( STATUS "- BSC" )
+message( STATUS "- AQ" )
+message( STATUS "- Default (NetCDF)" )
+message( STATUS "- GMSH" )
+
+# Common sources, not obs-related
+list( APPEND vind_src_files
+
+Constants.cc
+Constants.h
+Covariance.h
+Fields.cc
+Fields.h
+Geometry.cc
+Geometry.h
+GeometryIterator.cc
+GeometryIterator.h
+Increment.cc
+Increment.h
+Interpolation.cc
+Interpolation.h
+IncrModCtlVec.h
+LinearVariableChange.cc
+LinearVariableChange.h
+LinearVariableChangeParameters.h
+ModelData.h
+State.cc
+State.h
+Traits.h
+TraitsFwd.h
+Utilities.cc
+Utilities.h
+VaderCookbook.h
+VariableChange.cc
+VariableChange.h
+VariableChangeParameters.h
+VariablesSwitch.h
+
+FieldsIO/FieldsIOArome.cc
+FieldsIO/FieldsIOArome.h
+FieldsIO/FieldsIOBase.cc
+FieldsIO/FieldsIOBase.h
+FieldsIO/FieldsIOBSC.cc
+FieldsIO/FieldsIOBSC.h
+FieldsIO/FieldsIOAQ.cc
+FieldsIO/FieldsIOAQ.h
+FieldsIO/FieldsIODefault.cc
+FieldsIO/FieldsIODefault.h
+FieldsIO/FieldsIOGmsh.cc
+FieldsIO/FieldsIOGmsh.h
+
+)
+
+if( ECSABER )
+    # ECSABER-specific sources, not obs-related
+    list( APPEND vind_src_files
+
+    HorizScaleDecomposition.h
+    HybridWeight.cc
+    HybridWeight.h
+    IncrEnsCtlVec.h
+    instantiateQuenchMatrices.h
+    Interpolator.h
+    LocalizationMatrix.h
+    Logbook.cc
+    Logbook.h
+    LinearModel.cc
+    LinearModel.h
+    Model.cc
+    Model.h
+    ModelAuxControl.h
+    ModelAuxCovariance.h
+    ModelAuxCtlVec.h
+    ModelAuxControlEstimator.h
+    ModelAuxIncrement.h
+    Variables.h
+    Variables.cc
+
+    )
+endif()
+
+if( ENABLE_OBS )
+    # Common sources, obs-related
+    list( APPEND vind_src_files
+
+    GeoVaLs.cc
+    GeoVaLs.h
+    ObsSpace.cc
+    ObsSpace.h
+    ObsVector.cc
+    ObsVector.h
+
+    )
+
+    if( ECSABER )
+        # ECSABER-specific sources, obs-related
+        list( APPEND vind_src_files  
+
+        LinearObsOperator.cc
+        LinearObsOperator.h
+        Locations.cc
+        Locations.h
+        ObsAuxControl.cc
+        ObsAuxControl.h
+        ObsAuxCovariance.cc
+        ObsAuxCovariance.h
+        ObsAuxCtlVec.cc
+        ObsAuxCtlVec.h
+        ObsAuxIncrement.cc
+        ObsAuxIncrement.h
+        ObsError.cc
+        ObsError.h
+        ObsOperator.cc
+        ObsOperator.h
+
+        )
+    else()
+        # JEDI-specific sources, obs-related
+        list( APPEND vind_src_files
+
+        ObsLocalizationJEDI.cc
+        ObsLocalizationJEDI.h
+
+        )
+    endif()
+endif()
+
+if( eccodes_FOUND )
+    # GRIB IO-specific sources
+    message( STATUS "- GRIB" )
+    list( APPEND vind_src_files
+
+    FieldsIO/FieldsIOGrib.cc
+    FieldsIO/FieldsIOGrib.h
+
+    )
+endif()
+
+if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS AND ectrans_HAVE_TRANSI ) AND falfilfa_FOUND )
+    # AROME FA IO-specific sources
+    message( STATUS "- AROME-FA" )
+    list( APPEND vind_src_files
+
+    FieldsIO/fieldsio_arome_fa.h
+    FieldsIO/fieldsio_arome_fa_interface.F90
+    FieldsIO/fieldsio_arome_fa_mod.F90
+
+    )
+endif()
+
+ecbuild_add_library( TARGET   vind
+                     SOURCES  ${vind_src_files}
+                     PUBLIC_LIBS  ${VIND_PUBLIC_LIBS}
+                     HEADER_DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/vind
+                     INSTALL_HEADERS LISTED
+                     LINKER_LANGUAGE CXX )
+
+target_include_directories( vind PUBLIC "$<BUILD_INTERFACE:${VIND_INCLUDE_DIRS}>" "$<BUILD_INTERFACE:${VIND_EXTRA_INCLUDE_DIRS}>" )
+
+target_link_libraries( vind PUBLIC NetCDF::NetCDF_Fortran NetCDF::NetCDF_C )
+if( eccodes_FOUND )
+    target_link_libraries( vind PUBLIC eccodes )
+endif()
+if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS ) AND falfilfa_FOUND )
+    target_link_libraries( vind PUBLIC trans_dp transi_dp fa_dp )
+endif()
+
+#Configure include directory layout for build-tree to match install-tree
+set(VIND_BUILD_DIR_INCLUDE_PATH ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/include)
+add_custom_target(vind_headers ALL COMMAND ${CMAKE_COMMAND} -E make_directory "${VIND_BUILD_DIR_INCLUDE_PATH}"
+                                   COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR} ${VIND_BUILD_DIR_INCLUDE_PATH}/vind )
+add_dependencies(vind vind_headers)
+target_include_directories(vind PUBLIC $<BUILD_INTERFACE:${VIND_BUILD_DIR_INCLUDE_PATH}>
+                                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+                                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../..>)

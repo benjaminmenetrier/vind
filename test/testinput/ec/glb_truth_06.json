@@ -1,0 +1,47 @@
+{
+  "input geometry": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+    },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "2"
+      }
+    ],
+    "halo": "1"
+  },
+  "output geometry": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+    },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "2"
+      }
+    ],
+    "halo": "1"
+  },
+  "model": {
+    "tstep": "PT6H"
+  },
+  "states": [{
+    "input": {
+      "date": "2010-01-01T06:00:00Z",
+        "variables": ["air_temperature"],
+      "constant profile": ["0.8","1.0"]
+    },
+    "output": {
+      "date": "2010-01-01T06:00:00Z",
+      "filepath": "testdata/glb_truth_06"
+    }
+  }],
+  "test": {
+    "reference filename": "testref/glb_truth_06.ref"
+  }
+}

@@ -1,0 +1,99 @@
+cost function:
+  cost type: 3D-Var
+  time window:
+    begin: 2010-01-01T11:59:59Z
+    length: PT2S
+  analysis variables: [air_temperature]
+  geometry: &geom
+    function space: StructuredColumns
+    grid:
+      type: regional
+      nx: 71
+      ny: 53
+      dx: 2.5e3
+      dy: 2.5e3
+      lonlat(centre): [9.9, 56.3]
+      projection:
+        type: lambert_conformal_conic
+        latitude0: 56.3
+        longitude0: 0.0
+      y_numbering: 1
+    partitioner: checkerboard
+    groups:
+    - variables:
+       - air_temperature
+      levels: 2
+      vert_coord: &vert_coord [1,2]
+    halo: 1
+  background:
+    date: 2010-01-01T12:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/reg_bkg_12_000001
+  background error:
+    covariance model: SABER
+    saber central block:
+      saber block name: BUMP_NICAS
+      calibration:
+        general:
+          default seed: 12
+        drivers:
+          multivariate strategy: univariate
+          compute nicas: true
+        nicas:
+          resolution: 4.0
+          explicit length-scales: true
+          horizontal length-scale:
+          - groups:
+            - air_temperature
+            value: 3.0e4
+          vertical length-scale:
+          - groups:
+            - air_temperature
+            value: 3.0
+    saber outer blocks:
+    - saber block name: StdDev
+      read:
+        model file:
+          filepath: testdata/reg_stddev
+  observations:
+    observers:
+    - obs space:
+        name: air_temperature
+        simulated variables: [air_temperature]
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: testdata/reg_obs_12.nc
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: testdata/reg_obs_3dvar.nc
+      obs operator:
+        name: VertInterp
+        constant vertical coordinate values: *vert_coord
+        observation vertical coordinate: height
+        interpolation method: linear
+      obs error:
+        covariance model: diagonal
+variational:
+  minimizer:
+    algorithm: DRIPCG
+  iterations:
+  - diagnostics:
+      departures: ombg0
+    gradient norm reduction: 1.0e-10
+    ninner: 10
+    geometry: *geom
+final:
+  diagnostics:
+    departures: oman
+  increment:
+    geometry: *geom
+    output:
+      state component:
+        filepath: testdata/reg_3dvar_incr
+output:
+  filepath: testdata/reg_3dvar_analysis
+test:
+  reference filename: testref/jedi/reg_3dvar.ref

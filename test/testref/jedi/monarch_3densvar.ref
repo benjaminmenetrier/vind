@@ -1,0 +1,59 @@
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.3632891011913653e+00, nobs = 1, Jo/n = 1.3632891011913653e+00, err = 1.8144000080155820e-08
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostFunction: Nonlinear J = 1.3632891011913653e+00
+DRIPCGMinimizer: reduction in residual norm = 0.0000000000000000e+00
+CostFunction::addIncrement: Analysis: 
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    ~ 0
+    + max    = 9.8462342238610275e-08
+    + mean   = 3.8935746945423279e-08
+    + stddev = 1.1207890826486360e-08
+
+  - carbon_monoxyde (5 levels):
+    + min    = 5.3954821079969401e-08
+    + max    = 3.7773072719573970e-07
+    + mean   = 9.3639115352871771e-08
+    + stddev = 1.8668755291800972e-08
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 1.0055721588742017e-13
+    + max    = 5.5385572286238485e-08
+    + mean   = 1.3922286523379813e-10
+    + stddev = 4.7225131283758627e-10
+
+  - sulfur_dioxide (5 levels):
+    + min    ~ 0
+    + max    = 5.1429003477096556e-08
+    + mean   = 2.1587788649884426e-10
+    + stddev = 5.2500110126387054e-10
+
+  - pm10 (5 levels):
+    + min    = 8.7928400454781452e-13
+    + max    = 2.6815544060809771e-06
+    + mean   = 3.4975151631585021e-08
+    + stddev = 7.3211659951174233e-08
+
+  - pm2p5 (5 levels):
+    + min    = 8.7928400454781452e-13
+    + max    = 2.6435659492562991e-06
+    + mean   = 7.7089972567336833e-09
+    + stddev = 1.5891050084576302e-08
+
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.2496932622875478e+00, nobs = 1, Jo/n = 1.2496932622875478e+00, err = 1.8144000080155820e-08
+CostJb   : Nonlinear Jb = 0.0000000000000000e+00
+CostFunction: Nonlinear J = 1.2496932622875478e+00

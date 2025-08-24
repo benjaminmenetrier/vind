@@ -1,0 +1,32 @@
+input geometry: &geom
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 71
+    ny: 53
+    dx: 2.5e3
+    dy: 2.5e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables:
+    - air_temperature
+    levels: 2
+  halo: 1
+output geometry: *geom
+states:
+- input:
+    date: 2010-01-01T18:00:00Z
+    state variables:
+    - air_temperature
+    constant profile: [1.0, 1.2]
+  output:
+    date: 2010-01-01T18:00:00Z
+    filepath: testdata/reg_truth_18
+test:
+  reference filename: testref/reg_truth_18.ref

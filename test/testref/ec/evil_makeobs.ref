@@ -1,0 +1,161 @@
+State: 
+- Valid time: 2010-01-01T12:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+    air_temperature: 5.0199601592044530e+01
+H(x):
+air_temperature nobs= 30 Min=9.9999999999999989e-01, Max=1.0000000000000002e+00, RMS=1.0000000000000000e+00
+End H(x)
+Perturbed H(x):
+air_temperature nobs= 30 Min=9.7605982744002129e-01, Max=1.0228371008323089e+00, RMS=9.9621124555526008e-01
+End Perturbed H(x)
+Perturbed H(x) for member 1:
+Generated perturbed observation 0 for member 1: air_temperature nobs= 30 Min=9.6375447403697523e-01, Max=1.0187576177095603e+00, RMS=9.9537802289517918e-01
+End perturbed H(x) for member 1
+Perturbed H(x) for member 2:
+Generated perturbed observation 0 for member 2: air_temperature nobs= 30 Min=9.7438356763815881e-01, Max=1.0197732296739184e+00, RMS=9.9456278605485959e-01
+End perturbed H(x) for member 2
+Perturbed H(x) for member 3:
+Generated perturbed observation 0 for member 3: air_temperature nobs= 30 Min=9.6131215795869296e-01, Max=1.0260412094043472e+00, RMS=9.9923211420598990e-01
+End perturbed H(x) for member 3
+Perturbed H(x) for member 4:
+Generated perturbed observation 0 for member 4: air_temperature nobs= 30 Min=9.5932961887824841e-01, Max=1.0169981673661928e+00, RMS=9.9393008696066332e-01
+End perturbed H(x) for member 4
+Perturbed H(x) for member 5:
+Generated perturbed observation 0 for member 5: air_temperature nobs= 30 Min=9.7091638148595871e-01, Max=1.0304350303707881e+00, RMS=9.9790721487246059e-01
+End perturbed H(x) for member 5
+Perturbed H(x) for member 6:
+Generated perturbed observation 0 for member 6: air_temperature nobs= 30 Min=9.7318760278795646e-01, Max=1.0210845104970070e+00, RMS=9.9435432832132087e-01
+End perturbed H(x) for member 6
+Perturbed H(x) for member 7:
+Generated perturbed observation 0 for member 7: air_temperature nobs= 30 Min=9.6792265039978154e-01, Max=1.0314583612344259e+00, RMS=9.9619569420939547e-01
+End perturbed H(x) for member 7
+Perturbed H(x) for member 8:
+Generated perturbed observation 0 for member 8: air_temperature nobs= 30 Min=9.6779144338178813e-01, Max=1.0455556641088151e+00, RMS=9.9582382504666767e-01
+End perturbed H(x) for member 8
+Perturbed H(x) for member 9:
+Generated perturbed observation 0 for member 9: air_temperature nobs= 30 Min=9.6933813687847259e-01, Max=1.0218200889021303e+00, RMS=9.9777181042492680e-01
+End perturbed H(x) for member 9
+Perturbed H(x) for member 10:
+Generated perturbed observation 0 for member 10: air_temperature nobs= 30 Min=9.7033814914155370e-01, Max=1.0195360278628101e+00, RMS=9.9676544591884131e-01
+End perturbed H(x) for member 10
+Perturbed H(x) for member 11:
+Generated perturbed observation 0 for member 11: air_temperature nobs= 30 Min=9.6107264541109794e-01, Max=1.0337541607331606e+00, RMS=9.9521438982845034e-01
+End perturbed H(x) for member 11
+Perturbed H(x) for member 12:
+Generated perturbed observation 0 for member 12: air_temperature nobs= 30 Min=9.6852723333469537e-01, Max=1.0213618508447424e+00, RMS=9.9617028037302013e-01
+End perturbed H(x) for member 12
+Perturbed H(x) for member 13:
+Generated perturbed observation 0 for member 13: air_temperature nobs= 30 Min=9.5277222277800577e-01, Max=1.0310592228943658e+00, RMS=9.9678665206572514e-01
+End perturbed H(x) for member 13
+Perturbed H(x) for member 14:
+Generated perturbed observation 0 for member 14: air_temperature nobs= 30 Min=9.6458525077278334e-01, Max=1.0148442799810939e+00, RMS=9.9494441537042633e-01
+End perturbed H(x) for member 14
+Perturbed H(x) for member 15:
+Generated perturbed observation 0 for member 15: air_temperature nobs= 30 Min=9.5514798796042599e-01, Max=1.0264779142886962e+00, RMS=9.9373416653285507e-01
+End perturbed H(x) for member 15
+Perturbed H(x) for member 16:
+Generated perturbed observation 0 for member 16: air_temperature nobs= 30 Min=9.6702075525366160e-01, Max=1.0278299919478344e+00, RMS=9.9600515546321955e-01
+End perturbed H(x) for member 16
+Perturbed H(x) for member 17:
+Generated perturbed observation 0 for member 17: air_temperature nobs= 30 Min=9.6585483699460373e-01, Max=1.0327897180784815e+00, RMS=9.9522104162046043e-01
+End perturbed H(x) for member 17
+Perturbed H(x) for member 18:
+Generated perturbed observation 0 for member 18: air_temperature nobs= 30 Min=9.5963813534519904e-01, Max=1.0226362664072262e+00, RMS=9.9613758373177452e-01
+End perturbed H(x) for member 18
+Perturbed H(x) for member 19:
+Generated perturbed observation 0 for member 19: air_temperature nobs= 30 Min=9.7003189116285571e-01, Max=1.0217015169390418e+00, RMS=9.9662881910682755e-01
+End perturbed H(x) for member 19
+Perturbed H(x) for member 20:
+Generated perturbed observation 0 for member 20: air_temperature nobs= 30 Min=9.5678357931489522e-01, Max=1.0180019627137218e+00, RMS=9.9588991153737083e-01
+End perturbed H(x) for member 20
+Perturbed H(x) for member 21:
+Generated perturbed observation 0 for member 21: air_temperature nobs= 30 Min=9.7501799495346531e-01, Max=1.0306830513017811e+00, RMS=9.9678036819952531e-01
+End perturbed H(x) for member 21
+Perturbed H(x) for member 22:
+Generated perturbed observation 0 for member 22: air_temperature nobs= 30 Min=9.7193583209471712e-01, Max=1.0363700563301401e+00, RMS=9.9760053645882896e-01
+End perturbed H(x) for member 22
+Perturbed H(x) for member 23:
+Generated perturbed observation 0 for member 23: air_temperature nobs= 30 Min=9.7570525288370091e-01, Max=1.0272151587914291e+00, RMS=9.9651429197387398e-01
+End perturbed H(x) for member 23
+Perturbed H(x) for member 24:
+Generated perturbed observation 0 for member 24: air_temperature nobs= 30 Min=9.7077030498039207e-01, Max=1.0225934306116764e+00, RMS=9.9264385035001101e-01
+End perturbed H(x) for member 24
+Perturbed H(x) for member 25:
+Generated perturbed observation 0 for member 25: air_temperature nobs= 30 Min=9.6275920885632871e-01, Max=1.0295090127269835e+00, RMS=9.9692118275559150e-01
+End perturbed H(x) for member 25
+Perturbed H(x) for member 26:
+Generated perturbed observation 0 for member 26: air_temperature nobs= 30 Min=9.5675327367759500e-01, Max=1.0207950621189477e+00, RMS=9.9458355375216101e-01
+End perturbed H(x) for member 26
+Perturbed H(x) for member 27:
+Generated perturbed observation 0 for member 27: air_temperature nobs= 30 Min=9.7033993375832828e-01, Max=1.0167014913064611e+00, RMS=9.9589364986717988e-01
+End perturbed H(x) for member 27
+Perturbed H(x) for member 28:
+Generated perturbed observation 0 for member 28: air_temperature nobs= 30 Min=9.6495888093864601e-01, Max=1.0319985558572917e+00, RMS=9.9491610313114698e-01
+End perturbed H(x) for member 28
+Perturbed H(x) for member 29:
+Generated perturbed observation 0 for member 29: air_temperature nobs= 30 Min=9.5613331167614501e-01, Max=1.0383555663844279e+00, RMS=9.9618863388702061e-01
+End perturbed H(x) for member 29
+Perturbed H(x) for member 30:
+Generated perturbed observation 0 for member 30: air_temperature nobs= 30 Min=9.6848658169453417e-01, Max=1.0274304467651649e+00, RMS=9.9912181701727820e-01
+End perturbed H(x) for member 30
+Perturbed H(x) for member 31:
+Generated perturbed observation 0 for member 31: air_temperature nobs= 30 Min=9.6030792800614351e-01, Max=1.0559835272438400e+00, RMS=9.9419791941863622e-01
+End perturbed H(x) for member 31
+Perturbed H(x) for member 32:
+Generated perturbed observation 0 for member 32: air_temperature nobs= 30 Min=9.6665481804491371e-01, Max=1.0370057383300484e+00, RMS=9.9394527750507744e-01
+End perturbed H(x) for member 32
+Perturbed H(x) for member 33:
+Generated perturbed observation 0 for member 33: air_temperature nobs= 30 Min=9.5975577842286119e-01, Max=1.0293605678565982e+00, RMS=9.9560785958003006e-01
+End perturbed H(x) for member 33
+Perturbed H(x) for member 34:
+Generated perturbed observation 0 for member 34: air_temperature nobs= 30 Min=9.6902901148195408e-01, Max=1.0292788987349561e+00, RMS=9.9934076581786357e-01
+End perturbed H(x) for member 34
+Perturbed H(x) for member 35:
+Generated perturbed observation 0 for member 35: air_temperature nobs= 30 Min=9.5973439280329442e-01, Max=1.0234055862936391e+00, RMS=9.9613147022304704e-01
+End perturbed H(x) for member 35
+Perturbed H(x) for member 36:
+Generated perturbed observation 0 for member 36: air_temperature nobs= 30 Min=9.6553321815362070e-01, Max=1.0360488641201331e+00, RMS=9.9684514242657074e-01
+End perturbed H(x) for member 36
+Perturbed H(x) for member 37:
+Generated perturbed observation 0 for member 37: air_temperature nobs= 30 Min=9.7681236695304030e-01, Max=1.0376626150186998e+00, RMS=1.0001445321651181e+00
+End perturbed H(x) for member 37
+Perturbed H(x) for member 38:
+Generated perturbed observation 0 for member 38: air_temperature nobs= 30 Min=9.7276089108838282e-01, Max=1.0279580240577111e+00, RMS=1.0006189946382145e+00
+End perturbed H(x) for member 38
+Perturbed H(x) for member 39:
+Generated perturbed observation 0 for member 39: air_temperature nobs= 30 Min=9.6703790912835841e-01, Max=1.0284724689611144e+00, RMS=9.9664044126572859e-01
+End perturbed H(x) for member 39
+Perturbed H(x) for member 40:
+Generated perturbed observation 0 for member 40: air_temperature nobs= 30 Min=9.7245692909050629e-01, Max=1.0178724626698439e+00, RMS=9.9289320871673847e-01
+End perturbed H(x) for member 40
+Perturbed H(x) for member 41:
+Generated perturbed observation 0 for member 41: air_temperature nobs= 30 Min=9.6555468598613714e-01, Max=1.0175991752035487e+00, RMS=9.9445468556179029e-01
+End perturbed H(x) for member 41
+Perturbed H(x) for member 42:
+Generated perturbed observation 0 for member 42: air_temperature nobs= 30 Min=9.7543405995908505e-01, Max=1.0213645878193345e+00, RMS=9.9730750471222174e-01
+End perturbed H(x) for member 42
+Perturbed H(x) for member 43:
+Generated perturbed observation 0 for member 43: air_temperature nobs= 30 Min=9.5964843248047216e-01, Max=1.0356269047241240e+00, RMS=9.9595619549797443e-01
+End perturbed H(x) for member 43
+Perturbed H(x) for member 44:
+Generated perturbed observation 0 for member 44: air_temperature nobs= 30 Min=9.6231616521802932e-01, Max=1.0349105473105029e+00, RMS=9.9406753827288685e-01
+End perturbed H(x) for member 44
+Perturbed H(x) for member 45:
+Generated perturbed observation 0 for member 45: air_temperature nobs= 30 Min=9.6896108703961381e-01, Max=1.0367839533166319e+00, RMS=9.9822239265646873e-01
+End perturbed H(x) for member 45
+Perturbed H(x) for member 46:
+Generated perturbed observation 0 for member 46: air_temperature nobs= 30 Min=9.7092327158265745e-01, Max=1.0230916016085443e+00, RMS=9.9555809056283517e-01
+End perturbed H(x) for member 46
+Perturbed H(x) for member 47:
+Generated perturbed observation 0 for member 47: air_temperature nobs= 30 Min=9.6804900933939952e-01, Max=1.0439297085863088e+00, RMS=9.9762407642661399e-01
+End perturbed H(x) for member 47
+Perturbed H(x) for member 48:
+Generated perturbed observation 0 for member 48: air_temperature nobs= 30 Min=9.7583558536611148e-01, Max=1.0344267838425076e+00, RMS=9.9939246073859200e-01
+End perturbed H(x) for member 48
+Perturbed H(x) for member 49:
+Generated perturbed observation 0 for member 49: air_temperature nobs= 30 Min=9.7094978898631890e-01, Max=1.0359669334618147e+00, RMS=9.9835878335799400e-01
+End perturbed H(x) for member 49
+Perturbed H(x) for member 50:
+Generated perturbed observation 0 for member 50: air_temperature nobs= 30 Min=9.6713170241007973e-01, Max=1.0307234822652724e+00, RMS=9.9571313135552642e-01
+End perturbed H(x) for member 50

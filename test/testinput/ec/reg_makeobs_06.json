@@ -1,0 +1,73 @@
+{
+  "Geometry": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regional",
+      "nx": "71",
+      "ny": "53",
+      "dx": "2.5e3",
+      "dy": "2.5e3",
+      "lonlat(centre)": ["9.9", "56.3"],
+      "projection": {
+        "type" : "lambert_conformal_conic",
+        "latitude0"  : "56.3",
+        "longitude0" : "0.0"
+      },
+      "y_numbering": "1"
+    },
+    "partitioner": "checkerboard",
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "2"
+      }
+    ],
+    "halo": "1"
+  },
+  "Observations": {
+    "ObsTypes": [
+      {
+        "ObsType": "default",
+        "ObsData": {
+          "ObsDataOut": {
+            "filepath": "testdata/reg_obs_06"
+          },
+          "obsvalue": "ObsValue"
+        },
+        "variables": ["air_temperature"],
+        "Generate": {
+          "lats": [55.3,55.8,56.3,56.8,57.3,55.3,55.8,56.3,56.8,57.3,55.3,55.8,56.3,56.8,57.3,55.3,55.8,56.3,56.8,57.3,55.3,55.8,56.3,56.8,57.3],
+          "lons": [8.9,8.9,8.9,8.9,8.9,9.4,9.4,9.4,9.4,9.4,9.9,9.9,9.9,9.9,9.9,10.4,10.4,10.4,10.4,10.4,10.9,10.9,10.9,10.9,10.9],
+          "dateTimes": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          "vert coord type": "height",
+          "vert coords": [1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3],
+          "epoch": "seconds since 2010-01-01T06:00:00Z",
+          "obs errors": [0.1],
+          "obserror": "ObsError"
+        },
+        "Covariance": {
+          "ObsErrorCovariance": {
+            "covariance": "diagonal",
+            "obserror": "ObsError"
+          }
+        }
+      }
+    ]
+  },
+  "Model": {
+    "tstep": "PT6H"
+  },
+  "Initial Condition": {
+    "date": "2010-01-01T06:00:00Z",
+    "variables": ["air_temperature"],
+    "filepath": "testdata/reg_truth_06"
+  },
+  "Assimilation Window": {
+    "Begin": "2010-01-01T06:00:00Z",
+    "End": "2010-01-01T06:00:00Z"
+  },
+  "test": {
+    "reference filename": "testref/reg_makeobs_06.ref",
+    "float relative tolerance": 1.0e-8
+  }
+}

@@ -1,0 +1,22 @@
+--- /home/benjaminm/code/jedi-bundle/vind/src/vind/FieldsIO/FieldsIOGmsh.h.tmp.bak	2025-05-20 12:47:08.802713152 +0200
++++ /home/benjaminm/code/jedi-bundle/vind/src/vind/FieldsIO/FieldsIOGmsh.h	2025-05-20 12:42:49.674410744 +0200
+@@ -13,9 +13,8 @@
+ #include "atlas/field.h"
+ #include "atlas/output/Gmsh.h"
+ 
+-#include "oops/base/Variables.h"
+-
+ #include "vind/FieldsIO/FieldsIOBase.h"
++#include "vind/VariablesSwitch.h"
+ 
+ namespace vind {
+   class Geometry;
+@@ -34,7 +33,7 @@
+ 
+   // Read
+   void read(const Geometry &,
+-            const oops::Variables &,
++            const varns::Variables &,
+             const eckit::Configuration &,
+             atlas::FieldSet &) const override;
+ 

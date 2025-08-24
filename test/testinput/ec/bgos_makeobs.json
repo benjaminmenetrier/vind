@@ -1,0 +1,62 @@
+{
+  "Geometry": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+    },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "3"
+      }
+    ],
+    "halo": "1"
+  },
+  "Observations": {
+    "ObsTypes": [
+      {
+        "ObsType": "default",
+        "ObsData": {
+          "ObsDataOut": {
+            "filepath": "testdata/bgos_obs"
+          },
+          "obserror": "ObsError",
+          "obsvalue": "ObsValue"
+        },
+        "variables": ["air_temperature"],
+        "Generate": {
+          "lats": [-60.0,-30.0,0.0,30.0,60.0,-60.0,-30.0,0.0,30.0,60.0,-60.0,-30.0,0.0,30.0,60.0,-60.0,-30.0,0.0,30.0,60.0,-60.0,-30.0,0.0,30.0,60.0,-60.0,-30.0,0.0,30.0,60.0],
+          "lons": [0.0,0.0,0.0,0.0,0.0,60.0,60.0,60.0,60.0,60.0,120.0,120.0,120.0,120.0,120.0,180.0,180.0,180.0,180.0,180.0,240.0,240.0,240.0,240.0,240.0,300.0,300.0,300.0,300.0,300.0],
+          "dateTimes": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          "vert coord type": "height",
+          "vert coords": [1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3],
+          "epoch": "seconds since 2010-01-01T12:00:00Z",
+          "obs errors": [0.1],
+          "obserror": "ObsError"
+        },
+        "Covariance": {
+          "ObsErrorCovariance": {
+            "covariance": "diagonal",
+            "obserror": "ObsError"
+          }
+        }
+      }
+    ]
+  },
+  "Model": {
+    "tstep": "PT6H"
+  },
+  "Initial Condition": {
+    "date": "2010-01-01T12:00:00Z",
+    "variables": ["air_temperature"],
+    "filepath": "testdata/bgos_truth"
+  },
+  "Assimilation Window": {
+    "Begin": "2010-01-01T12:00:00Z",
+    "End": "2010-01-01T12:00:00Z"
+  },
+  "test": {
+    "reference filename": "testref/ec/bgos_makeobs.ref"
+  }
+}

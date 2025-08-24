@@ -1,0 +1,22 @@
+input geometry: &geom
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables:
+    - air_temperature
+    levels: 2
+  halo: 1
+output geometry: *geom
+states:
+- input:
+    date: 2010-01-01T12:00:00Z
+    state variables:
+    - air_temperature
+    constant profile: [0.9, 1.1]
+  output:
+    date: 2010-01-01T12:00:00Z
+    filepath: testdata/glb_truth_12
+test:
+  reference filename: testref/glb_truth_12.ref

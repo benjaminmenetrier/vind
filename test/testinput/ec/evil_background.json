@@ -1,0 +1,74 @@
+{
+  "resolution": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+     },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "3"
+      }
+    ],
+    "halo": "1"
+  },
+  "model": {
+    "tstep": "PT6H"
+  },
+  "Background": {
+    "state": [{
+      "date": "2010-01-01T12:00:00Z",
+      "variables": ["air_temperature"],
+      "filepath": "testdata/evil_truth"
+    }]
+  },
+  "Covariance": {
+    "covariance": "SABER",
+    "saber central block": {
+      "saber block name": "BUMP_NICAS",
+      "calibration": {
+        "general": {
+          "default seed": "12"
+        },
+        "drivers": {
+          "multivariate strategy": "univariate",
+          "compute nicas": "true",
+          "write local nicas": "true"
+        },
+        "io": {
+          "data directory": "testdata",
+          "files prefix": "evil"
+        },
+        "nicas": {
+          "resolution": "5.0",
+          "explicit length-scales": "true",
+          "horizontal length-scale": [{
+            "groups": ["air_temperature"],
+            "value": "10.0e6"
+          }],
+          "vertical length-scale": [{
+            "groups": ["air_temperature"],
+            "value": "3.0"
+          }]
+        }
+      }
+    },
+    "saber outer blocks": [{
+      "saber block name": "StdDev",
+      "read": {
+        "model file": {
+          "filepath": "testdata/evil_stddev"
+        }
+      }
+    }],
+    "randomization size": "1"
+  },
+  "output states": {
+    "date": "2010-01-01T12:00:00Z",
+    "filepath": "testdata/evil_bkg"
+  },
+  "test": {
+    "reference filename": "testref/ec/evil_background.ref"
+  }
+}

@@ -1,0 +1,15 @@
+State: 
+- Valid time: 2010-01-01T18:00:00Z
+  Geometry: structured [3763]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = 1.0000000000000000e+00
+    + max    = 1.2000000000000000e+00
+    + mean   = 1.0999999999999404e+00
+    + stddev = 1.0000664429754053e-01
+H(x): 
+air_temperature nobs= 15 Min=1.0599999904632569e+00, Max=1.0599999904632569e+00, RMS=1.0599999904632569e+00
+End H(x)
+Perturbed H(x): 
+air_temperature nobs= 15 Min=9.7413403359774109e-01, Max=1.2788112470107196e+00, RMS=1.1035663598850485e+00
+End Perturbed H(x)

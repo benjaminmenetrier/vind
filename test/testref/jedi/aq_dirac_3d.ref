@@ -1,0 +1,116 @@
+Input Dirac increment:
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000000e+00
+    + mean   = 6.3131313131313133e-07
+    + stddev = 7.9455215770523311e-04
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000000e+00
+    + mean   = 6.3131313131313133e-07
+    + stddev = 7.9455215770523528e-04
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+Covariance(ensemble) * Increment:
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = -8.9449982103629129e-18
+    + max    = 1.0981480483760604e-17
+    + mean   = 3.1769087386359210e-20
+    + stddev = 3.0654021435210115e-19
+
+  - carbon_monoxyde (5 levels):
+    + min    = -6.7010478851175336e-18
+    + max    = 1.3001980687988014e-17
+    + mean   = 3.9791192851796202e-20
+    + stddev = 3.0072461632622771e-19
+
+  - nitrogen_dioxide (5 levels):
+    + min    = -6.3683858022156859e-18
+    + max    = 5.7262460965023440e-18
+    + mean   = 2.0625536596729443e-22
+    + stddev = 5.8007979509701560e-20
+
+  - sulfur_dioxide (5 levels):
+    + min    = -8.5511988419372829e-19
+    + max    = 5.8575732138370059e-19
+    + mean   = 5.9321996947437880e-22
+    + stddev = 7.2424177159706807e-21
+
+  - pm10 (5 levels):
+    + min    = -6.0369524142995867e-17
+    + max    = 2.3055893226671042e-17
+    + mean   = -3.6676291819394830e-20
+    + stddev = 8.6184117202881835e-19
+
+  - pm2p5 (5 levels):
+    + min    = -2.2392872335775352e-17
+    + max    = 3.5641134714625798e-18
+    + mean   = 8.5536254754182721e-21
+    + stddev = 1.3568792895501632e-19
+
+Localization(ensemble_localization) diagnostics:
+- Localization at zero separation:
+  + Value for variable carbon_monoxyde, subwindow 0, at (longitude, latitude, vertical index) point (7.95000, 38.35000, 5): 1.0000000000000002e+00
+  + Value for variable pm10, subwindow 0, at (longitude, latitude, vertical index) point (17.85000, 60.35000, 5): 1.0000000000000007e+00
+Localization(ensemble) * Increment:
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000007e+00
+    + mean   = 1.5815196737598809e-02
+    + stddev = 7.9821044241862829e-02
+
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000007e+00
+    + mean   = 1.5815196737598809e-02
+    + stddev = 7.9821044241862829e-02
+
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000007e+00
+    + mean   = 1.5815196737598809e-02
+    + stddev = 7.9821044241862829e-02
+
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000007e+00
+    + mean   = 1.5815196737598809e-02
+    + stddev = 7.9821044241862829e-02
+
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000007e+00
+    + mean   = 1.5815196737598809e-02
+    + stddev = 7.9821044241862829e-02
+
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000007e+00
+    + mean   = 1.5815196737598809e-02
+    + stddev = 7.9821044241862829e-02
+

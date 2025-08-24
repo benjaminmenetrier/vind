@@ -1,0 +1,14 @@
+Input state: 
+- Valid time: 2010-01-01T12:00:00Z
+  Geometry: structured [3763]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = 1.0000000000000001e-01
+    + max    = 1.0000000000000001e-01
+Output state: 
+- Valid time: 2010-01-01T12:00:00Z
+  Geometry: structured [3763]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = 1.0000000000000001e-01
+    + max    = 1.0000000000000001e-01

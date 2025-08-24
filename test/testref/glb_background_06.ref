@@ -1,0 +1,10 @@
+Norm of input parameter StdDev: 4.0987803063838184e+00
+Member 0: 
+- Valid time: 2010-01-01T06:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -2.6250594485344375e-01
+    + max    = 3.0396275255270733e-01
+    + mean   = 1.7236082530328354e-02
+    + stddev = 8.3328277353351868e-02

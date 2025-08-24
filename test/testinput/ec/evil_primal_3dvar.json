@@ -1,0 +1,161 @@
+{
+  "resolution": {
+    "function space": "StructuredColumns",
+    "grid": {
+      "type": "regular_lonlat",
+      "N": "10"
+    },
+    "groups": [
+      {
+        "variables": ["air_temperature"],
+        "levels": "3"
+      }
+    ],
+    "halo": "1"
+  },
+  "model": {
+    "tstep": "PT6H"
+  },
+  "cost_function": {
+    "cost_type": "3D-Var",
+    "window_begin": "2010-01-01T12:00:00Z",
+    "window_length": "PT0H",
+    "variables": ["air_temperature"],
+    "Jb": {
+      "Background": {
+        "state": [
+          {
+            "date": "2010-01-01T12:00:00Z",
+            "variables": ["air_temperature"],
+            "filepath": "testdata/evil_bkg_000001"
+          }
+        ]
+      },
+      "Covariance": {
+        "covariance": "SABER",
+        "ensemble": [
+          {
+            "variables": ["air_temperature"],
+            "members": "50",
+            "state from template": {
+              "template": {
+                "date": "2010-01-01T12:00:00Z",
+                "state variables": ["air_temperature"],
+                "filepath": "testdata/evil_ens_%member%"
+              },
+              "pattern": "%member%",
+              "zero padding": "6"
+            }
+          }
+        ],
+        "saber central block": {
+          "saber block name": "Ensemble",
+          "inflation value": 1.0,
+          "localization": {
+            "saber central block": {
+              "saber block name": "BUMP_NICAS",
+              "read": {
+                "drivers": {
+                  "multivariate strategy": "univariate",
+                  "read local nicas": "true"
+                },
+                "io": {
+                   "overriding nicas file": "testdata/evil_nicas"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Jo": {
+      "ObsTypes": [
+        {
+          "ObsType": "default",
+          "ObsData": {
+            "ObsDataInScreened": {
+              "filepath": "testdata/evil_obs"
+            },
+            "ObsDataOutScreened": {
+              "filepath": "testdata/evil_obs_primal_3dvar"
+            },
+            "obsvalue": "ObsValue.000000"
+          },
+          "Covariance": {
+            "ObsErrorCovariance": {
+              "covariance": "diagonal",
+              "obserror": "ObsError"
+            }
+          },
+          "variables": ["air_temperature"]
+        }
+      ]
+    }
+  },
+  "minimizer": {
+    "algorithm": "DRPLanczosEVIL",
+    "ritz tolerance": "1.0e-2",
+    "eigenvalues": "testdata/evil_primal_3dvar.eigenvalues.txt",
+    "ritz vectors": {
+      "mpi pattern": "%mpi%",
+      "increment": [
+        {
+          "filepath": "testdata/evil_primal_3dvar.ritz.%pattern%.%iteration%_%mpi%"
+        }
+      ]
+    }
+  },
+  "output": {
+    "filepath": "testdata/evil_primal_3dvar"
+  },
+  "variational": {
+    "iteration": [
+      {
+        "resolution": {
+          "function space": "StructuredColumns",
+          "grid": {
+            "type": "regular_lonlat",
+            "N": "10"
+          },
+          "groups": [
+            {
+              "variables": ["air_temperature"],
+              "levels": "3"
+            }
+          ],
+          "halo": "1"
+        },
+        "timeslot": "PT0H",                
+        "linearmodel": {
+          "version": "default",
+          "tstep": "PT0H",
+          "trajectory": {
+            "tstep": "PT6H",
+            "forcing": {
+              "variables": ["air_temperature"]
+            }
+          }
+        },
+        "ninner": "30",
+        "gradient_norm_reduction": "1e-10",
+        "test": "on",
+        "diagnostics": {
+          "departures": {
+            "obsvalue": "ombg"
+          }
+        }
+      }
+    ]
+  },
+  "final": {
+    "diagnostics": {
+      "departures": {
+        "obsvalue": "oman"
+      }
+    }
+  },
+  "test": {
+    "reference filename": "testref/ec/evil_primal_3dvar.ref",
+    "float relative tolerance": 1.0e-10
+  }
+}

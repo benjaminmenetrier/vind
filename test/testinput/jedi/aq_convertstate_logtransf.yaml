@@ -1,0 +1,80 @@
+_defaultAddConst: 
+    additive constant: &defaddconst 1.e-10 
+_ozoneAddConst: 
+    additive constant: &o3addconst 5.e-9 
+_logTransform: &logtransform
+    log transform: true
+    additive constant: *defaddconst
+
+_variables: &vars
+    - ozone
+    - carbon_monoxyde
+    - nitrogen_dioxide
+    - sulfur_dioxide
+    - pm10
+    - pm2p5
+
+input geometry: &geom
+  function space: StructuredColumns
+  grid:
+    type: regional
+    dx: 0.1
+    dy: 0.1
+    nx: 720
+    ny: 440
+    xmin: -25.95
+    ymin: 28.05
+  partitioner: "checkerboard"
+  halo: 1
+  levels are top down: true
+  groups:
+  - variables: *vars
+    levels: 5
+    vertical coordinate:
+      profile: [19, 20, 21, 22, 23]
+  alias:
+  alias:
+  - in code: ozone
+    in file: O3
+    <<: *logtransform
+    additive constant: *o3addconst
+  - in code: carbon_monoxyde
+    in file: CO
+    <<: *logtransform
+  - in code: nitrogen_dioxide
+    in file: NO2
+    <<: *logtransform
+  - in code: sulfur_dioxide
+    in file: SO2
+    <<: *logtransform
+  - in code: pm10
+    in file: dry_pm10_mass
+    <<: *logtransform
+  - in code: pm2p5
+    in file: dry_pm2p5_mass
+    <<: *logtransform
+  io:
+    initial date: 2022-06-30T12:00:00Z
+output geometry: *geom
+states:
+- input:
+    date: 2022-07-01T00:00:00Z
+    filepath: testdata/forecast/MONARCH_2022070100.nc
+    format: aq
+    state variables: *vars
+  output:
+    date: 2022-07-01T00:00:00Z
+    filepath: testdata/aq_output_logtransf_2022070100.nc
+    formats: [aq]
+- input:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/forecast/MONARCH_2022070112.nc
+    format: aq
+    state variables: *vars
+  output:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/aq_output_logtransf_2022070112.nc
+    formats: [aq]
+test:
+  reference filename: testref/jedi/aq_convertstate_logtransf.ref
+  test output filename: testdata/aq_convertstate_logtransf.log
