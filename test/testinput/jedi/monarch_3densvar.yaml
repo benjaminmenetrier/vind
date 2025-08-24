@@ -100,16 +100,20 @@ cost function:
       saber central block:
         saber block name: FastLAM
         calibration:
-          multivariate strategy: duplicated
+          multivariate strategy: duplicated and weighted
           groups:
           - group name: var3d
             variables: *chemvars
           horizontal length-scale:
           - group: var3d
-            value: 1000.0e3
+            value: 200.0e3
           vertical length-scale:
           - group: var3d
             value: 3.0
+          default off-diagonal weight: 0.5
+          specific off-diagonal weights:
+          - variables pair: [ozone, carbon_monoxyde]
+            weight: 0.2
           number of layers: 3
           resolution: 8
   observations:

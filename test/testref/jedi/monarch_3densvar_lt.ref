@@ -13,47 +13,47 @@ CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.7546500263538110e+00, nobs = 1, Jo/n = 1
     FastLAM rowsToCols test passed
 CostJb   : Nonlinear Jb = 0.0000000000000000e+00
 CostFunction: Nonlinear J = 1.7546500263538110e+00
-DRIPCGMinimizer: reduction in residual norm = 0.0000000000000000e+00
+DRIPCGMinimizer: reduction in residual norm = 1.5269049998095037e-16
 CostFunction::addIncrement: Analysis: 
 - Valid time: 2022-07-01T12:00:00Z
   Geometry: structured [95121]
   Fields:
   - ozone (5 levels):
     + min    = -8.3010299956639813e+00
-    + max    = -6.9852240740252247e+00
-    + mean   = -7.3714949028010910e+00
-    + stddev = 1.1265103700602443e-01
+    + max    = -6.9852161574568497e+00
+    + mean   = -7.3714958057353046e+00
+    + stddev = 1.1263532580076903e-01
 
   - carbon_monoxyde (5 levels):
     + min    = -7.2671655658169705e+00
     + max    = -6.4227027258506313e+00
-    + mean   = -7.0361003489190921e+00
-    + stddev = 8.2311960060806807e-02
+    + mean   = -7.0361037939796711e+00
+    + stddev = 8.2306016694170855e-02
 
   - nitrogen_dioxide (5 levels):
     + min    = -9.9995635049870994e+00
-    + max    = -7.2381615546069202e+00
-    + mean   = -9.7360301778681286e+00
-    + stddev = 2.4222578537949993e-01
+    + max    = -7.2821549315520571e+00
+    + mean   = -9.7360833749265208e+00
+    + stddev = 2.4205156877071227e-01
 
   - sulfur_dioxide (5 levels):
     + min    = -1.0000000000000000e+01
     + max    = -7.2879482563082414e+00
-    + mean   = -9.6702960921489574e+00
-    + stddev = 3.2788065170396891e-01
+    + mean   = -9.6703250910779488e+00
+    + stddev = 3.2784938132974994e-01
 
   - pm10 (5 levels):
     + min    = -9.9961980088495022e+00
     + max    = -5.5715971918844458e+00
-    + mean   = -8.0232483643133676e+00
-    + stddev = 6.6288433843293648e-01
+    + mean   = -8.0233500484867299e+00
+    + stddev = 6.6289392884897402e-01
 
   - pm2p5 (5 levels):
     + min    = -9.9961980088495022e+00
     + max    = -5.5777934226962786e+00
-    + mean   = -8.3557946047577669e+00
-    + stddev = 4.4304440847039589e-01
+    + mean   = -8.3558253435110323e+00
+    + stddev = 4.4304333656562456e-01
 
-CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.4897168329239325e+00, nobs = 1, Jo/n = 1.4897168329239325e+00, err = 8.7150573730468750e-02
-CostJb   : Nonlinear Jb = 8.7250935425599294e-02
-CostFunction: Nonlinear J = 1.5769677683495318e+00
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.5024608300159188e+00, nobs = 1, Jo/n = 1.5024608300159188e+00, err = 8.7150573730468750e-02
+CostJb   : Nonlinear Jb = 4.4678076057237885e-02
+CostFunction: Nonlinear J = 1.5471389060731566e+00

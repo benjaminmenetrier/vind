@@ -27,6 +27,7 @@ cost function:
     begin: 2022-07-01T09:00:00Z
     length: PT6H
   analysis variables: *chemvars
+  jb evaluation: false
   geometry: &geom
     function space: StructuredColumns
     grid:
@@ -82,18 +83,31 @@ cost function:
       saber central block:
         saber block name: BUMP_NICAS
         calibration:
-          drivers:
-            multivariate strategy: duplicated
-            compute nicas: true
           nicas:
             resolution: 8.0
+            smooth interpolation factor: 0.8
             explicit length-scales: true
             horizontal length-scale:
               - groups: [common]
-                value: 1000.0e3
+                value: &common_length_scale 200.0e3
             vertical length-scale:
               - groups: [common]
                 value: 3.0
+            default off-diagonal weight: 0.5
+            specific off-diagonal weights:
+            - variables pair: [ozone, carbon_monoxyde]
+              weight: 0.2
+          general:
+            deprecated hull: false
+            universe length-scale: *common_length_scale
+          drivers:
+            multivariate strategy: duplicated and weighted
+            compute nicas: true
+            write global nicas: true
+          io:
+            data directory: testdata
+            files prefix: aq_nicas_3d
+            io tasks: 4
   observations:
     observers:
     - obs space:
