@@ -22,7 +22,7 @@ namespace vind {
 // -----------------------------------------------------------------------------
 
 State::State(const Geometry & geom,
-             const varns::Variables & vars,
+             const oops::Variables & vars,
              const util::DateTime & vt)
   : fields_(new Fields(geom, vars, vt, true)) {
   oops::Log::trace() << classname() << "::State starting" << std::endl;
@@ -41,7 +41,7 @@ State::State(const Geometry & geom,
 
   const std::vector<std::string> varNames = file.has("state variables") ?
     file.getStringVector("state variables") : file.getStringVector("variables");
-  const varns::Variables vars(varNames);
+  const oops::Variables vars(varNames);
   const util::DateTime vt(file.getString("date"));
   fields_.reset(new Fields(geom, vars, vt, true));
   if (file.has("filepath")) {
@@ -83,7 +83,7 @@ State & State::operator+=(const Increment & dx) {
 
   ASSERT(this->validTime() == dx.validTime());
   ASSERT(fields_);
-  *fields_+=dx.fields();
+  *fields_ += dx.fields();
 
   oops::Log::trace() << classname() << "::operator+= done" << std::endl;
   return *this;

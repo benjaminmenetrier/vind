@@ -30,7 +30,7 @@ class ModelAuxControl : public util::Printable,
                         private util::ObjectCounter<ModelAuxControl> {
  public:
   static const std::string classname()
-    {return "quench::ModelAuxControl";}
+    {return "vind::ModelAuxControl";}
 
 // Constructors/destructor
   ModelAuxControl(const Geometry &,

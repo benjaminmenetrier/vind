@@ -21,6 +21,7 @@
 #include "eckit/mpi/Comm.h"
 
 #include "oops/base/GeometryData.h"
+#include "oops/base/Variables.h"
 #include "oops/mpi/mpi.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/parameters/OptionalParameter.h"
@@ -28,8 +29,6 @@
 #include "oops/util/parameters/Parameters.h"
 #include "oops/util/parameters/RequiredParameter.h"
 #include "oops/util/Printable.h"
-
-#include "vind/VariablesSwitch.h"
 
 namespace eckit {
   class Configuration;
@@ -185,7 +184,7 @@ class Geometry : public util::Printable,
   Geometry(const Geometry &);
 
   // Variables sizes
-  std::vector<size_t> variableSizes(const varns::Variables &) const;
+  std::vector<size_t> variableSizes(const oops::Variables &) const;
   std::vector<size_t> variableSizes(const std::vector<std::string> &) const;
 
   // Levels direction

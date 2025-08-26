@@ -27,10 +27,14 @@ Increment.cc
 Increment.h
 Interpolation.cc
 Interpolation.h
-IncrModCtlVec.h
 LinearVariableChange.cc
 LinearVariableChange.h
 LinearVariableChangeParameters.h
+Model.cc
+Model.h
+ModelAuxControl.h
+ModelAuxCovariance.h
+ModelAuxIncrement.h
 ModelData.h
 State.cc
 State.h
@@ -42,7 +46,6 @@ VaderCookbook.h
 VariableChange.cc
 VariableChange.h
 VariableChangeParameters.h
-VariablesSwitch.h
 
 FieldsIO/FieldsIOArome.cc
 FieldsIO/FieldsIOArome.h
@@ -59,87 +62,12 @@ FieldsIO/FieldsIOGmsh.h
 
 )
 
-if( ECSABER )
-    # ECSABER-specific sources, not obs-related
-    list( APPEND vind_src_files
-
-    HorizScaleDecomposition.h
-    HybridWeight.cc
-    HybridWeight.h
-    IncrEnsCtlVec.h
-    instantiateQuenchMatrices.h
-    Interpolator.h
-    LocalizationMatrix.h
-    Logbook.cc
-    Logbook.h
-    LinearModel.cc
-    LinearModel.h
-    Model.cc
-    Model.h
-    ModelAuxControl.h
-    ModelAuxCovariance.h
-    ModelAuxCtlVec.h
-    ModelAuxControlEstimator.h
-    ModelAuxIncrement.h
-    Variables.h
-    Variables.cc
-
-    )
-endif()
-
 if( ENABLE_OBS )
     # Common sources, obs-related
     list( APPEND vind_src_files
 
-    GeoVaLs.cc
-    GeoVaLs.h
-    ObsSpace.cc
-    ObsSpace.h
-    ObsVector.cc
-    ObsVector.h
-
-    )
-
-    if( ECSABER )
-        # ECSABER-specific sources, obs-related
-        list( APPEND vind_src_files  
-
-        LinearObsOperator.cc
-        LinearObsOperator.h
-        Locations.cc
-        Locations.h
-        ObsAuxControl.cc
-        ObsAuxControl.h
-        ObsAuxCovariance.cc
-        ObsAuxCovariance.h
-        ObsAuxCtlVec.cc
-        ObsAuxCtlVec.h
-        ObsAuxIncrement.cc
-        ObsAuxIncrement.h
-        ObsError.cc
-        ObsError.h
-        ObsOperator.cc
-        ObsOperator.h
-
-        )
-    else()
-        # JEDI-specific sources, obs-related
-        list( APPEND vind_src_files
-
-        ObsLocalizationJEDI.cc
-        ObsLocalizationJEDI.h
-
-        )
-    endif()
-endif()
-
-if( eccodes_FOUND )
-    # GRIB IO-specific sources
-    message( STATUS "- GRIB" )
-    list( APPEND vind_src_files
-
-    FieldsIO/FieldsIOGrib.cc
-    FieldsIO/FieldsIOGrib.h
+    ObsLocalization.cc
+    ObsLocalization.h
 
     )
 endif()
@@ -152,6 +80,17 @@ if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS AND ectrans_HAVE_TRANSI ) AND falfil
     FieldsIO/fieldsio_arome_fa.h
     FieldsIO/fieldsio_arome_fa_interface.F90
     FieldsIO/fieldsio_arome_fa_mod.F90
+
+    )
+endif()
+
+if( eccodes_FOUND )
+    # GRIB IO-specific sources
+    message( STATUS "- GRIB" )
+    list( APPEND vind_src_files
+
+    FieldsIO/FieldsIOGrib.cc
+    FieldsIO/FieldsIOGrib.h
 
     )
 endif()

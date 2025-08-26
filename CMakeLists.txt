@@ -79,15 +79,8 @@ if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS AND ectrans_HAVE_TRANSI ) AND falfil
 endif()
 
 # oops
-if( ECSABER )
-    find_package( oops REQUIRED )
-    list( APPEND VIND_PUBLIC_LIBS "oops" )
-    find_package( oops_patch REQUIRED )
-    list( APPEND VIND_PUBLIC_LIBS "oops" "oops_patch" )
-else()
-    find_package( oops 1.10.0 REQUIRED )
-    list( APPEND VIND_PUBLIC_LIBS "oops" )
-endif()
+find_package( oops 1.10.0 REQUIRED )
+list( APPEND VIND_PUBLIC_LIBS "oops" )
 
 # vader
 find_package( vader 1.7.0 REQUIRED )
@@ -99,12 +92,12 @@ if( ENABLE_SABER )
     list( APPEND VIND_PUBLIC_LIBS "saber" )
 endif()
 
-if( ( NOT ECSABER ) AND ENABLE_CRTM )
+if( ENABLE_CRTM )
     # crtm
     find_package( crtm 2.2.3 REQUIRED )
 endif()
 
-if( ( NOT ECSABER ) AND ENABLE_OBS )
+if( ENABLE_OBS )
     # ufo
     find_package( ufo 1.10.0 REQUIRED )
     list( APPEND VIND_PUBLIC_LIBS "ufo" )
@@ -130,7 +123,7 @@ set( VIND_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src
 
 set( VIND_LIBRARIES vind )
 
-get_directory_property( QUENCH_DEFINITIONS COMPILE_DEFINITIONS )
+get_directory_property( VIND_DEFINITIONS COMPILE_DEFINITIONS )
 
 foreach( _tpl ${VIND_TPLS} )
   string( TOUPPER ${_tpl} TPL )
@@ -143,9 +136,6 @@ endforeach()
 # Sources
 ################################################################################
 
-if( ECSABER )
-    add_definitions( -DECSABER )
-endif()
 if( ENABLE_SABER )
     add_definitions( -DENABLE_SABER )
 endif()

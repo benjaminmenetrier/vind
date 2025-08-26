@@ -1,0 +1,201 @@
+_variables: &vars
+    - ozone
+    - carbon_monoxyde
+    - nitrogen_dioxide
+    - sulfur_dioxide
+    - pm10
+    - pm2p5
+_chemVariables: &chemvars
+    - ozone
+    - carbon_monoxyde
+    - nitrogen_dioxide
+    - sulfur_dioxide
+    - pm10
+    - pm2p5
+_o3_ObsErrFactor:
+    total coefficient: &o3_obserr_factor 0.2
+_o3_BkgBheckQCFactor:
+    threshold: &o3_bkgcheckQC_factor 3.0
+_o3_ObsErrMin:
+    error parameter: &o3_obserr_min 5.e-10
+_o3_ObsErrCheckMax:
+    absolute threshold: &o3_obserr_checkmax 5.0e-6
+
+cost function:
+  cost type: 3D-Var
+  time window:
+    begin: 2022-07-01T09:00:00Z
+    length: PT6H
+  analysis variables: *chemvars
+  jb evaluation: false
+  geometry: &geom
+    function space: StructuredColumns
+    grid:
+      type: regional
+      dx: 0.1
+      dy: 0.1
+      nx: 720
+      ny: 440
+      xmin: -25.95
+      ymin: 28.05
+    partitioner: "checkerboard"
+    halo: 1
+    levels are top down: true
+    groups:
+    - variables: *chemvars
+      levels: 5
+      vertical coordinate:
+        profile: [19, 20, 21, 22, 23]
+    alias:
+    - in code: ozone
+      in file: O3
+    - in code: carbon_monoxyde
+      in file: CO
+    - in code: nitrogen_dioxide
+      in file: NO2
+    - in code: sulfur_dioxide
+      in file: SO2
+    - in code: pm10
+      in file: dry_pm10_mass
+    - in code: pm2p5
+      in file: dry_pm2p5_mass
+    io:
+      initial date: 2022-06-30T12:00:00Z
+  background:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/forecast/MONARCH_2022070112.nc
+    format: aq
+    state variables: *chemvars
+  background error:
+    covariance model: ensemble
+    members from template:
+      template:
+        date: 2022-07-01T12:00:00Z
+        filepath: testdata/E%mem%/MONARCH_2022070112_E%mem%.nc
+        format: aq
+        state variables: *chemvars
+      pattern: %mem%
+      zero padding: 4
+      start: 0
+      nmembers: 6
+    localization:
+      localization method: SABER
+      saber central block:
+        saber block name: BUMP_NICAS
+        calibration:
+          nicas:
+            resolution: 8.0
+            smooth interpolation factor: 0.8
+            explicit length-scales: true
+            horizontal length-scale:
+              - groups: [common]
+                value: &common_length_scale 200.0e3
+            vertical length-scale:
+              - groups: [common]
+                value: 3.0
+            default off-diagonal weight: 0.5
+            specific off-diagonal weights:
+            - variables pair: [ozone, carbon_monoxyde]
+              weight: 0.2
+          general:
+            deprecated hull: false
+            universe length-scale: *common_length_scale
+          drivers:
+            multivariate strategy: duplicated and weighted
+            compute nicas: true
+            write global nicas: true
+          io:
+            data directory: testdata
+            files prefix: aq_nicas_3d
+            io tasks: 4
+  observations:
+    observers:
+    - obs space:
+        name: AIRBASE_O3
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: testdata/HDAT_AIRBASE_O3-2022070112.nc
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: testdata/HSTAT_aq3D_AIRBASE_O3-2022070112.nc
+        simulated variables: [ozoneSurface]
+      obs filters:
+        - filter: Variable Assignment
+          assignments:
+          - name: DerivedObsError/ozoneSurface
+            type: float
+            function:
+              name: ObsFunction/Arithmetic
+              options:
+                variables:
+                - name: ObsValue/ozoneSurface
+                absolute value: [true]
+                total coefficient: *o3_obserr_factor
+        - filter: Perform Action
+          filter variables:
+          - name: ozoneSurface
+          action:
+            name: assign error
+            error function:
+              name: ObsFunction/Arithmetic
+              options:
+                variables:
+                - name: DerivedObsError/ozoneSurface
+          where:
+            - variable:
+                name: DerivedObsError/ozoneSurface
+              minvalue: *o3_obserr_min
+        - filter: Perform Action
+          filter variables:
+          - name: ozoneSurface
+          action:
+            name: assign error
+            error parameter: *o3_obserr_min
+          where:
+            - variable:
+                name: DerivedObsError/ozoneSurface
+              maxvalue: *o3_obserr_min
+        - filter: Background Check
+          filter variables:
+          - name: ozoneSurface
+          threshold: *o3_bkgcheckQC_factor
+          absolute threshold: *o3_obserr_checkmax
+      obs operator:
+        name: VertInterp
+        constant vertical coordinate values: [0, 0, 0, 0, 1]
+        observation vertical coordinate: air_pressure
+        interpolation method: nearest-neighbor
+        observation alias file: testinput/monarch_ufo_variable_name_map.yaml
+      obs error:
+        covariance model: diagonal
+variational:
+  minimizer:
+    algorithm: DRIPCG
+  iterations:
+  - diagnostics:
+      departures: ombg0
+    gradient norm reduction: 1.0e-10
+    ninner: 20
+    geometry: *geom
+final:
+  diagnostics:
+    departures: oman
+  increment:
+    geometry: *geom
+    output:
+      state component:
+        date: 2022-07-01T12:00:00Z
+        filepath: testdata/aq_3densvar_incr_2022070112.nc
+        formats: [aq]
+        
+output:
+  date: 2022-07-01T12:00:00Z
+  filepath: testdata/aq_3densvar_analysis_2022070112.nc
+  formats: [aq]
+test:
+  reference filename: testref/aq_3densvar.ref
+  test output filename: testdata/aq_3densvar.log
+    
+

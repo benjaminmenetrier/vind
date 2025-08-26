@@ -1,91 +1,91 @@
 Norm of input parameter StdDev: 8.6752521577186208e+00
-Member 0: 
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -2.8196116816282846e-01
-    + max    = 3.6471346238508578e-01
-    + mean   = 1.3626828944796781e-02
-    + stddev = 1.0023978416808782e-01
-Member 1: 
+    + min    = 4.3073956053305335e-01
+    + max    = 1.9171971511494388e+00
+    + mean   = 1.0915060199881019e+00
+    + stddev = 2.2855454285983340e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.8190848535998168e-01
-    + max    = 2.8187796220206746e-01
-    + mean   = -1.5858162351208645e-04
-    + stddev = 9.8657483528080209e-02
-Member 2: 
+    + min    = 5.4427049982338482e-01
+    + max    = 1.6282683224513406e+00
+    + mean   = 1.1262571852928061e+00
+    + stddev = 1.7575366342367865e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.1491060804523119e-01
-    + max    = 3.4344271255469883e-01
-    + mean   = -2.5440480498793987e-02
-    + stddev = 9.5665153288471999e-02
-Member 3: 
+    + min    = 4.8281284059073293e-01
+    + max    = 1.7194594252472495e+00
+    + mean   = 1.0930789589006553e+00
+    + stddev = 1.8070211321188281e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.8329840227649642e-01
-    + max    = 3.0270491746323602e-01
-    + mean   = 1.2468789869254249e-02
-    + stddev = 9.7577372824326894e-02
-Member 4: 
+    + min    = 5.8138110924605890e-01
+    + max    = 1.5516833422447256e+00
+    + mean   = 1.0953904491249047e+00
+    + stddev = 1.7217731978236045e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.4819155544851998e-01
-    + max    = 2.5913202946846220e-01
-    + mean   = -6.3967593467520196e-04
-    + stddev = 9.5424857871979449e-02
-Member 5: 
+    + min    = 5.8794016944690641e-01
+    + max    = 1.5888097577690987e+00
+    + mean   = 1.0786349979368666e+00
+    + stddev = 1.6319983960021855e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.0473067808823939e-01
-    + max    = 3.1311228260007468e-01
-    + mean   = -7.0548896663825654e-03
-    + stddev = 9.6221636407087266e-02
-Member 6: 
+    + min    = 5.9674513965690545e-01
+    + max    = 1.5528232084466405e+00
+    + mean   = 1.0769017257876043e+00
+    + stddev = 1.6577445161776772e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.3760294964641679e-01
-    + max    = 3.0374890728506942e-01
-    + mean   = -5.1349879737857375e-03
-    + stddev = 9.9195659130022776e-02
-Member 7: 
+    + min    = 5.9531093391680301e-01
+    + max    = 1.5864997315617253e+00
+    + mean   = 1.1038737446332558e+00
+    + stddev = 1.6916648152187083e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.4214160902388113e-01
-    + max    = 3.0948884370929264e-01
-    + mean   = -2.0658458648898691e-03
-    + stddev = 9.7187255601472802e-02
-Member 8: 
+    + min    = 6.3116967008272085e-01
+    + max    = 1.7218348691426353e+00
+    + mean   = 1.1146598842489901e+00
+    + stddev = 1.7197465745038823e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.1347815819034935e-01
-    + max    = 3.6409924407709426e-01
-    + mean   = 1.0488574792206003e-03
-    + stddev = 9.9938979840241263e-02
-Member 9: 
+    + min    = 4.6061768389794500e-01
+    + max    = 1.5586745008410485e+00
+    + mean   = 1.0893871817494745e+00
+    + stddev = 1.7008810302508176e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: structured [3763]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.0234186086093334e-01
-    + max    = 3.0542573776457005e-01
-    + mean   = -1.1409251434413509e-02
-    + stddev = 9.1204600428979363e-02
+    + min    = 6.4742665160494917e-01
+    + max    = 1.7318395393134398e+00
+    + mean   = 1.0898203321015913e+00
+    + stddev = 1.7243296497031346e-01

@@ -245,7 +245,7 @@ size_t Geometry::groupIndex(const std::string & var) const {
 
 // -----------------------------------------------------------------------------
 
-std::vector<size_t> Geometry::variableSizes(const varns::Variables & vars) const {
+std::vector<size_t> Geometry::variableSizes(const oops::Variables & vars) const {
   oops::Log::trace() << classname() << "::variableSizes starting" << std::endl;
 
   std::vector<size_t> sizes;
@@ -263,7 +263,7 @@ std::vector<size_t> Geometry::variableSizes(const std::vector<std::string> & var
   oops::Log::trace() << classname() << "::variableSizes starting" << std::endl;
 
   // Create variables
-  const varns::Variables vars(varNames);
+  const oops::Variables vars(varNames);
 
   oops::Log::trace() << classname() << "::variableSizes done" << std::endl;
   return variableSizes(vars);
@@ -278,7 +278,7 @@ void Geometry::print(std::ostream & os) const {
   if (os.rdbuf() == oops::Log::info().rdbuf()) {
     prefix = "Info     : ";
   }
-  os << prefix <<  "Quench geometry grid:" << std::endl;
+  os << prefix <<  "VIND geometry grid:" << std::endl;
   os << prefix << "- name: " << grid_.name() << std::endl;
   os << prefix << "- size: " << grid_.size() << std::endl;
   if (!grid_.domain().global()) {
@@ -392,7 +392,7 @@ void Geometry::setupVertCoord(groupData & group) {
     } else {
       // Get variable to read
       const std::string varName = vertCoordConf->getString("variable");
-      const varns::Variables vertCoordVars(std::vector<std::string>({varName}));
+      const oops::Variables vertCoordVars(std::vector<std::string>({varName}));
 
       // Add group index for this variable
       groupIndex_[varName] = group.index_;
@@ -674,7 +674,7 @@ void Geometry::checkLonLat(const eckit::Configuration & checkLonLatConf) {
   // Get variable to read
   const std::string lonName = checkLonLatConf.getString("longitude", "longitude");
   const std::string latName = checkLonLatConf.getString("latitude", "latitude");
-  const varns::Variables lonLatVars(std::vector<std::string>({lonName, latName}));
+  const oops::Variables lonLatVars(std::vector<std::string>({lonName, latName}));
 
   // Add new group to read coordinates
   groupData coordGroup;

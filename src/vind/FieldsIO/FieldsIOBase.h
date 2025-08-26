@@ -18,7 +18,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/NonCopyable.h"
 
-#include "vind/VariablesSwitch.h"
+#include "oops/base/Variables.h"
 
 namespace vind {
   class Geometry;
@@ -36,7 +36,7 @@ class FieldsIOBase : private eckit::NonCopyable {
 
   // Read
   virtual void read(const Geometry &,
-                    const varns::Variables &,
+                    const oops::Variables &,
                     const eckit::Configuration &,
                     atlas::FieldSet &) const
     {throw eckit::Exception("read not implemented for this format", Here());}

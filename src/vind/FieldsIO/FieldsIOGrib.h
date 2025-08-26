@@ -11,8 +11,9 @@
 
 #include "eckit/config/Configuration.h"
 
+#include "oops/base/Variables.h"
+
 #include "vind/FieldsIO/FieldsIOBase.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
   class Geometry;
@@ -31,7 +32,7 @@ class FieldsIOGrib : public FieldsIOBase {
 
   // Read
   void read(const Geometry &,
-            const varns::Variables &,
+            const oops::Variables &,
             const eckit::Configuration &,
             atlas::FieldSet &) const override;
 };

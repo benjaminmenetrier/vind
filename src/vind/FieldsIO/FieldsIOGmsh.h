@@ -13,8 +13,9 @@
 
 #include "eckit/config/Configuration.h"
 
+#include "oops/base/Variables.h"
+
 #include "vind/FieldsIO/FieldsIOBase.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
   class Geometry;

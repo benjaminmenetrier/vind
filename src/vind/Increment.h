@@ -18,17 +18,16 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "oops/base/LocalIncrement.h"
+#include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 #include "oops/util/Serializable.h"
 
-#include "oops/base/LocalIncrement.h"
-
 #include "vind/Fields.h"
 #include "vind/GeometryIterator.h"
 #include "vind/State.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
   class Geometry;
@@ -45,11 +44,7 @@ class Increment : public util::Printable,
 
   // Constructors/destructor
   Increment(const Geometry &,
-            const varns::Variables &,
-            const util::DateTime &);
-  Increment(const Geometry &,
-            const varns::Variables &,
-            const util::DateTime &,
+            const oops::Variables &,
             const util::DateTime &);
   Increment(const Geometry &,
             const Increment &);
@@ -81,10 +76,6 @@ class Increment : public util::Printable,
     {fields_->random();}
   void sqrt()
     {fields_->sqrt();}
-  double max(const varns::Variables & var) const
-    {return fields_->max(var);}
-  double min(const varns::Variables & var) const
-    {return fields_->min(var);}
 
   // I/O and diagnostics
   void read(const eckit::Configuration & config)
@@ -122,14 +113,8 @@ class Increment : public util::Printable,
   void accumul(const double & zz,
                const State & xx)
     {fields_->axpy(zz, xx.fields());}
-  const varns::Variables & variables() const
+  const oops::Variables & variables() const
     {return fields_->variables();}
-  void interpolateTL(const Locations & locs,
-                     GeoVaLs & gv) const
-    {fields_->interpolate(locs, gv);}
-  void interpolateAD(const Locations & locs,
-                     const GeoVaLs & gv)
-    {fields_->interpolateAD(locs, gv);}
 
   // Serialization
   size_t serialSize() const
@@ -139,10 +124,6 @@ class Increment : public util::Printable,
   void deserialize(const std::vector<double> & vect,
                    size_t & index)
     {fields_->deserialize(vect, index);}
-  friend eckit::Stream & operator<<(eckit::Stream &,
-                                    const Increment &);
-  friend eckit::Stream & operator>>(eckit::Stream &,
-                                    Increment &);
 
   // Local increment
   oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const;

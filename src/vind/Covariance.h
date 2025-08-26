@@ -15,12 +15,11 @@
 #include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 
+#include "oops/base/Variables.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 #include "vind/Increment.h"
-#include "vind/IncrModCtlVec.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
   class Geometry;
@@ -38,22 +37,12 @@ class Covariance : public util::Printable,
 
   // Constructor/destructor
   Covariance(const Geometry &,
-             const varns::Variables &,
+             const oops::Variables &,
              const eckit::Configuration &,
              const State &,
              const State &)
     {}
-  Covariance(const Geometry &,
-             const varns::Variables &,
-             const eckit::Configuration &,
-             const State &)
-    {}
   ~Covariance()
-    {}
-
-  // Linearize
-  void linearize(const State &,
-                 const Geometry &)
     {}
 
   // Multiply and inverse multiply
@@ -62,14 +51,6 @@ class Covariance : public util::Printable,
     {throw eckit::NotImplemented(Here());}
   void inverseMultiply(const Increment &,
                        Increment &) const
-    {throw eckit::NotImplemented(Here());}
-
-  // Square-root and adjoint
-  void multiplySqrt(const IncrModCtlVec &,
-                    Increment &) const
-    {throw eckit::NotImplemented(Here());}
-  void multiplySqrtTrans(const Increment &,
-                         IncrModCtlVec &) const
     {throw eckit::NotImplemented(Here());}
 
   // Randomization

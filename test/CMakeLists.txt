@@ -12,21 +12,11 @@ endmacro()
 
 # Macro to create test
 macro( create_test name mpi exec )
-    if( ECSABER )
-        ecbuild_add_test( TARGET vind_test_${name}_${mpi}
-                          COMMAND ${CMAKE_BINARY_DIR}/bin/vind_compare.py
-                          ARGS ${mpi}
-                               1
-                               ${CMAKE_BINARY_DIR}/bin/vind_${exec}.x
-                               testinput/ec/${name}.json
-                          DEPENDS vind_${exec}.x )
-    else()
-        ecbuild_add_test( TARGET   vind_test_${name}_${mpi}
-                          MPI      ${mpi}
-                          COMMAND  vind_${exec}.x
-                          ARGS     testinput/jedi/${name}.yaml
-                          DEPENDS  vind_${exec}.x )
-    endif()
+    ecbuild_add_test( TARGET   vind_test_${name}_${mpi}
+                      MPI      ${mpi}
+                      COMMAND  vind_${exec}.x
+                      ARGS     testinput/${name}.yaml
+                      DEPENDS  vind_${exec}.x )
 endmacro()
 
 # Create the testdata directory
@@ -92,213 +82,123 @@ endif()
 # Create the input/output directories
 # -----------------------------------
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput )
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput/ec )
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput/jedi )
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref/ec )
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref/jedi )
 
 # Test input scripts
 # ------------------
 list( APPEND vind_testinput
 
-# EC
-
-# BGOS
-testinput/ec/bgos_background.json
-testinput/ec/bgos_ensemble.json
-testinput/ec/bgos_linear_ensemble.json
-testinput/ec/bgos_linear_randomized.json
-testinput/ec/bgos_makeobs.json
-testinput/ec/bgos_nonlinear_ensemble.json
-testinput/ec/bgos_nonlinear_randomized.json
-testinput/ec/bgos_stddev.json
-testinput/ec/bgos_truth.json
-
-# EVIL
-testinput/ec/evil_assim_ensemble.json
-testinput/ec/evil_background.json
-testinput/ec/evil_control_3dvar.json
-testinput/ec/evil_control_update_D.json
-testinput/ec/evil_control_update_R.json
-testinput/ec/evil_control_update_S.json
-testinput/ec/evil_dual_3dvar.json
-testinput/ec/evil_dual_update_D.json
-testinput/ec/evil_dual_update_R.json
-testinput/ec/evil_dual_update_S.json
-testinput/ec/evil_ensemble.json
-testinput/ec/evil_ensemble_variance.json
-testinput/ec/evil_makeobs.json
-testinput/ec/evil_primal_3dvar.json
-testinput/ec/evil_primal_update_D.json
-testinput/ec/evil_primal_update_R.json
-testinput/ec/evil_primal_update_S.json
-testinput/ec/evil_stddev.json
-testinput/ec/evil_truth.json
-
-# GLOBAL
-testinput/ec/glb_3dvar.json
-testinput/ec/glb_3densvar.json
-testinput/ec/glb_4densvar.json
-testinput/ec/glb_4denvar.json
-testinput/ec/glb_background_06.json
-testinput/ec/glb_background_12.json
-testinput/ec/glb_background_18.json
-testinput/ec/glb_ensemble_06.json
-testinput/ec/glb_ensemble_12.json
-testinput/ec/glb_ensemble_18.json
-testinput/ec/glb_getkf_nonlinear.json
-testinput/ec/glb_hofx.json
-testinput/ec/glb_interfaces.json
-testinput/ec/glb_makeobs_06.json
-testinput/ec/glb_makeobs_12.json
-testinput/ec/glb_makeobs_18.json
-testinput/ec/glb_stddev.json
-testinput/ec/glb_truth_06.json
-testinput/ec/glb_truth_12.json
-testinput/ec/glb_truth_18.json
-
-# REGIONAL
-testinput/ec/reg_3dvar.json
-testinput/ec/reg_3densvar.json
-testinput/ec/reg_4densvar.json
-testinput/ec/reg_4denvar.json
-testinput/ec/reg_background_06.json
-testinput/ec/reg_background_12.json
-testinput/ec/reg_background_18.json
-testinput/ec/reg_ensemble_06.json
-testinput/ec/reg_ensemble_12.json
-testinput/ec/reg_ensemble_18.json
-testinput/ec/reg_getkf_nonlinear.json
-testinput/ec/reg_hofx.json
-testinput/ec/reg_interfaces.json
-testinput/ec/reg_makeobs_06.json
-testinput/ec/reg_makeobs_12.json
-testinput/ec/reg_makeobs_18.json
-testinput/ec/reg_stddev.json
-testinput/ec/reg_truth_06.json
-testinput/ec/reg_truth_12.json
-testinput/ec/reg_truth_18.json
-
-# SYNTHETIC DATA
-testinput/ec/synthetic_data_generate.json
-testinput/ec/synthetic_data_makeobs.json
-testinput/ec/synthetic_data_stddev.json
-testinput/ec/synthetic_data_truth.json
-
-# JEDI
-
 # GENINT
-testinput/jedi/genint_convertstate_nonuni_lonlat.yaml
-testinput/jedi/genint_convertstate_regular_lonlat.yaml
-testinput/jedi/genint_convertstate_varcha_regular_lonlat.yaml
-testinput/jedi/genint_convertstate_varcha_nonuni_lonlat.yaml
-testinput/jedi/genint_geometry_lambertCC.yaml
-testinput/jedi/genint_geometry_regular_lonlat.yaml
-testinput/jedi/genint_hofx3d_lambertCC.yaml
-testinput/jedi/genint_hofx3d_nonuni_lonlat.yaml
-testinput/jedi/genint_hofx3d_regular_lonlat.yaml
+testinput/genint_convertstate_nonuni_lonlat.yaml
+testinput/genint_convertstate_regular_lonlat.yaml
+testinput/genint_convertstate_varcha_regular_lonlat.yaml
+testinput/genint_convertstate_varcha_nonuni_lonlat.yaml
+testinput/genint_geometry_lambertCC.yaml
+testinput/genint_geometry_regular_lonlat.yaml
+testinput/genint_hofx3d_lambertCC.yaml
+testinput/genint_hofx3d_nonuni_lonlat.yaml
+testinput/genint_hofx3d_regular_lonlat.yaml
 
 # GLOBAL
-testinput/jedi/glb_3dvar.yaml
-testinput/jedi/glb_3densvar.yaml
-testinput/jedi/glb_4densvar.yaml
-testinput/jedi/glb_4densvar_parallel.yaml
-testinput/jedi/glb_background_06.yaml
-testinput/jedi/glb_background_12.yaml
-testinput/jedi/glb_background_18.yaml
-testinput/jedi/glb_ensemble_06.yaml
-testinput/jedi/glb_ensemble_12.yaml
-testinput/jedi/glb_ensemble_18.yaml
-testinput/jedi/glb_getkf_nonlinear.yaml
-testinput/jedi/glb_letkf_linear.yaml
-testinput/jedi/glb_letkf_linear_4d.yaml
-testinput/jedi/glb_letkf_nonlinear.yaml
-testinput/jedi/glb_letkf_nonlinear_4d.yaml
-testinput/jedi/glb_letkf_read_members.yaml
-testinput/jedi/glb_makeobs_06.yaml
-testinput/jedi/glb_makeobs_12.yaml
-testinput/jedi/glb_makeobs_18.yaml
-testinput/jedi/glb_stddev.yaml
-testinput/jedi/glb_truth_06.yaml
-testinput/jedi/glb_truth_12.yaml
-testinput/jedi/glb_truth_18.yaml
+testinput/glb_3dvar.yaml
+testinput/glb_3densvar.yaml
+testinput/glb_4densvar.yaml
+testinput/glb_4densvar_parallel.yaml
+testinput/glb_background_06.yaml
+testinput/glb_background_12.yaml
+testinput/glb_background_18.yaml
+testinput/glb_ensemble_06.yaml
+testinput/glb_ensemble_12.yaml
+testinput/glb_ensemble_18.yaml
+testinput/glb_getkf_nonlinear.yaml
+testinput/glb_letkf_linear.yaml
+testinput/glb_letkf_linear_4d.yaml
+testinput/glb_letkf_nonlinear.yaml
+testinput/glb_letkf_nonlinear_4d.yaml
+testinput/glb_letkf_read_members.yaml
+testinput/glb_makeobs_06.yaml
+testinput/glb_makeobs_12.yaml
+testinput/glb_makeobs_18.yaml
+testinput/glb_stddev.yaml
+testinput/glb_truth_06.yaml
+testinput/glb_truth_12.yaml
+testinput/glb_truth_18.yaml
 
 # REGIONAL
-testinput/jedi/reg_3dvar.yaml
-testinput/jedi/reg_3densvar.yaml
-testinput/jedi/reg_4densvar.yaml
-testinput/jedi/reg_4densvar_parallel.yaml
-testinput/jedi/reg_background_06.yaml
-testinput/jedi/reg_background_12.yaml
-testinput/jedi/reg_background_18.yaml
-testinput/jedi/reg_ensemble_06.yaml
-testinput/jedi/reg_ensemble_12.yaml
-testinput/jedi/reg_ensemble_18.yaml
-testinput/jedi/reg_getkf_nonlinear.yaml
-testinput/jedi/reg_letkf_linear.yaml
-testinput/jedi/reg_letkf_linear_4d.yaml
-testinput/jedi/reg_letkf_nonlinear.yaml
-testinput/jedi/reg_letkf_nonlinear_4d.yaml
-testinput/jedi/reg_letkf_read_members.yaml
-testinput/jedi/reg_makeobs_06.yaml
-testinput/jedi/reg_makeobs_12.yaml
-testinput/jedi/reg_makeobs_18.yaml
-testinput/jedi/reg_stddev.yaml
-testinput/jedi/reg_truth_06.yaml
-testinput/jedi/reg_truth_12.yaml
-testinput/jedi/reg_truth_18.yaml
+testinput/reg_3dvar.yaml
+testinput/reg_3densvar.yaml
+testinput/reg_4densvar.yaml
+testinput/reg_4densvar_parallel.yaml
+testinput/reg_background_06.yaml
+testinput/reg_background_12.yaml
+testinput/reg_background_18.yaml
+testinput/reg_ensemble_06.yaml
+testinput/reg_ensemble_12.yaml
+testinput/reg_ensemble_18.yaml
+testinput/reg_getkf_nonlinear.yaml
+testinput/reg_letkf_linear.yaml
+testinput/reg_letkf_linear_4d.yaml
+testinput/reg_letkf_nonlinear.yaml
+testinput/reg_letkf_nonlinear_4d.yaml
+testinput/reg_letkf_read_members.yaml
+testinput/reg_makeobs_06.yaml
+testinput/reg_makeobs_12.yaml
+testinput/reg_makeobs_18.yaml
+testinput/reg_stddev.yaml
+testinput/reg_truth_06.yaml
+testinput/reg_truth_12.yaml
+testinput/reg_truth_18.yaml
 )
 
 list( APPEND monarch_testinput
 # MONARCH REGIONAL
-testinput/jedi/monarch_geometry_rotated.yaml
-testinput/jedi/monarch_state.yaml
-testinput/jedi/monarch_convertstate.yaml
-testinput/jedi/monarch_convertstate_levsel.yaml
-testinput/jedi/monarch_convertstate_levsel_scaling.yaml
-testinput/jedi/monarch_convertstate_levsel_logtransf.yaml
-testinput/jedi/monarch_increment.yaml
-testinput/jedi/monarch_ens_mean_variance.yaml
-testinput/jedi/monarch_ufo_variable_name_map.yaml
-testinput/jedi/monarch_hofx3d_constant.yaml
-testinput/jedi/monarch_hofx3d_air_pressure.yaml
-testinput/jedi/monarch_hofx3d_logarithm.yaml
-testinput/jedi/monarch_dirac_no_loc_3d.yaml
-testinput/jedi/monarch_dirac_no_loc_3d_lt.yaml
-testinput/jedi/monarch_dirac_no_loc_4d_id.yaml
-testinput/jedi/monarch_dirac_no_loc_4d.yaml
-testinput/jedi/monarch_dirac_3d.yaml
-testinput/jedi/monarch_dirac_4d.yaml
-testinput/jedi/monarch_dirac_4d_FL.yaml
-testinput/jedi/monarch_3densvar.yaml
-testinput/jedi/monarch_3densvar_lt.yaml
-testinput/jedi/monarch_4densvar.yaml
-testinput/jedi/monarch_4densvar_lt.yaml
+testinput/monarch_geometry_rotated.yaml
+testinput/monarch_state.yaml
+testinput/monarch_convertstate.yaml
+testinput/monarch_convertstate_levsel.yaml
+testinput/monarch_convertstate_levsel_scaling.yaml
+testinput/monarch_convertstate_levsel_logtransf.yaml
+testinput/monarch_increment.yaml
+testinput/monarch_ens_mean_variance.yaml
+testinput/monarch_ufo_variable_name_map.yaml
+testinput/monarch_hofx3d_constant.yaml
+testinput/monarch_hofx3d_air_pressure.yaml
+testinput/monarch_hofx3d_logarithm.yaml
+testinput/monarch_dirac_no_loc_3d.yaml
+testinput/monarch_dirac_no_loc_3d_lt.yaml
+testinput/monarch_dirac_no_loc_4d_id.yaml
+testinput/monarch_dirac_no_loc_4d.yaml
+testinput/monarch_dirac_3d.yaml
+testinput/monarch_dirac_4d.yaml
+testinput/monarch_dirac_4d_FL.yaml
+testinput/monarch_3densvar.yaml
+testinput/monarch_3densvar_lt.yaml
+testinput/monarch_4densvar.yaml
+testinput/monarch_4densvar_lt.yaml
 )
 
 list( APPEND aq_testinput
 # MONARCH REGIONAL
-testinput/jedi/aq_geometry.yaml
-testinput/jedi/aq_state.yaml
-testinput/jedi/aq_convertstate.yaml
-testinput/jedi/aq_convertstate_logtransf.yaml
-testinput/jedi/aq_increment.yaml
-testinput/jedi/aq_ens_mean_variance.yaml
-testinput/jedi/monarch_ufo_variable_name_map.yaml
-testinput/jedi/aq_hofx3d_constant.yaml
-testinput/jedi/aq_hofx3d_logarithm.yaml
-testinput/jedi/aq_dirac_no_loc_3d.yaml
-testinput/jedi/aq_dirac_no_loc_3d_lt.yaml
-testinput/jedi/aq_dirac_no_loc_4d_id.yaml
-testinput/jedi/aq_dirac_no_loc_4d.yaml
-testinput/jedi/aq_dirac_3d.yaml
-testinput/jedi/aq_dirac_4d.yaml
-testinput/jedi/aq_dirac_4d_FL.yaml
-testinput/jedi/aq_3densvar.yaml
-testinput/jedi/aq_3densvar_lt.yaml
-testinput/jedi/aq_4densvar.yaml
-testinput/jedi/aq_4densvar_lt.yaml
+testinput/aq_geometry.yaml
+testinput/aq_state.yaml
+testinput/aq_convertstate.yaml
+testinput/aq_convertstate_logtransf.yaml
+testinput/aq_increment.yaml
+testinput/aq_ens_mean_variance.yaml
+testinput/monarch_ufo_variable_name_map.yaml
+testinput/aq_hofx3d_constant.yaml
+testinput/aq_hofx3d_logarithm.yaml
+testinput/aq_dirac_no_loc_3d.yaml
+testinput/aq_dirac_no_loc_3d_lt.yaml
+testinput/aq_dirac_no_loc_4d_id.yaml
+testinput/aq_dirac_no_loc_4d.yaml
+testinput/aq_dirac_3d.yaml
+testinput/aq_dirac_4d.yaml
+testinput/aq_dirac_4d_FL.yaml
+testinput/aq_3densvar.yaml
+testinput/aq_3densvar_lt.yaml
+testinput/aq_4densvar.yaml
+testinput/aq_4densvar_lt.yaml
 )
 
 # Test output references
@@ -337,147 +237,89 @@ testref/reg_truth_06.ref
 testref/reg_truth_12.ref
 testref/reg_truth_18.ref
 
-# EC
-
-# BGOS
-testref/ec/bgos_background.ref
-testref/ec/bgos_ensemble.ref
-testref/ec/bgos_linear_ensemble.ref
-testref/ec/bgos_linear_randomized.ref
-testref/ec/bgos_makeobs.ref
-testref/ec/bgos_nonlinear_ensemble.ref
-testref/ec/bgos_nonlinear_randomized.ref
-testref/ec/bgos_stddev.ref
-testref/ec/bgos_truth.ref
-
-# EVIL
-testref/ec/evil_assim_ensemble.ref
-testref/ec/evil_background.ref
-testref/ec/evil_control_3dvar.ref
-testref/ec/evil_control_update_D.ref
-testref/ec/evil_control_update_R.ref
-testref/ec/evil_control_update_S.ref
-testref/ec/evil_dual_3dvar.ref
-testref/ec/evil_dual_update_D.ref
-testref/ec/evil_dual_update_R.ref
-testref/ec/evil_dual_update_S.ref
-testref/ec/evil_ensemble.ref
-testref/ec/evil_ensemble_variance.ref
-testref/ec/evil_makeobs.ref
-testref/ec/evil_primal_3dvar.ref
-testref/ec/evil_primal_update_D.ref
-testref/ec/evil_primal_update_R.ref
-testref/ec/evil_primal_update_S.ref
-testref/ec/evil_stddev.ref
-testref/ec/evil_truth.ref
-
-# GLOBAL
-testref/ec/glb_3dvar.ref
-testref/ec/glb_3densvar.ref
-testref/ec/glb_4densvar.ref
-testref/ec/glb_4denvar.ref
-testref/ec/glb_getkf_nonlinear.ref
-testref/ec/glb_hofx.ref
-
-# REGIONAL
-testref/ec/reg_3dvar.ref
-testref/ec/reg_3densvar.ref
-testref/ec/reg_4densvar.ref
-testref/ec/reg_4denvar.ref
-testref/ec/reg_getkf_nonlinear.ref
-testref/ec/reg_hofx.ref
-
-# SYNTHETIC DATA
-testref/ec/synthetic_data_generate.ref
-testref/ec/synthetic_data_makeobs.ref
-testref/ec/synthetic_data_stddev.ref
-testref/ec/synthetic_data_truth.ref
-
-# JEDI
-
 # GENINT
-testref/jedi/genint_geometry_regular_lonlat.ref
-testref/jedi/genint_geometry_lambertCC.ref
-testref/jedi/genint_convertstate_regular_lonlat.ref
-testref/jedi/genint_convertstate_nonuni_lonlat.ref
-testref/jedi/genint_convertstate_varcha_regular_lonlat.ref
-testref/jedi/genint_convertstate_varcha_nonuni_lonlat.ref
-testref/jedi/genint_hofx3d_regular_lonlat.ref
-testref/jedi/genint_hofx3d_nonuni_lonlat.ref
-testref/jedi/genint_hofx3d_lambertCC.ref
+testref/genint_geometry_regular_lonlat.ref
+testref/genint_geometry_lambertCC.ref
+testref/genint_convertstate_regular_lonlat.ref
+testref/genint_convertstate_nonuni_lonlat.ref
+testref/genint_convertstate_varcha_regular_lonlat.ref
+testref/genint_convertstate_varcha_nonuni_lonlat.ref
+testref/genint_hofx3d_regular_lonlat.ref
+testref/genint_hofx3d_nonuni_lonlat.ref
+testref/genint_hofx3d_lambertCC.ref
 
 # GLOBAL
-testref/jedi/glb_3dvar.ref
-testref/jedi/glb_3densvar.ref
-testref/jedi/glb_4densvar.ref
-testref/jedi/glb_4densvar_parallel.ref
-testref/jedi/glb_getkf_nonlinear.ref
-testref/jedi/glb_letkf_linear.ref
-testref/jedi/glb_letkf_linear_4d.ref
-testref/jedi/glb_letkf_nonlinear.ref
-testref/jedi/glb_letkf_nonlinear_4d.ref
-testref/jedi/glb_letkf_read_members.ref
+testref/glb_3dvar.ref
+testref/glb_3densvar.ref
+testref/glb_4densvar.ref
+testref/glb_4densvar_parallel.ref
+testref/glb_getkf_nonlinear.ref
+testref/glb_letkf_linear.ref
+testref/glb_letkf_linear_4d.ref
+testref/glb_letkf_nonlinear.ref
+testref/glb_letkf_nonlinear_4d.ref
+testref/glb_letkf_read_members.ref
 
 # REGIONAL
-testref/jedi/reg_3dvar.ref
-testref/jedi/reg_3densvar.ref
-testref/jedi/reg_4densvar.ref
-testref/jedi/reg_4densvar_parallel.ref
-testref/jedi/reg_getkf_nonlinear.ref
-testref/jedi/reg_letkf_linear.ref
-testref/jedi/reg_letkf_linear_4d.ref
-testref/jedi/reg_letkf_nonlinear.ref
-testref/jedi/reg_letkf_nonlinear_4d.ref
-testref/jedi/reg_letkf_read_members.ref
+testref/reg_3dvar.ref
+testref/reg_3densvar.ref
+testref/reg_4densvar.ref
+testref/reg_4densvar_parallel.ref
+testref/reg_getkf_nonlinear.ref
+testref/reg_letkf_linear.ref
+testref/reg_letkf_linear_4d.ref
+testref/reg_letkf_nonlinear.ref
+testref/reg_letkf_nonlinear_4d.ref
+testref/reg_letkf_read_members.ref
 )
 
 list( APPEND monarch_testref
 # MONARCH REGIONAL
-testref/jedi/monarch_geometry_rotated.ref
-testref/jedi/monarch_state.ref
-testref/jedi/monarch_convertstate.ref
-testref/jedi/monarch_convertstate_levsel.ref
-testref/jedi/monarch_convertstate_levsel_scaling.ref
-testref/jedi/monarch_convertstate_levsel_logtransf.ref
-testref/jedi/monarch_increment.ref
-testref/jedi/monarch_ens_mean_variance.ref
-testref/jedi/monarch_hofx3d_constant.ref
-testref/jedi/monarch_hofx3d_air_pressure.ref
-testref/jedi/monarch_hofx3d_logarithm.ref
-testref/jedi/monarch_dirac_no_loc_3d.ref
-testref/jedi/monarch_dirac_no_loc_3d_lt.ref
-testref/jedi/monarch_dirac_no_loc_4d_id.ref
-testref/jedi/monarch_dirac_no_loc_4d.ref
-testref/jedi/monarch_dirac_3d.ref
-testref/jedi/monarch_dirac_4d.ref
-testref/jedi/monarch_dirac_4d_FL.ref
-testref/jedi/monarch_3densvar.ref
-testref/jedi/monarch_3densvar_lt.ref
-testref/jedi/monarch_4densvar.ref
-testref/jedi/monarch_4densvar_lt.ref
+testref/monarch_geometry_rotated.ref
+testref/monarch_state.ref
+testref/monarch_convertstate.ref
+testref/monarch_convertstate_levsel.ref
+testref/monarch_convertstate_levsel_scaling.ref
+testref/monarch_convertstate_levsel_logtransf.ref
+testref/monarch_increment.ref
+testref/monarch_ens_mean_variance.ref
+testref/monarch_hofx3d_constant.ref
+testref/monarch_hofx3d_air_pressure.ref
+testref/monarch_hofx3d_logarithm.ref
+testref/monarch_dirac_no_loc_3d.ref
+testref/monarch_dirac_no_loc_3d_lt.ref
+testref/monarch_dirac_no_loc_4d_id.ref
+testref/monarch_dirac_no_loc_4d.ref
+testref/monarch_dirac_3d.ref
+testref/monarch_dirac_4d.ref
+testref/monarch_dirac_4d_FL.ref
+testref/monarch_3densvar.ref
+testref/monarch_3densvar_lt.ref
+testref/monarch_4densvar.ref
+testref/monarch_4densvar_lt.ref
 )
 
 list( APPEND aq_testref
 # MONARCH REGIONAL
-testref/jedi/aq_geometry.ref
-testref/jedi/aq_state.ref
-testref/jedi/aq_convertstate.ref
-testref/jedi/aq_convertstate_logtransf.ref
-testref/jedi/aq_increment.ref
-testref/jedi/aq_ens_mean_variance.ref
-testref/jedi/aq_hofx3d_constant.ref
-testref/jedi/aq_hofx3d_logarithm.ref
-testref/jedi/aq_dirac_no_loc_3d.ref
-testref/jedi/aq_dirac_no_loc_3d_lt.ref
-testref/jedi/aq_dirac_no_loc_4d_id.ref
-testref/jedi/aq_dirac_no_loc_4d.ref
-testref/jedi/aq_dirac_3d.ref
-testref/jedi/aq_dirac_4d.ref
-testref/jedi/aq_dirac_4d_FL.ref
-testref/jedi/aq_3densvar.ref
-testref/jedi/aq_3densvar_lt.ref
-testref/jedi/aq_4densvar.ref
-testref/jedi/aq_4densvar_lt.ref
+testref/aq_geometry.ref
+testref/aq_state.ref
+testref/aq_convertstate.ref
+testref/aq_convertstate_logtransf.ref
+testref/aq_increment.ref
+testref/aq_ens_mean_variance.ref
+testref/aq_hofx3d_constant.ref
+testref/aq_hofx3d_logarithm.ref
+testref/aq_dirac_no_loc_3d.ref
+testref/aq_dirac_no_loc_3d_lt.ref
+testref/aq_dirac_no_loc_4d_id.ref
+testref/aq_dirac_no_loc_4d.ref
+testref/aq_dirac_3d.ref
+testref/aq_dirac_4d.ref
+testref/aq_dirac_4d_FL.ref
+testref/aq_3densvar.ref
+testref/aq_3densvar_lt.ref
+testref/aq_4densvar.ref
+testref/aq_4densvar_lt.ref
 )
 
 # Link input configurations and output references
@@ -508,7 +350,7 @@ list( APPEND hh_list "06" "12" "18" )
 # Tests
 # -----
 
-if( ( NOT ECSABER ) AND ENABLE_GENINT_TESTS )
+if( ENABLE_GENINT_TESTS )
     # GENINT tests
     create_test( genint_geometry_regular_lonlat 6 geometry )
     create_test( genint_geometry_lambertCC 6 geometry )
@@ -524,7 +366,7 @@ if( ( NOT ECSABER ) AND ENABLE_GENINT_TESTS )
     endif()
 endif()
 
-if( ( NOT ECSABER ) AND ENABLE_MONARCH_TESTS )
+if( ENABLE_MONARCH_TESTS )
     # MONARCH BSC tests
     create_test( monarch_geometry_rotated 8 geometry )
     create_test( monarch_state 8 state )
@@ -559,7 +401,7 @@ if( ( NOT ECSABER ) AND ENABLE_MONARCH_TESTS )
     endif()
 endif()
 
-if( ( NOT ECSABER ) AND ENABLE_AQ_TESTS )
+if( ENABLE_AQ_TESTS )
     # AQ BSC tests
     create_test( aq_geometry 8 geometry )
     create_test( aq_state 8 state )
@@ -605,11 +447,7 @@ foreach( mpi ${mpi_list} )
             endif()
 
             if( ENABLE_OBS )
-                if( ECSABER )
-                    create_test( ${domain}_makeobs_${hh} ${mpi} makeobs_patched )
-                else()
-                    create_test( ${domain}_makeobs_${hh} ${mpi} hofx3d )
-                endif()
+                create_test( ${domain}_makeobs_${hh} ${mpi} hofx3d )
             endif()
         endforeach()
 
@@ -618,88 +456,36 @@ foreach( mpi ${mpi_list} )
             create_test( ${domain}_3densvar ${mpi} variational )
             create_test( ${domain}_4densvar ${mpi} variational )
 
-            if( ECSABER )
-                create_test( ${domain}_4denvar ${mpi} variational )
-            else()
-                math( EXPR mpi_par "${mpi}*3" )
-                create_test( ${domain}_4densvar_parallel ${mpi_par} variational )
-                create_test( ${domain}_getkf_nonlinear ${mpi} letkf )
-                create_test( ${domain}_letkf_linear ${mpi} letkf )
-                create_test( ${domain}_letkf_linear_4d ${mpi} letkf )
-                create_test( ${domain}_letkf_nonlinear ${mpi} letkf )
-                create_test( ${domain}_letkf_nonlinear_4d ${mpi} letkf )
-                create_test( ${domain}_letkf_read_members ${mpi} letkf )
-            endif()
-        endif()
+            math( EXPR mpi_par "${mpi}*3" )
+            create_test( ${domain}_4densvar_parallel ${mpi_par} variational )
+            create_test( ${domain}_getkf_nonlinear ${mpi} letkf )
+            create_test( ${domain}_letkf_linear ${mpi} letkf )
+            create_test( ${domain}_letkf_linear_4d ${mpi} letkf )
+            create_test( ${domain}_letkf_nonlinear ${mpi} letkf )
+            create_test( ${domain}_letkf_nonlinear_4d ${mpi} letkf )
+            create_test( ${domain}_letkf_read_members ${mpi} letkf )
+         endif()
     endforeach()
 
-    if( ECSABER )
-        if( ENABLE_BGOS_TESTS )
-            # BGOS tests
-            create_test( bgos_truth ${mpi} convertstate )
-            create_test( bgos_stddev ${mpi} convertstate )
+    if( ENABLE_BGOS_TESTS )
+        # BGOS tests
+#        create_test( bgos_truth ${mpi} convertstate )
+#        create_test( bgos_stddev ${mpi} convertstate )
 
-            if( ENABLE_SABER )
-                create_test( bgos_background ${mpi} error_covariance_toolbox )
-                create_test( bgos_ensemble ${mpi} error_covariance_toolbox )
-            endif()
-
-            if( ENABLE_OBS )
-                create_test( bgos_makeobs ${mpi} makeobs_patched )
-            endif()
-
-            if( ENABLE_SABER AND ENABLE_OBS )
-                create_test( bgos_linear_ensemble ${mpi} bgos )
-                create_test( bgos_linear_randomized ${mpi} bgos )
-                create_test( bgos_nonlinear_ensemble ${mpi} bgos )
-                create_test( bgos_nonlinear_randomized ${mpi} bgos )
-            endif()
+        if( ENABLE_SABER )
+#            create_test( bgos_background ${mpi} error_covariance_toolbox )
+#            create_test( bgos_ensemble ${mpi} error_covariance_toolbox )
         endif()
 
-        if( ENABLE_EVIL_TESTS )
-            # EVIL tests
-            create_test( evil_truth ${mpi} convertstate )
-            create_test( evil_stddev ${mpi} convertstate )
-
-            if( ENABLE_SABER )
-                create_test( evil_background ${mpi} error_covariance_toolbox )
-                create_test( evil_ensemble ${mpi} error_covariance_toolbox )
-            endif()
-
-            if( ENABLE_OBS )
-                create_test( evil_makeobs ${mpi} makeobs_patched )
-            endif()
-
-            if( ENABLE_SABER AND ENABLE_OBS )
-                create_test( evil_control_3dvar ${mpi} variational )
-                create_test( evil_control_update_D ${mpi} evil_update )
-                create_test( evil_control_update_R ${mpi} evil_update )
-                create_test( evil_control_update_S ${mpi} evil_update )
-                create_test( evil_dual_3dvar ${mpi} variational )
-                create_test( evil_dual_update_D ${mpi} evil_update )
-                create_test( evil_dual_update_R ${mpi} evil_update )
-                create_test( evil_dual_update_S ${mpi} evil_update )
-                create_test( evil_primal_3dvar ${mpi} variational )
-                create_test( evil_primal_update_D ${mpi} evil_update )
-                create_test( evil_primal_update_R ${mpi} evil_update )
-                create_test( evil_primal_update_S ${mpi} evil_update )
-                create_test( evil_assim_ensemble ${mpi} assim_ensemble_patched )
-                create_test( evil_ensemble_variance ${mpi} ensemble_variance )
-            endif()
+        if( ENABLE_OBS )
+#            create_test( bgos_makeobs ${mpi} makeobs_patched )
         endif()
 
-        if( ENABLE_SYNTHETIC_DATA_TESTS )
-            # SYNTHETIC DATA tests
-            create_test( synthetic_data_truth ${mpi} convertstate )
-            create_test( synthetic_data_stddev ${mpi} convertstate )
-
-            if( ENABLE_OBS )
-                create_test( synthetic_data_makeobs ${mpi} makeobs_patched )
-            endif()
-
-            if( ENABLE_SABER AND ENABLE_OBS )
-                create_test( synthetic_data_generate ${mpi} synthetic_data )
-            endif()
+        if( ENABLE_SABER AND ENABLE_OBS )
+#            create_test( bgos_linear_ensemble ${mpi} bgos )
+#            create_test( bgos_linear_randomized ${mpi} bgos )
+#            create_test( bgos_nonlinear_ensemble ${mpi} bgos )
+#            create_test( bgos_nonlinear_randomized ${mpi} bgos )
         endif()
     endif()
 endforeach()

@@ -42,7 +42,7 @@ static inline bool transSetup = false;
 // -----------------------------------------------------------------------------
 
 void FieldsIOArome::read(const Geometry & geom,
-                         const varns::Variables & vars,
+                         const oops::Variables & vars,
                          const eckit::Configuration & config,
                          atlas::FieldSet & fset) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
@@ -71,7 +71,7 @@ void FieldsIOArome::read(const Geometry & geom,
   fset.clear();
 
   // Variables to copy / to read
-  varns::Variables varsToRead;
+  oops::Variables varsToRead;
   for (const auto & var : vars) {
     if (var.name() == "log_of_air_pressure_at_surface" || var.name() == "air_pressure_at_surface"
       || var.name() == "air_pressure" || var.name() == "air_pressure_at_half_levels") {

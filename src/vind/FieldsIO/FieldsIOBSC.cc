@@ -34,7 +34,7 @@ static std::vector<std::string> existingFiles_;
 // -----------------------------------------------------------------------------
 
 void FieldsIOBSC::read(const Geometry & geom,
-                       const varns::Variables & vars,
+                       const oops::Variables & vars,
                        const eckit::Configuration & conf,
                        atlas::FieldSet & fset) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;

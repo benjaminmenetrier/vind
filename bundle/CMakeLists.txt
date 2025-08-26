@@ -1,7 +1,7 @@
-# (C) Copyright 2022 UCAR
+# (C) Copyright 2025 Meteorolgisk Institutt
 #
 
-# VIND bundle
+# VIND bundle for JEDI
 cmake_minimum_required( VERSION 3.12 FATAL_ERROR )
 find_package( ecbuild 3.6 REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild)
 project( vind-bundle VERSION 8.0.0 LANGUAGES C CXX Fortran )
@@ -28,8 +28,8 @@ set( ENABLE_CRTM OFF )
 
 # What tests to run?
 set( ENABLE_GENINT_TESTS ON )
-set( ENABLE_MONARCH_TESTS ON )
-set( ENABLE_AQ_TESTS ON )
+set( ENABLE_MONARCH_TESTS OFF )
+set( ENABLE_AQ_TESTS OFF )
 set( ENABLE_GLB_TESTS ON )
 set( ENABLE_REG_TESTS ON )
 set( ENABLE_BGOS_TESTS ON )

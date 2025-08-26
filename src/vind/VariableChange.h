@@ -15,11 +15,11 @@
 
 #include "eckit/config/Configuration.h"
 
+#include "oops/base/Variables.h"
 #include "oops/util/Printable.h"
 
 #include "vind/Geometry.h"
 #include "vind/State.h"
-#include "vind/VariablesSwitch.h"
 
 #include "vader/vader.h"
 
@@ -40,9 +40,9 @@ class VariableChange : public util::Printable {
 
   // Variable changes: direct and inverse
   void changeVar(State &,
-                 const varns::Variables &) const;
+                 const oops::Variables &) const;
   void changeVarInverse(State &,
-                        const varns::Variables &) const;
+                        const oops::Variables &) const;
 
  private:
   // Print

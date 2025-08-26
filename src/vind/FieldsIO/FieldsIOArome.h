@@ -16,8 +16,9 @@
 #include "ectrans/transi.h"
 #endif
 
+#include "oops/base/Variables.h"
+
 #include "vind/FieldsIO/FieldsIOBase.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
   class Geometry;
@@ -36,7 +37,7 @@ class FieldsIOArome : public FieldsIOBase {
 
   // Read
   void read(const Geometry &,
-            const varns::Variables &,
+            const oops::Variables &,
             const eckit::Configuration &,
             atlas::FieldSet &) const override;
 

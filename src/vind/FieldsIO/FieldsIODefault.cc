@@ -23,7 +23,7 @@ static FieldsIOMaker<FieldsIODefault> makerDefault_("default");
 // -----------------------------------------------------------------------------
 
 void FieldsIODefault::read(const Geometry & geom,
-                           const varns::Variables & vars,
+                           const oops::Variables & vars,
                            const eckit::Configuration & conf,
                            atlas::FieldSet & fset) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;

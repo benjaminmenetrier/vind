@@ -1,0 +1,201 @@
+_chemVariables: &chemvars
+    - ozone
+    - carbon_monoxyde
+    - nitrogen_dioxide
+    - sulfur_dioxide
+    - pm10
+    - pm2p5
+_levels: 
+    profile: &levs [19, 20, 21, 22, 23]
+_defaultAddConst: 
+    additive constant: &defaddconst 1.e-10 
+_ozoneAddConst: 
+    additive constant: &o3addconst 5.e-9 
+_scalingGas: &scalegas
+    scaling factor: 1.e-6
+_logTransform: &logtransform
+    log transform: true
+    additive constant: *defaddconst
+_pm10_ObsErrFactor:
+    total coefficient: &pm10_obserr_factor 0.2
+_pm10_ObsErrMin:
+    error parameter: &pm10_obserr_min 1.e-3
+_pm10_ObsErrCheckMax:
+    absolute threshold: &pm10_obserr_checkmax 4.5
+
+time window:
+  begin: 2022-07-01T09:00:00Z
+  length: PT6H
+geometry: &geom
+  function space: StructuredColumns
+  grid:
+    type: structured
+    xspace:
+      type: linear
+      N : 351
+      start : -35.0
+      end :  35.0
+    yspace:
+      type: linear
+      N: 271
+      start: -27.0
+      end : 27.0
+    projection :
+      type: rotated_lonlat
+      north_pole: [190, 39]
+    y_numbering: -1
+  partitioner: checkerboard
+  halo: 1
+  levels are top down: true
+  groups:
+  - variables: *chemvars  
+    levels: 5
+    vertical coordinate:
+      profile: *levs
+  alias:
+  - in code: ozone
+    in file: O3
+    <<: *scalegas
+    <<: *logtransform
+    additive constant: *o3addconst
+  - in code: carbon_monoxyde
+    in file: CO
+    <<: *scalegas
+    <<: *logtransform
+  - in code: nitrogen_dioxide
+    in file: NO2
+    <<: *scalegas
+    <<: *logtransform
+  - in code: sulfur_dioxide
+    in file: SO2
+    <<: *scalegas
+    <<: *logtransform
+  - in code: pm10
+    in file: dry_pm10_mass
+    <<: *logtransform
+  - in code: pm2p5
+    in file: dry_pm2p5_mass
+    <<: *logtransform
+  io:
+    total number of levels: 24
+    initial date: 2022-06-30T12:00:00Z
+    final date: 2022-07-02T00:00:00Z
+state:
+  date: 2022-07-01T12:00:00Z
+  filepath: testdata/006/REDUCED_MONARCH_d01_2022063012.nc
+  format: bsc
+  state variables: *chemvars
+observations:
+  observers:
+  - obs space:
+      name: AIRBASE_PM10
+      obsdatain:
+        engine:
+          type: H5File
+          obsfile: testdata/HDAT_AIRBASE_PM10-2022070112.nc
+      obsdataout:
+        engine:
+          type: H5File
+          obsfile: testdata/HOUT_logarithm-2022070112.nc
+      simulated variables: [particulatematter10Surface]
+      derived variables: [particulatematter10Surface]
+    obs filters:
+      - filter: Variable Assignment
+        assignments:
+        - name: MetaData/log_transf_c_t
+          type: float
+          value: *defaddconst
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedObsError/particulatematter10Surface_fraction
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: ObsValue/particulatematter10Surface
+              total coefficient: *pm10_obserr_factor
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedObsError/particulatematter10Surface_up
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: ObsValue/particulatematter10Surface
+              - name: DerivedObsError/particulatematter10Surface_fraction
+              coefs: [ 1.0, 0.5 ]
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedObsError/particulatematter10Surface_down
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: ObsValue/particulatematter10Surface
+              - name: DerivedObsError/particulatematter10Surface_fraction
+              coefs: [ 1.0, -0.5 ]
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedObsError/particulatematter10Surface
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: DerivedObsError/particulatematter10Surface_up
+              - name: DerivedObsError/particulatematter10Surface_down
+              log bases: [ 10, 10 ]
+              coefs: [ 1.0, -1.0 ]
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedObsValue/particulatematter10Surface
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: ObsValue/particulatematter10Surface
+              - name: MetaData/log_transf_c_t
+              total log base: 10
+      - filter: Perform Action
+        filter variables:
+        - name: particulatematter10Surface
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: DerivedObsError/particulatematter10Surface
+        where:
+          - variable:
+              name: DerivedObsError/particulatematter10Surface
+            minvalue: *pm10_obserr_min
+      - filter: Perform Action
+        filter variables:
+        - name: particulatematter10Surface
+        action:
+          name: assign error
+          error parameter: *pm10_obserr_min
+        where:
+          - variable:
+              name: DerivedObsError/particulatematter10Surface
+            maxvalue: *pm10_obserr_min
+      - filter: Background Check
+        filter variables:
+        - name: particulatematter10Surface
+        threshold: 1.0
+        absolute threshold: *pm10_obserr_checkmax
+    obs operator:
+      name: VertInterp
+      constant vertical coordinate values: [0, 0, 0, 0, 1]
+      observation vertical coordinate: air_pressure
+      interpolation method: nearest-neighbor
+      observation alias file: testinput/monarch_ufo_variable_name_map.yaml
+
+test:
+  reference filename: testref/monarch_hofx3d_logarithm.ref
+  test output filename: testdata/monarch_hofx3d_logarithm.log

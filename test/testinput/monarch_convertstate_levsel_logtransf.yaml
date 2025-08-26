@@ -1,0 +1,120 @@
+_levels: 
+    profile: &levs [19, 20, 21, 22, 23]
+    press_profile: &plevs [19, 20, 21, 22, 23, 24]
+_defaultAddConst: 
+    additive constant: &defaddconst 1.e-10 
+_ozoneAddConst: 
+    additive constant: &o3addconst 5.e-9 
+_scalingGas: &scalegas
+    scaling factor: 1.e-6
+_logTransform: &logtransform
+    log transform: true
+    additive constant: *defaddconst
+
+input geometry: &geom
+  function space: StructuredColumns
+  grid:
+    type: structured
+    xspace:
+      type: linear
+      N : 351
+      start : -35.0
+      end :  35.0
+    yspace:
+      type: linear
+      N: 271
+      start: -27.0
+      end : 27.0
+    projection :
+      type: rotated_lonlat
+      north_pole: [190, 39]
+    y_numbering: -1
+  partitioner: checkerboard
+  halo: 1
+  levels are top down: true
+  groups:
+  - variables:
+    - ozone
+    - carbon_monoxyde
+    - pm10
+    levels: 5
+    vertical coordinate:
+      profile: *levs
+  - variables:
+    - lev_height
+    - air_pressure
+    levels: 5
+    vertical coordinate:
+      profile: *levs
+  - variables:
+    - air_pressure_levels
+    levels: 6
+    vertical coordinate:
+      profile: *plevs
+  - variables:
+    - air_pressure_at_surface
+    - surface_geopotential
+    levels: 1
+    lev2d: down
+  alias:
+  - in code: ozone
+    in file: O3
+    <<: *scalegas
+    <<: *logtransform
+    additive constant: *o3addconst
+  - in code: carbon_monoxyde
+    in file: CO
+    <<: *scalegas
+    <<: *logtransform
+  - in code: pm10
+    in file: dry_pm10_mass
+    <<: *logtransform
+  - in code: lev_height
+    in file: mid_layer_height_agl
+  - in code: air_pressure
+    in file: mid_layer_pressure
+  - in code: air_pressure_levels
+    in file: interface_pressure
+  - in code: air_pressure_at_surface
+    in file: PSFC
+  - in code: surface_geopotential
+    in file: FIS
+  io:
+    total number of levels: 24
+    initial date: 2022-06-30T12:00:00Z
+    final date: 2022-07-02T00:00:00Z
+output geometry: *geom
+states:
+- input:
+    date: 2022-07-01T00:00:00Z
+    filepath: testdata/006/REDUCED_MONARCH_d01_2022063012.nc
+    format: bsc
+    state variables:
+    - ozone
+    - carbon_monoxyde
+    - pm10
+    - air_pressure
+    - air_pressure_levels
+    - surface_geopotential
+  output:
+    date: 2022-07-01T00:00:00Z
+    filepath: testdata/monarch_levsel_logtransf_output.nc
+    formats: [bsc]
+- input:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/006/REDUCED_MONARCH_d01_2022063012.nc
+    format: bsc
+    state variables:
+    - ozone
+    - carbon_monoxyde
+    - pm10
+    - air_pressure
+    - air_pressure_levels
+    - surface_geopotential
+  output:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/monarch_levsel_logtransf_output.nc
+    formats: [bsc]
+test:
+  reference filename: testref/monarch_convertstate_levsel_logtransf.ref
+  test output filename: testdata/monarch_convertstate_levsel_logtransf.log

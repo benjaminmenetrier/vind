@@ -74,7 +74,7 @@ LinearVariableChange::LinearVariableChange(const Geometry & geom,
 // -----------------------------------------------------------------------------
 
 void LinearVariableChange::changeVarTL(Increment & dx,
-                                       const varns::Variables & vars) const {
+                                       const oops::Variables & vars) const {
   oops::Log::trace() << classname() << "::changeVarTL starting" << std::endl;
 
   if (!multiplierFset_.empty()) {
@@ -106,7 +106,7 @@ void LinearVariableChange::changeVarTL(Increment & dx,
 // -----------------------------------------------------------------------------
 
 void LinearVariableChange::changeVarInverseTL(Increment & dx,
-                                              const varns::Variables & vars) const {
+                                              const oops::Variables & vars) const {
   oops::Log::trace() << classname() << "::changeVarInverseTL starting" << std::endl;
 
   if (!multiplierFset_.empty()) {
@@ -138,7 +138,7 @@ void LinearVariableChange::changeVarInverseTL(Increment & dx,
 // -----------------------------------------------------------------------------
 
 void LinearVariableChange::changeVarAD(Increment & dx,
-                                       const varns::Variables & vars) const {
+                                       const oops::Variables & vars) const {
   oops::Log::trace() << classname() << "::changeVarAD starting" << std::endl;
 
   if (!multiplierFset_.empty()) {
@@ -170,7 +170,7 @@ void LinearVariableChange::changeVarAD(Increment & dx,
 // -----------------------------------------------------------------------------
 
 void LinearVariableChange::changeVarInverseAD(Increment & dx,
-                                              const varns::Variables & vars) const {
+                                              const oops::Variables & vars) const {
   oops::Log::trace() << classname() << "::changeVarInverseAD starting" << std::endl;
 
   if (!multiplierFset_.empty()) {

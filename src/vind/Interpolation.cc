@@ -11,9 +11,8 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "oops/base/Variables.h"
 #include "oops/util/FieldSetHelpers.h"
-
-#include "vind/VariablesSwitch.h"
 
 // -----------------------------------------------------------------------------
 
@@ -88,7 +87,7 @@ void Interpolation::execute(const atlas::FieldSet & srcFieldSet,
     fset.haloExchange();
 
     // Apply unstructured interpolator
-    const varns::Variables vars(fset.field_names());
+    const oops::Variables vars(fset.field_names());
     std::vector<double> vals;
     unstructuredInterp_->apply(vars, fset, vals);
 
@@ -97,9 +96,9 @@ void Interpolation::execute(const atlas::FieldSet & srcFieldSet,
     size_t index = 0;
     for (auto & tgtField : tgtFieldSet) {
       auto tgtView = atlas::array::make_view<double, 2>(tgtField);
-      for (atlas::idx_t jlevel = 0; jlevel < tgtView.shape(1); ++jlevel) {
-        for (atlas::idx_t jnode = 0; jnode < tgtView.shape(0); ++jnode) {
-          if (tgtGhostView(jnode) == 0) {
+      for (atlas::idx_t jnode = 0; jnode < tgtView.shape(0); ++jnode) {
+        if (tgtGhostView(jnode) == 0) {
+          for (atlas::idx_t jlevel = 0; jlevel < tgtView.shape(1); ++jlevel) {
             tgtView(jnode, jlevel) = vals[index];
             ++index;
           }
@@ -143,7 +142,7 @@ void Interpolation::executeAdjoint(atlas::FieldSet & srcFieldSet,
     }
 
     // Apply unstructured interpolator, adjoint
-    const varns::Variables vars(tgtFieldSet.field_names());
+    const oops::Variables vars(tgtFieldSet.field_names());
     unstructuredInterp_->applyAD(vars, srcFieldSet, vals);
 
     // Exchange FieldSet halo, adjoint

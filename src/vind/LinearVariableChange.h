@@ -16,12 +16,12 @@
 
 #include "atlas/field.h"
 
+#include "oops/base/Variables.h"
 #include "oops/util/Printable.h"
 
 #include "vind/Geometry.h"
 #include "vind/Increment.h"
 #include "vind/State.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
 
@@ -40,17 +40,17 @@ class LinearVariableChange: public util::Printable {
 
   // Linear variable changes: TL, inverseTL, AD and inverseAD
   void changeVarTL(Increment &,
-                   const varns::Variables &) const;
+                   const oops::Variables &) const;
   void changeVarInverseTL(Increment &,
-                          const varns::Variables &) const;
+                          const oops::Variables &) const;
   void changeVarAD(Increment &,
-                   const varns::Variables &) const;
+                   const oops::Variables &) const;
   void changeVarInverseAD(Increment &,
-                          const varns::Variables &) const;
+                          const oops::Variables &) const;
 
   // Trajectory setup
   void changeVarTraj(const State &,
-                     const varns::Variables &)
+                     const oops::Variables &)
     {}
 
  private:

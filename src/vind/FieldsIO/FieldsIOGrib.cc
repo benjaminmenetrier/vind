@@ -30,7 +30,7 @@ static FieldsIOMaker<FieldsIOGrib> makerGrib_("grib");
 // -----------------------------------------------------------------------------
 
 void FieldsIOGrib::read(const Geometry & geom,
-                        const varns::Variables & vars,
+                        const oops::Variables & vars,
                         const eckit::Configuration & config,
                         atlas::FieldSet & fset) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;

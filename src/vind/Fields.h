@@ -21,15 +21,13 @@
 
 #include "eckit/serialisation/Stream.h"
 
+#include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 #include "oops/util/Serializable.h"
 
-#include "vind/GeoVaLs.h"
 #include "vind/Interpolation.h"
-#include "vind/Locations.h"
-#include "vind/VariablesSwitch.h"
 
 namespace vind {
   class Geometry;
@@ -46,7 +44,7 @@ class Fields : public util::Printable,
 
   // Constructors/destructor
   Fields(const Geometry &,
-         const varns::Variables &,
+         const oops::Variables &,
          const util::DateTime &,
          const bool &);
   Fields(const Fields &,
@@ -79,14 +77,6 @@ class Fields : public util::Printable,
   void sqrt();
   void diff(const Fields &,
             const Fields &);
-  double min(const varns::Variables &) const;
-  double max(const varns::Variables &) const;
-  void interpolate(const Locations &,
-                   GeoVaLs &) const;
-  void interpolateAD(const Locations &,
-                     const GeoVaLs &);
-  void forceWith(const Fields &,
-                 const varns::Variables &);
 
   // ATLAS FieldSet
   void toFieldSet(atlas::FieldSet &) const;
@@ -103,7 +93,7 @@ class Fields : public util::Printable,
   double norm() const;
   std::shared_ptr<const Geometry> geometry() const
     {return geom_;}
-  const varns::Variables & variables() const
+  const oops::Variables & variables() const
     {return vars_;}
   const util::DateTime & time() const
     {return time_;}
@@ -135,17 +125,11 @@ class Fields : public util::Printable,
   // Return grid interpolation
   std::vector<vind::Interpolation>::iterator setupGridInterpolation(const Geometry &) const;
 
-  // Return observations interpolation
-  std::vector<vind::Interpolation>::iterator setupObsInterpolation(const Locations &) const;
-
-  // Reduce duplicate points
-  void reduceDuplicatePoints();
-
   // Geometry
   std::shared_ptr<const Geometry> geom_;
 
   // Variables
-  varns::Variables vars_;
+  oops::Variables vars_;
 
   // Time
   util::DateTime time_;

@@ -39,9 +39,6 @@ class ObsSpace;
 class ObsVector;
 class State;
 class VariableChange;
-#ifdef ECSABER
-class Variables;
-#endif
 
 struct Traits {
   static std::string name()
@@ -73,9 +70,6 @@ struct Traits {
   using ObsVector = vind::ObsVector;
   using State = vind::State;
   using VariableChange = vind::VariableChange;
-#ifdef ECSABER
-  using Variables = vind::Variables;
-#endif
 };
 
 }  // namespace vind

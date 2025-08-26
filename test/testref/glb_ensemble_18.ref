@@ -1,91 +1,91 @@
 Norm of input parameter StdDev: 4.0987803063838184e+00
-Member 0: 
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.3269600611440492e-01
-    + max    = 2.8323643223744005e-01
-    + mean   = 1.1079172490521394e-02
-    + stddev = 9.4465945745416321e-02
-Member 1: 
+    + min    = 3.6510005960875214e-01
+    + max    = 1.9511541093949829e+00
+    + mean   = 1.0757563647041162e+00
+    + stddev = 2.0645995094358588e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.3449268154783529e-01
-    + max    = 3.0839541743972387e-01
-    + mean   = 3.0400082676078013e-04
-    + stddev = 9.5675464013619316e-02
-Member 2: 
+    + min    = 5.5815850550871460e-01
+    + max    = 1.6122020473456040e+00
+    + mean   = 1.1157153378339206e+00
+    + stddev = 1.6489167601793997e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -4.7316613049104439e-01
-    + max    = 2.7369874641073005e-01
-    + mean   = -2.7587833937673541e-03
-    + stddev = 9.3879859173408506e-02
-Member 3: 
+    + min    = 6.4098248087964360e-01
+    + max    = 1.5559329504773083e+00
+    + mean   = 1.1163853166651401e+00
+    + stddev = 1.6001470488153158e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.0956232527628502e-01
-    + max    = 2.8426406327957382e-01
-    + mean   = -3.2516897034070236e-02
-    + stddev = 9.0497901197938255e-02
-Member 4: 
+    + min    = 5.6401103661673291e-01
+    + max    = 1.5920550236005528e+00
+    + mean   = 1.0939114141338642e+00
+    + stddev = 1.7560148228883954e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.0057255318738008e-01
-    + max    = 2.9660493208112826e-01
-    + mean   = 2.4098353736059237e-02
-    + stddev = 9.7888377318010270e-02
-Member 5: 
+    + min    = 6.6240560294958439e-01
+    + max    = 1.6016910474190613e+00
+    + mean   = 1.0993013749154381e+00
+    + stddev = 1.5405722615035400e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -2.5822819672286190e-01
-    + max    = 2.7844062599663572e-01
-    + mean   = 4.9151493865235854e-03
-    + stddev = 8.9112250880619914e-02
-Member 6: 
+    + min    = 5.0721419236711140e-01
+    + max    = 1.6778510572288794e+00
+    + mean   = 1.0712245233411746e+00
+    + stddev = 1.6566464870235259e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.4775079792706109e-01
-    + max    = 3.7263099642070252e-01
-    + mean   = -4.1551468779724363e-03
-    + stddev = 9.3779008240071973e-02
-Member 7: 
+    + min    = 5.9201144511735171e-01
+    + max    = 1.5577128552068149e+00
+    + mean   = 1.0879918306847234e+00
+    + stddev = 1.5984363678089808e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.1573508825708307e-01
-    + max    = 3.2106240168083489e-01
-    + mean   = -4.4986058533283673e-03
-    + stddev = 1.0190255666046547e-01
-Member 8: 
+    + min    = 6.1014061937399877e-01
+    + max    = 1.6188283076478636e+00
+    + mean   = 1.0684169304348021e+00
+    + stddev = 1.5908048775831554e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -2.9660461774978336e-01
-    + max    = 3.3000019724275753e-01
-    + mean   = -2.0576434299647197e-02
-    + stddev = 9.0713056581499155e-02
-Member 9: 
+    + min    = 6.0303755126477154e-01
+    + max    = 1.5762677274686760e+00
+    + mean   = 1.0854342115530919e+00
+    + stddev = 1.9140362122217988e-01
+Write state: 
 - Valid time: 2010-01-01T18:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -2.8717301051593203e-01
-    + max    = 2.8467665739468456e-01
-    + mean   = -9.2378834132490816e-04
-    + stddev = 9.0632593436911116e-02
+    + min    = 4.9336262929700903e-01
+    + max    = 1.6120955558113661e+00
+    + mean   = 1.1068458090739430e+00
+    + stddev = 1.6992330929719990e-01

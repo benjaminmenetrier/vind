@@ -19,21 +19,7 @@ namespace vind {
 // -----------------------------------------------------------------------------
 
 Increment::Increment(const Geometry & geom,
-                     const varns::Variables & vars,
-                     const util::DateTime & vt)
-  : fields_(new Fields(geom, vars, vt, false)) {
-  oops::Log::trace() << classname() << "::Increment starting" << std::endl;
-
-  fields_->zero();
-
-  oops::Log::trace() << classname() << "::Increment done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-Increment::Increment(const Geometry & geom,
-                     const varns::Variables & vars,
-                     const util::DateTime &,
+                     const oops::Variables & vars,
                      const util::DateTime & vt)
   : fields_(new Fields(geom, vars, vt, false)) {
   oops::Log::trace() << classname() << "::Increment starting" << std::endl;
@@ -144,30 +130,6 @@ void Increment::axpy(const double & zz,
   fields_->axpy(zz, *dx.fields_);
 
   oops::Log::trace() << classname() << "::axpy done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-eckit::Stream & operator<<(eckit::Stream & s,
-                           const Increment & dx) {
-  oops::Log::trace() << "Increment::operator<< starting" << std::endl;
-
-  s << dx.fields();
-
-  oops::Log::trace() << "Increment::operator<< done" << std::endl;
-  return s;
-}
-
-// -----------------------------------------------------------------------------
-
-eckit::Stream & operator>>(eckit::Stream & s,
-                           Increment & dx) {
-  oops::Log::trace() << "Increment::operator>> starting" << std::endl;
-
-  s >> dx.fields();
-
-  oops::Log::trace() << "Increment::operator>> done" << std::endl;
-  return s;
 }
 
 // -----------------------------------------------------------------------------
