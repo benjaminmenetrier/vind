@@ -3,32 +3,34 @@
  * 
  */
 
-#include "vind/Model.h"
+#include "vind/Model/ModelPersistence.h"
 
 #include "oops/util/Logger.h"
-
-#include "vind/State.h"
 
 namespace vind {
 
 // -----------------------------------------------------------------------------
 
-Model::Model(const Geometry &,
-             const eckit::Configuration & config)
+static oops::interface::ModelMaker<Traits, ModelPersistence> makerPersistence_("persistence");
+
+// -----------------------------------------------------------------------------
+
+ModelPersistence::ModelPersistence(const Geometry &,
+                                   const eckit::Configuration & config)
   : timeResolution_(config.getString("tstep")) {
   oops::Log::trace() << classname() << "::Model" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
-Model::Model(const Model & other)
+ModelPersistence::ModelPersistence(const ModelPersistence & other)
   : timeResolution_(other.timeResolution_) {
   oops::Log::trace() << classname() << "::Model" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
-void Model::step(State & xx,
-                 const ModelAuxControl &) const {
+void ModelPersistence::step(State & xx,
+                            const ModelAuxControl & xxAux) const {
   oops::Log::trace() << classname() << "::step starting" << std::endl;
 
   xx.validTime() += timeResolution_;

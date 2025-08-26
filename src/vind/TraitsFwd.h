@@ -28,7 +28,6 @@ class Interpolator;
 class LinearVariableChange;
 class LocalizationMatrix;
 class Locations;
-class Model;
 class ModelAuxControl;
 class ModelAuxControlEstimator;
 class ModelAuxCovariance;
@@ -59,7 +58,6 @@ struct Traits {
 //  using LocalInterpolator = oops::AtlasInterpolator;  // TODO(Benjamin)
   using LocalizationMatrix = vind::LocalizationMatrix;
   using Locations = vind::Locations;
-  using Model = vind::Model;
   using ModelAuxControl = vind::ModelAuxControl;
   using ModelAuxControlEstimator = vind::ModelAuxControlEstimator;
   using ModelAuxCovariance = vind::ModelAuxCovariance;

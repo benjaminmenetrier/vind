@@ -110,6 +110,7 @@ testinput/glb_background_18.yaml
 testinput/glb_ensemble_06.yaml
 testinput/glb_ensemble_12.yaml
 testinput/glb_ensemble_18.yaml
+testinput/glb_forecast_persistence.yaml
 testinput/glb_getkf_nonlinear.yaml
 testinput/glb_letkf_linear.yaml
 testinput/glb_letkf_linear_4d.yaml
@@ -205,15 +206,24 @@ testinput/aq_4densvar_lt.yaml
 # ----------------------
 list( APPEND vind_testref
 
-# COMMON
-
 # GLOBAL
+testref/glb_3dvar.ref
+testref/glb_3densvar.ref
+testref/glb_4densvar.ref
+testref/glb_4densvar_parallel.ref
 testref/glb_background_06.ref
 testref/glb_background_12.ref
 testref/glb_background_18.ref
 testref/glb_ensemble_06.ref
 testref/glb_ensemble_12.ref
 testref/glb_ensemble_18.ref
+testref/glb_forecast_persistence.ref
+testref/glb_getkf_nonlinear.ref
+testref/glb_letkf_linear.ref
+testref/glb_letkf_linear_4d.ref
+testref/glb_letkf_nonlinear.ref
+testref/glb_letkf_nonlinear_4d.ref
+testref/glb_letkf_read_members.ref
 testref/glb_makeobs_06.ref
 testref/glb_makeobs_12.ref
 testref/glb_makeobs_18.ref
@@ -223,12 +233,22 @@ testref/glb_truth_12.ref
 testref/glb_truth_18.ref
 
 # REGIONAL
+testref/reg_3dvar.ref
+testref/reg_3densvar.ref
+testref/reg_4densvar.ref
+testref/reg_4densvar_parallel.ref
 testref/reg_background_06.ref
 testref/reg_background_12.ref
 testref/reg_background_18.ref
 testref/reg_ensemble_06.ref
 testref/reg_ensemble_12.ref
 testref/reg_ensemble_18.ref
+testref/reg_getkf_nonlinear.ref
+testref/reg_letkf_linear.ref
+testref/reg_letkf_linear_4d.ref
+testref/reg_letkf_nonlinear.ref
+testref/reg_letkf_nonlinear_4d.ref
+testref/reg_letkf_read_members.ref
 testref/reg_makeobs_06.ref
 testref/reg_makeobs_12.ref
 testref/reg_makeobs_18.ref
@@ -248,32 +268,10 @@ testref/genint_hofx3d_regular_lonlat.ref
 testref/genint_hofx3d_nonuni_lonlat.ref
 testref/genint_hofx3d_lambertCC.ref
 
-# GLOBAL
-testref/glb_3dvar.ref
-testref/glb_3densvar.ref
-testref/glb_4densvar.ref
-testref/glb_4densvar_parallel.ref
-testref/glb_getkf_nonlinear.ref
-testref/glb_letkf_linear.ref
-testref/glb_letkf_linear_4d.ref
-testref/glb_letkf_nonlinear.ref
-testref/glb_letkf_nonlinear_4d.ref
-testref/glb_letkf_read_members.ref
-
-# REGIONAL
-testref/reg_3dvar.ref
-testref/reg_3densvar.ref
-testref/reg_4densvar.ref
-testref/reg_4densvar_parallel.ref
-testref/reg_getkf_nonlinear.ref
-testref/reg_letkf_linear.ref
-testref/reg_letkf_linear_4d.ref
-testref/reg_letkf_nonlinear.ref
-testref/reg_letkf_nonlinear_4d.ref
-testref/reg_letkf_read_members.ref
 )
 
 list( APPEND monarch_testref
+
 # MONARCH REGIONAL
 testref/monarch_geometry_rotated.ref
 testref/monarch_state.ref
@@ -297,10 +295,12 @@ testref/monarch_3densvar.ref
 testref/monarch_3densvar_lt.ref
 testref/monarch_4densvar.ref
 testref/monarch_4densvar_lt.ref
+
 )
 
 list( APPEND aq_testref
-# MONARCH REGIONAL
+
+# AQ REGIONAL
 testref/aq_geometry.ref
 testref/aq_state.ref
 testref/aq_convertstate.ref
@@ -320,6 +320,7 @@ testref/aq_3densvar.ref
 testref/aq_3densvar_lt.ref
 testref/aq_4densvar.ref
 testref/aq_4densvar_lt.ref
+
 )
 
 # Link input configurations and output references
@@ -352,8 +353,8 @@ list( APPEND hh_list "06" "12" "18" )
 
 if( ENABLE_GENINT_TESTS )
     # GENINT tests
-    create_test( genint_geometry_regular_lonlat 6 geometry )
-    create_test( genint_geometry_lambertCC 6 geometry )
+    create_test( genint_geometry_regular_lonlat 6 test_geometry )
+    create_test( genint_geometry_lambertCC 6 test_geometry )
     create_test( genint_convertstate_regular_lonlat 6 convertstate )
     create_test( genint_convertstate_nonuni_lonlat 6 convertstate )
     create_test( genint_convertstate_varcha_regular_lonlat 6 convertstate )
@@ -368,13 +369,13 @@ endif()
 
 if( ENABLE_MONARCH_TESTS )
     # MONARCH BSC tests
-    create_test( monarch_geometry_rotated 8 geometry )
-    create_test( monarch_state 8 state )
+    create_test( monarch_geometry_rotated 8 test_geometry )
+    create_test( monarch_state 8 test_state )
     create_test( monarch_convertstate 8 convertstate )
     create_test( monarch_convertstate_levsel 8 convertstate )
     create_test( monarch_convertstate_levsel_scaling 8 convertstate )
     create_test( monarch_convertstate_levsel_logtransf 8 convertstate )
-    create_test( monarch_increment 8 increment )
+    create_test( monarch_increment 8 test_increment )
     create_test( monarch_ens_mean_variance 8 ens_mean_variance )
 
     if( ENABLE_OBS )
@@ -403,11 +404,11 @@ endif()
 
 if( ENABLE_AQ_TESTS )
     # AQ BSC tests
-    create_test( aq_geometry 8 geometry )
-    create_test( aq_state 8 state )
+    create_test( aq_geometry 8 test_geometry )
+    create_test( aq_state 8 test_state )
     create_test( aq_convertstate 8 convertstate )
     create_test( aq_convertstate_logtransf 8 convertstate )
-    create_test( aq_increment 8 increment )
+    create_test( aq_increment 8 test_increment )
     create_test( aq_ens_mean_variance 8 ens_mean_variance )
     
     if( ENABLE_OBS )
@@ -436,6 +437,7 @@ endif()
 foreach( mpi ${mpi_list} )
     # GLOBAL and REGIONAL tests
     foreach( domain ${domain_list} )
+        create_test( ${domain}_forecast_persistence ${mpi} forecast )
         create_test( ${domain}_stddev ${mpi} convertstate )
 
         foreach( hh ${hh_list} )
@@ -466,26 +468,4 @@ foreach( mpi ${mpi_list} )
             create_test( ${domain}_letkf_read_members ${mpi} letkf )
          endif()
     endforeach()
-
-    if( ENABLE_BGOS_TESTS )
-        # BGOS tests
-#        create_test( bgos_truth ${mpi} convertstate )
-#        create_test( bgos_stddev ${mpi} convertstate )
-
-        if( ENABLE_SABER )
-#            create_test( bgos_background ${mpi} error_covariance_toolbox )
-#            create_test( bgos_ensemble ${mpi} error_covariance_toolbox )
-        endif()
-
-        if( ENABLE_OBS )
-#            create_test( bgos_makeobs ${mpi} makeobs_patched )
-        endif()
-
-        if( ENABLE_SABER AND ENABLE_OBS )
-#            create_test( bgos_linear_ensemble ${mpi} bgos )
-#            create_test( bgos_linear_randomized ${mpi} bgos )
-#            create_test( bgos_nonlinear_ensemble ${mpi} bgos )
-#            create_test( bgos_nonlinear_randomized ${mpi} bgos )
-        endif()
-    endif()
 endforeach()

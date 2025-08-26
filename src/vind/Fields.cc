@@ -27,6 +27,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/mpi/Comm.h"
 
+#include "oops/util/ConfigFunctions.h"
 #include "oops/util/FieldSetHelpers.h"
 #include "oops/util/FieldSetOperations.h"
 #include "oops/util/FloatCompare.h"
@@ -982,7 +983,13 @@ void Fields::write(const eckit::Configuration & config) const {
     // Check date if present
     if (config.has("date")) {
       const util::DateTime dateTime(config.getString("date"));
-      ASSERT(dateTime == time_);
+      if (config.has("range pattern")) {
+        const util::Duration range(time_-dateTime);
+        const std::string rangePattern = config.getString("range pattern");
+        util::seekAndReplace(updatedConfig, rangePattern, range.toString());
+      } else {
+        ASSERT(dateTime == time_);
+      }
     }
   }
 

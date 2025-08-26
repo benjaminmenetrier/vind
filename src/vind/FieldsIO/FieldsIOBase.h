@@ -30,7 +30,7 @@ class FieldsIOBase : private eckit::NonCopyable {
   static const std::string classname()
     {return "vind::FieldsIOBase";}
 
-  // Constructor/destructor
+  // Constructor
   explicit FieldsIOBase(const std::string & ioFormat)
     : ioFormat_(ioFormat) {}
 

@@ -108,6 +108,10 @@ if( OPENMP )
     find_package( OpenMP COMPONENTS CXX Fortran )
 endif()
 
+
+find_package( pybind11 )
+
+
 # MPI
 ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 

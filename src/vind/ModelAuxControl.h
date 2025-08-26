@@ -15,6 +15,8 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
+#include "vind/Geometry.h"
+
 namespace eckit {
   class Configuration;
 }
@@ -33,10 +35,6 @@ class ModelAuxControl : public util::Printable,
     {return "vind::ModelAuxControl";}
 
 // Constructors/destructor
-  ModelAuxControl(const Geometry &,
-                  const Model &,
-                  const eckit::Configuration &)
-    {}
   ModelAuxControl(const Geometry &,
                   const eckit::Configuration &)
     {}

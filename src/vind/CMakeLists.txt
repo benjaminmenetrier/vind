@@ -30,8 +30,6 @@ Interpolation.h
 LinearVariableChange.cc
 LinearVariableChange.h
 LinearVariableChangeParameters.h
-Model.cc
-Model.h
 ModelAuxControl.h
 ModelAuxCovariance.h
 ModelAuxIncrement.h
@@ -59,6 +57,9 @@ FieldsIO/FieldsIODefault.cc
 FieldsIO/FieldsIODefault.h
 FieldsIO/FieldsIOGmsh.cc
 FieldsIO/FieldsIOGmsh.h
+
+Model/ModelPersistence.cc
+Model/ModelPersistence.h
 
 )
 

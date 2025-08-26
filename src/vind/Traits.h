@@ -14,7 +14,6 @@
 #include "vind/GeometryIterator.h"
 #include "vind/Increment.h"
 #include "vind/LinearVariableChange.h"
-#include "vind/Model.h"
 #include "vind/ModelAuxControl.h"
 #include "vind/ModelAuxCovariance.h"
 #include "vind/ModelAuxIncrement.h"

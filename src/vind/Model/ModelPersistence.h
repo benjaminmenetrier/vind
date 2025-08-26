@@ -9,16 +9,16 @@
 #include <ostream>
 #include <string>
 
+#include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/NonCopyable.h"
 
+#include "oops/interface/ModelBase.h"
 #include "oops/util/Duration.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-namespace eckit {
-  class Configuration;
-}
+#include "vind/Traits.h"
 
 namespace vind {
   class Geometry;
@@ -27,27 +27,25 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  Model class
+///  ModelPersistence class
 
-class Model: public util::Printable,
-             private eckit::NonCopyable,
-             private util::ObjectCounter<Model> {
+class ModelPersistence: public oops::interface::ModelBase<Traits>,
+                        private util::ObjectCounter<ModelPersistence> {
  public:
   static const std::string classname()
-    {return "vind::Model";}
+    {return "vind::ModelPersistence";}
 
 /// OOPS interface
 
 // Constructors/destructor
-  Model(const Geometry &,
-        const eckit::Configuration &);
-  Model(const Model &);
-  ~Model()
+  ModelPersistence(const Geometry &,
+                   const eckit::Configuration &);
+  ModelPersistence(const ModelPersistence &);
+  ~ModelPersistence()
     {}
 
 // Prepare model integration
-  void initialize(State &,
-                  const ModelAuxControl &) const
+  void initialize(State &) const
     {}
 
 // Model integration
