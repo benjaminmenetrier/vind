@@ -1,0 +1,35 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 71
+    ny: 53
+    dx: 2.5e3
+    dy: 2.5e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables:
+    - air_temperature
+    levels: 2
+  halo: 1
+initial condition:
+  date: 2010-01-01T06:00:00Z
+  state variables:
+  - air_temperature
+model:
+  name: persistence
+  tstep: PT1H
+forecast length: PT6H
+output:
+  filepath: testdata/reg_forecast_persistence___RANGE__
+  range pattern: __RANGE__
+prints:
+  frequency: PT3H
+test:
+  reference filename: testref/reg_forecast_persistence.ref

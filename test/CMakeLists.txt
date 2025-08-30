@@ -133,6 +133,7 @@ testinput/reg_4densvar_parallel.yaml
 testinput/reg_background_06.yaml
 testinput/reg_background_12.yaml
 testinput/reg_background_18.yaml
+testinput/reg_forecast_persistence.yaml
 testinput/reg_ensemble_06.yaml
 testinput/reg_ensemble_12.yaml
 testinput/reg_ensemble_18.yaml
@@ -243,6 +244,7 @@ testref/reg_background_18.ref
 testref/reg_ensemble_06.ref
 testref/reg_ensemble_12.ref
 testref/reg_ensemble_18.ref
+testref/reg_forecast_persistence.ref
 testref/reg_getkf_nonlinear.ref
 testref/reg_letkf_linear.ref
 testref/reg_letkf_linear_4d.ref
