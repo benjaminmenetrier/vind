@@ -12,26 +12,26 @@ include( ecbuild_bundle )
 set( ECBUILD_DEFAULT_BUILD_TYPE Release )
 
 # Options
-set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
-set( ENABLE_OMP ON CACHE BOOL "Compile with OpenMP" )
-set( ENABLE_CUDA OFF CACHE BOOL "Compile with CUDA" )
-set( ENABLE_TRANSI ON CACHE BOOL "Compile TransI C-interface to trans" )
-set( ENABLE_ETRANS ON CACHE BOOL "Include Limited-Area-Model Transforms" )
-set( ENABLE_IODA_DATA ON CACHE BOOL "Obtain ioda test data from ioda-data repository (vs tarball)" )
-set( ENABLE_UFO_DATA ON CACHE BOOL "Obtain ufo test data from ufo-data repository (vs tarball)" )
-set( BUILD_IODA_CONVERTERS OFF CACHE BOOL "Build IODA Converters" )
+option( ENABLE_MPI "Compile with MPI" ON )
+option( ENABLE_OMP "Compile with OpenMP" ON )
+option( ENABLE_CUDA "Compile with CUDA" OFF )
+option( ENABLE_TRANSI "Compile TransI C-interface to trans" ON )
+option( ENABLE_ETRANS "Include Limited-Area-Model Transforms" ON )
+option( ENABLE_IODA_DATA "Obtain ioda test data from ioda-data repository (vs tarball)" ON )
+option( ENABLE_UFO_DATA "Obtain ufo test data from ufo-data repository (vs tarball)" ON )
+option( BUILD_IODA_CONVERTERS "Build IODA Converters" OFF )
 
 # What to compile?
-set( ENABLE_SABER ON )
-set( ENABLE_OBS ON )
-set( ENABLE_CRTM OFF )
+option( ENABLE_SABER "Compile SABER" ON )
+option( ENABLE_OBS "Compile IODA/UFO" ON )
+option( ENABLE_CRTM "Compile CRTM" OFF )
 
 # What tests to run?
-set( ENABLE_GENINT_TESTS ON )
-set( ENABLE_MONARCH_TESTS OFF )
-set( ENABLE_AQ_TESTS OFF )
-set( ENABLE_GLB_TESTS ON )
-set( ENABLE_REG_TESTS ON )
+option( ENABLE_GENINT_TESTS "Run genint tests" ON )
+option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
+option( ENABLE_AQ_TESTS "Run aq tests" OFF )
+option( ENABLE_GLB_TESTS "Run global tests" ON )
+option( ENABLE_REG_TESTS "Run regional tests" ON )
 
 # Setup
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/lib )

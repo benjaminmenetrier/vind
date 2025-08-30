@@ -1,6 +1,5 @@
 # Install scripts
 list( APPEND tool_files
-    compare.py
     cpplint.py
 )
 

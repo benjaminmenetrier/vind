@@ -1,6 +1,6 @@
 State: 
 Valid time: 2010-01-01T12:00:00Z
-Quench geometry grid:
+VIND geometry grid:
 - name: structured
 - size: 3763
 Regional grid detected
