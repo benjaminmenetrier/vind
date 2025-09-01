@@ -1,0 +1,125 @@
+Input Dirac increment:
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000000e+00
+    + mean   = 2.1025851284153869e-06
+    + stddev = 1.4500293543297453e-03
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000000e+00
+    + mean   = 2.1025851284153869e-06
+    + stddev = 1.4500293543300844e-03
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+Covariance(ensemble) * Increment:
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    = -1.3431965782569968e-18
+    + max    = 1.3827655784939261e-18
+    + mean   = 1.8315730121487023e-22
+    + stddev = 1.2620465209816259e-20
+  - carbon_monoxyde (5 levels):
+    + min    = -8.3961156851340443e-19
+    + max    = 3.2944125102606083e-18
+    + mean   = 3.3351363147397903e-22
+    + stddev = 1.7367705911002824e-20
+  - nitrogen_dioxide (5 levels):
+    + min    = -4.3229126392259147e-19
+    + max    = 8.0143147165078005e-19
+    + mean   = 2.3968985234692483e-23
+    + stddev = 4.1712246826629645e-21
+  - sulfur_dioxide (5 levels):
+    + min    = -2.1176450736799009e-20
+    + max    = 9.5481012444433879e-20
+    + mean   = 5.6514002251291870e-24
+    + stddev = 3.9620970313327189e-22
+  - pm10 (5 levels):
+    + min    = -4.4189904895759883e-18
+    + max    = 5.7028506347089182e-18
+    + mean   = 1.7611744069540789e-22
+    + stddev = 3.7587199723746861e-20
+  - pm2p5 (5 levels):
+    + min    = -2.5690594885855149e-19
+    + max    = 1.1032715599132903e-18
+    + mean   = 9.6379864606621089e-23
+    + stddev = 6.3299063936394027e-21
+
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+    FastLAM interpolation accuracy test passed
+    FastLAM interpolation adjoint test passed
+    FastLAM redToRows test passed
+    FastLAM rowsToCols test passed
+Localization(ensemble_localization) diagnostics:
+- Localization at zero separation:
+  + Value for variable carbon_monoxyde, subwindow 0, at (longitude, latitude, vertical index) point (8.00801, 38.37838, 5): 1.0000000000000002e+00
+  + Value for variable pm10, subwindow 0, at (longitude, latitude, vertical index) point (18.00000, 60.38287, 5): 1.0000000000000002e+00
+Localization(ensemble) * Increment:
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [95121]
+  Fields:
+  - ozone (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 5.0000000000000011e-01
+    + mean   = 1.1452097890212967e-04
+    + stddev = 4.4266964960631991e-03
+  - carbon_monoxyde (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 2.4657098388472932e-04
+    + stddev = 9.2230999060009342e-03
+  - nitrogen_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 5.0000000000000011e-01
+    + mean   = 1.6403973077060456e-04
+    + stddev = 5.8235578087672572e-03
+  - sulfur_dioxide (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 5.0000000000000011e-01
+    + mean   = 1.6403973077060461e-04
+    + stddev = 5.8235578087672572e-03
+  - pm10 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 1.0000000000000002e+00
+    + mean   = 2.4554820842708435e-04
+    + stddev = 9.1933133257750335e-03
+  - pm2p5 (5 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 5.0000000000000011e-01
+    + mean   = 1.6403973077060461e-04
+    + stddev = 5.8235578087672572e-03
+

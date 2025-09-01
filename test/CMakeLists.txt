@@ -171,6 +171,7 @@ testinput/monarch_dirac_no_loc_3d_lt.yaml
 testinput/monarch_dirac_no_loc_4d_id.yaml
 testinput/monarch_dirac_no_loc_4d.yaml
 testinput/monarch_dirac_3d.yaml
+testinput/monarch_dirac_3d_FL.yaml
 testinput/monarch_dirac_4d.yaml
 testinput/monarch_dirac_4d_FL.yaml
 testinput/monarch_3densvar.yaml
@@ -291,6 +292,7 @@ testref/monarch_dirac_no_loc_3d_lt.ref
 testref/monarch_dirac_no_loc_4d_id.ref
 testref/monarch_dirac_no_loc_4d.ref
 testref/monarch_dirac_3d.ref
+testref/monarch_dirac_3d_FL.ref
 testref/monarch_dirac_4d.ref
 testref/monarch_dirac_4d_FL.ref
 testref/monarch_3densvar.ref
@@ -392,6 +394,7 @@ if( ENABLE_MONARCH_TESTS )
         create_test( monarch_dirac_no_loc_4d_id 12 error_covariance_toolbox )
         create_test( monarch_dirac_no_loc_4d 12 error_covariance_toolbox )
         create_test( monarch_dirac_3d 8 error_covariance_toolbox )
+        create_test( monarch_dirac_3d_FL 8 error_covariance_toolbox )
         create_test( monarch_dirac_4d 12 error_covariance_toolbox )
         create_test( monarch_dirac_4d_FL 12 error_covariance_toolbox )
     endif()

@@ -80,27 +80,24 @@ background error:
   localization:
     localization method: SABER
     saber central block:
-      saber block name: BUMP_NICAS
+      saber block name: FastLAM
       calibration:
-        nicas:
-          resolution: 5.0
-          explicit length-scales: true
-          horizontal length-scale:
-          - groups: [common]
-            value: &common_length_scale 200.0e3
-          vertical length-scale:
-          - groups: [common]
-            value: 3.0
-          default off-diagonal weight: 0.5
-          specific off-diagonal weights:
-          - variables pair: [ozone, carbon_monoxyde]
-            weight: 0.2
-        general:
-          deprecated hull: false
-          universe length-scale: *common_length_scale
-        drivers:
-          multivariate strategy: duplicated and weighted
-          compute nicas: true
+        multivariate strategy: duplicated and weighted
+        groups:
+        - group name: var3d
+          variables: *chemvars
+        horizontal length-scale:
+        - group: var3d
+          value: 200.0e3
+        vertical length-scale:
+        - group: var3d
+          value: 3.0
+        default off-diagonal weight: 0.5
+        specific off-diagonal weights:
+        - variables pair: [ozone, carbon_monoxyde]
+          weight: 0.2
+        number of layers: 3
+        resolution: 8
 
 dirac:
   date: 2022-07-01T12:00:00Z
@@ -117,10 +114,10 @@ background:
 
   
 output dirac:
-  filepath: testdata/monarch_D3reg_%id%.nc
+  filepath: testdata/monarch_D3reg_FL_%id%.nc
   formats: [bsc]
   date: 2022-07-01T12:00:00Z
 
 test:
-  reference filename: testref/monarch_dirac_3d.ref
-  test output filename: testdata/monarch_dirac_3d.log
+  reference filename: testref/monarch_dirac_3d_FL.ref
+  test output filename: testdata/monarch_dirac_3d_FL.log

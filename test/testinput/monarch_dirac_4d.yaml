@@ -110,8 +110,7 @@ background error:
       saber block name: BUMP_NICAS
       calibration:
         nicas:
-          resolution: 8.0
-          smooth interpolation factor: 0.8
+          resolution: 5.0
           explicit length-scales: true
           horizontal length-scale:
           - groups: [common]
