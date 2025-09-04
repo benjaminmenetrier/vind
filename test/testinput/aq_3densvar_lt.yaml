@@ -33,6 +33,7 @@ cost function:
   time window:
     begin: 2022-07-01T09:00:00Z
     length: PT6H
+    bound to include: end
   analysis variables: *chemvars
   jb evaluation: false
   geometry: &geom

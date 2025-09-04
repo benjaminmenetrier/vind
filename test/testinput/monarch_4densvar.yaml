@@ -55,6 +55,7 @@ cost function:
   time window:
     begin: 2022-07-01T09:00:00Z
     length: PT5H
+    bound to include: end
   subwindow: PT1H
   analysis variables: *chemvars
   geometry: &geom

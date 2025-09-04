@@ -26,6 +26,7 @@ _pm10_ObsErrCheckMax:
 time window:
   begin: 2022-07-01T09:00:00Z
   length: PT6H
+  bound to include: end
 geometry: &geom
   function space: StructuredColumns
   grid:
