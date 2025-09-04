@@ -27,9 +27,12 @@ Increment.cc
 Increment.h
 Interpolation.cc
 Interpolation.h
+LinearModel.h
 LinearVariableChange.cc
 LinearVariableChange.h
 LinearVariableChangeParameters.h
+Model.cc
+Model.h
 ModelAuxControl.h
 ModelAuxCovariance.h
 ModelAuxIncrement.h
@@ -37,7 +40,6 @@ ModelData.h
 State.cc
 State.h
 Traits.h
-TraitsFwd.h
 Utilities.cc
 Utilities.h
 VaderCookbook.h
@@ -58,6 +60,8 @@ FieldsIO/FieldsIODefault.h
 FieldsIO/FieldsIOGmsh.cc
 FieldsIO/FieldsIOGmsh.h
 
+Model/ModelBase.cc
+Model/ModelBase.h
 Model/ModelPersistence.cc
 Model/ModelPersistence.h
 

@@ -530,7 +530,7 @@ void Fields::schur_product_with(const Fields & fld2) {
 
 // -----------------------------------------------------------------------------
 
-void Fields::random() {
+void Fields::random(const int & seed) {
   oops::Log::trace() << classname() << "::random starting" << std::endl;
 
   for (size_t groupIndex = 0; groupIndex < geom_->groups(); ++groupIndex) {
@@ -606,7 +606,7 @@ void Fields::random() {
 
     if (geom_->getComm().rank() == 0) {
       // Random vector
-      util::NormalDistribution<double> rand_vec(n, 0.0, 1.0, 1);
+      util::NormalDistribution<double> rand_vec(n, 0.0, 1.0, seed);
 
       // Copy random values
       n = 0;

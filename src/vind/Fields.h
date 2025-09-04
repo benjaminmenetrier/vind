@@ -73,7 +73,9 @@ class Fields : public util::Printable,
   double dot_product_with(const Fields &) const;
   void schur_product_with(const Fields &);
   void dirac(const eckit::Configuration &);
-  void random();
+  void random(const int &);
+  void random()
+    {random(1);}
   void sqrt();
   void diff(const Fields &,
             const Fields &);

@@ -45,9 +45,9 @@ class State : public util::Printable,
         const util::DateTime &);
   State(const Geometry &,
         const eckit::Configuration &);
-  State(const Geometry & resol,
+  State(const Geometry & geom,
         const State & other)
-    : fields_(new Fields(*other.fields_, resol)) {}
+    : fields_(new Fields(*other.fields_, geom)) {}
   State(const oops::Variables & vars,
         const State & other)
     : fields_(new Fields(*other.fields_)) {}

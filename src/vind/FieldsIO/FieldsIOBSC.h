@@ -21,6 +21,7 @@ namespace vind {
   class Geometry;
 
 // -----------------------------------------------------------------------------
+///  FieldsIOBSC class
 
 class FieldsIOBSC : public FieldsIOBase {
  public:

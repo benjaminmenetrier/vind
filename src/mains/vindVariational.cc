@@ -5,7 +5,6 @@
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-#include "oops/generic/instantiateModelFactory.h"
 #include "oops/runs/Run.h"
 #include "oops/runs/Variational.h"
 
@@ -22,7 +21,6 @@ int main(int argc,  char ** argv) {
   saber::instantiateCovarFactory<vind::Traits>();
   ufo::instantiateObsErrorFactory();
   ufo::instantiateObsFilterFactory();
-  oops::instantiateModelFactory<vind::Traits>();
   oops::Variational<vind::Traits, ufo::ObsTraits> var;
   return run.execute(var);
 }

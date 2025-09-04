@@ -24,6 +24,7 @@ namespace vind {
   class Geometry;
 
 // -----------------------------------------------------------------------------
+///  FieldsIOArome class
 
 class FieldsIOArome : public FieldsIOBase {
  public:

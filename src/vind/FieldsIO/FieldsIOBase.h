@@ -24,6 +24,7 @@ namespace vind {
   class Geometry;
 
 // -----------------------------------------------------------------------------
+///  FieldsIOBase class
 
 class FieldsIOBase : private eckit::NonCopyable {
  public:
@@ -52,10 +53,7 @@ class FieldsIOBase : private eckit::NonCopyable {
 };
 
 // -----------------------------------------------------------------------------
-
-class FieldsIOFactory;
-
-// -----------------------------------------------------------------------------
+///  FieldsIOFactory class
 
 class FieldsIOFactory {
  public:
@@ -79,6 +77,7 @@ class FieldsIOFactory {
 };
 
 // -----------------------------------------------------------------------------
+///  FieldsIOMaker class
 
 template<class T>
 class FieldsIOMaker : public FieldsIOFactory {

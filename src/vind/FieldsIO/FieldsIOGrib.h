@@ -19,6 +19,7 @@ namespace vind {
   class Geometry;
 
 // -----------------------------------------------------------------------------
+///  FieldsIOGrib class
 
 class FieldsIOGrib : public FieldsIOBase {
  public:

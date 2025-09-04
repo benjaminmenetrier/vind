@@ -88,17 +88,6 @@ file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
 # ------------------
 list( APPEND vind_testinput
 
-# GENINT
-testinput/genint_convertstate_nonuni_lonlat.yaml
-testinput/genint_convertstate_regular_lonlat.yaml
-testinput/genint_convertstate_varcha_regular_lonlat.yaml
-testinput/genint_convertstate_varcha_nonuni_lonlat.yaml
-testinput/genint_geometry_lambertCC.yaml
-testinput/genint_geometry_regular_lonlat.yaml
-testinput/genint_hofx3d_lambertCC.yaml
-testinput/genint_hofx3d_nonuni_lonlat.yaml
-testinput/genint_hofx3d_regular_lonlat.yaml
-
 # GLOBAL
 testinput/glb_3dvar.yaml
 testinput/glb_3densvar.yaml
@@ -110,7 +99,6 @@ testinput/glb_background_18.yaml
 testinput/glb_ensemble_06.yaml
 testinput/glb_ensemble_12.yaml
 testinput/glb_ensemble_18.yaml
-testinput/glb_forecast_persistence.yaml
 testinput/glb_getkf_nonlinear.yaml
 testinput/glb_letkf_linear.yaml
 testinput/glb_letkf_linear_4d.yaml
@@ -133,7 +121,6 @@ testinput/reg_4densvar_parallel.yaml
 testinput/reg_background_06.yaml
 testinput/reg_background_12.yaml
 testinput/reg_background_18.yaml
-testinput/reg_forecast_persistence.yaml
 testinput/reg_ensemble_06.yaml
 testinput/reg_ensemble_12.yaml
 testinput/reg_ensemble_18.yaml
@@ -150,9 +137,26 @@ testinput/reg_stddev.yaml
 testinput/reg_truth_06.yaml
 testinput/reg_truth_12.yaml
 testinput/reg_truth_18.yaml
+
+# PERSISTENCE
+testinput/per_truth.yaml
+testinput/per_forecast.yaml
+
+# GENINT
+testinput/genint_convertstate_nonuni_lonlat.yaml
+testinput/genint_convertstate_regular_lonlat.yaml
+testinput/genint_convertstate_varcha_regular_lonlat.yaml
+testinput/genint_convertstate_varcha_nonuni_lonlat.yaml
+testinput/genint_geometry_lambertCC.yaml
+testinput/genint_geometry_regular_lonlat.yaml
+testinput/genint_hofx3d_lambertCC.yaml
+testinput/genint_hofx3d_nonuni_lonlat.yaml
+testinput/genint_hofx3d_regular_lonlat.yaml
+
 )
 
 list( APPEND monarch_testinput
+
 # MONARCH REGIONAL
 testinput/monarch_geometry_rotated.yaml
 testinput/monarch_state.yaml
@@ -178,10 +182,12 @@ testinput/monarch_3densvar.yaml
 testinput/monarch_3densvar_lt.yaml
 testinput/monarch_4densvar.yaml
 testinput/monarch_4densvar_lt.yaml
+
 )
 
 list( APPEND aq_testinput
-# MONARCH REGIONAL
+
+# AQ REGIONAL
 testinput/aq_geometry.yaml
 testinput/aq_state.yaml
 testinput/aq_convertstate.yaml
@@ -202,6 +208,7 @@ testinput/aq_3densvar.yaml
 testinput/aq_3densvar_lt.yaml
 testinput/aq_4densvar.yaml
 testinput/aq_4densvar_lt.yaml
+
 )
 
 # Test output references
@@ -219,7 +226,6 @@ testref/glb_background_18.ref
 testref/glb_ensemble_06.ref
 testref/glb_ensemble_12.ref
 testref/glb_ensemble_18.ref
-testref/glb_forecast_persistence.ref
 testref/glb_getkf_nonlinear.ref
 testref/glb_letkf_linear.ref
 testref/glb_letkf_linear_4d.ref
@@ -245,7 +251,6 @@ testref/reg_background_18.ref
 testref/reg_ensemble_06.ref
 testref/reg_ensemble_12.ref
 testref/reg_ensemble_18.ref
-testref/reg_forecast_persistence.ref
 testref/reg_getkf_nonlinear.ref
 testref/reg_letkf_linear.ref
 testref/reg_letkf_linear_4d.ref
@@ -259,6 +264,10 @@ testref/reg_stddev.ref
 testref/reg_truth_06.ref
 testref/reg_truth_12.ref
 testref/reg_truth_18.ref
+
+# PERSISTENCE
+testref/per_truth.ref
+testref/per_forecast.ref
 
 # GENINT
 testref/genint_geometry_regular_lonlat.ref
@@ -355,6 +364,47 @@ list( APPEND hh_list "06" "12" "18" )
 # Tests
 # -----
 
+foreach( mpi ${mpi_list} )
+    # GLOBAL and REGIONAL tests
+    foreach( domain ${domain_list} )
+        create_test( ${domain}_stddev ${mpi} convertstate )
+
+        foreach( hh ${hh_list} )
+            create_test( ${domain}_truth_${hh} ${mpi} convertstate )
+
+            if( ENABLE_SABER )
+                create_test( ${domain}_background_${hh} ${mpi} error_covariance_toolbox )
+                create_test( ${domain}_ensemble_${hh} ${mpi} error_covariance_toolbox )
+            endif()
+
+            if( ENABLE_OBS )
+                create_test( ${domain}_makeobs_${hh} ${mpi} hofx3d )
+            endif()
+        endforeach()
+
+        if( ENABLE_SABER AND ENABLE_OBS )
+            create_test( ${domain}_3dvar ${mpi} variational )
+            create_test( ${domain}_3densvar ${mpi} variational )
+            create_test( ${domain}_4densvar ${mpi} variational )
+
+            math( EXPR mpi_par "${mpi}*3" )
+            create_test( ${domain}_4densvar_parallel ${mpi_par} variational )
+            create_test( ${domain}_getkf_nonlinear ${mpi} letkf )
+            create_test( ${domain}_letkf_linear ${mpi} letkf )
+            create_test( ${domain}_letkf_linear_4d ${mpi} letkf )
+            create_test( ${domain}_letkf_nonlinear ${mpi} letkf )
+            create_test( ${domain}_letkf_nonlinear_4d ${mpi} letkf )
+            create_test( ${domain}_letkf_read_members ${mpi} letkf )
+         endif()
+    endforeach()
+endforeach()
+
+# PERSISTENCE tests
+foreach( mpi ${mpi_list} )
+    create_test( per_truth ${mpi} forecast )
+    create_test( per_forecast ${mpi} forecast )
+endforeach()
+
 if( ENABLE_GENINT_TESTS )
     # GENINT tests
     create_test( genint_geometry_regular_lonlat 6 test_geometry )
@@ -438,39 +488,3 @@ if( ENABLE_AQ_TESTS )
         create_test( aq_4densvar_lt 12 variational )
     endif()
 endif()
-
-foreach( mpi ${mpi_list} )
-    # GLOBAL and REGIONAL tests
-    foreach( domain ${domain_list} )
-        create_test( ${domain}_forecast_persistence ${mpi} forecast )
-        create_test( ${domain}_stddev ${mpi} convertstate )
-
-        foreach( hh ${hh_list} )
-            create_test( ${domain}_truth_${hh} ${mpi} convertstate )
-
-            if( ENABLE_SABER )
-                create_test( ${domain}_background_${hh} ${mpi} error_covariance_toolbox )
-                create_test( ${domain}_ensemble_${hh} ${mpi} error_covariance_toolbox )
-            endif()
-
-            if( ENABLE_OBS )
-                create_test( ${domain}_makeobs_${hh} ${mpi} hofx3d )
-            endif()
-        endforeach()
-
-        if( ENABLE_SABER AND ENABLE_OBS )
-            create_test( ${domain}_3dvar ${mpi} variational )
-            create_test( ${domain}_3densvar ${mpi} variational )
-            create_test( ${domain}_4densvar ${mpi} variational )
-
-            math( EXPR mpi_par "${mpi}*3" )
-            create_test( ${domain}_4densvar_parallel ${mpi_par} variational )
-            create_test( ${domain}_getkf_nonlinear ${mpi} letkf )
-            create_test( ${domain}_letkf_linear ${mpi} letkf )
-            create_test( ${domain}_letkf_linear_4d ${mpi} letkf )
-            create_test( ${domain}_letkf_nonlinear ${mpi} letkf )
-            create_test( ${domain}_letkf_nonlinear_4d ${mpi} letkf )
-            create_test( ${domain}_letkf_read_members ${mpi} letkf )
-         endif()
-    endforeach()
-endforeach()

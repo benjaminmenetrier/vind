@@ -17,9 +17,9 @@ model:
   tstep: PT1H
 forecast length: PT6H
 output:
-  filepath: testdata/glb_forecast_persistence___RANGE__
+  filepath: testdata/per_truth___RANGE__
   range pattern: __RANGE__
 prints:
   frequency: PT3H
 test:
-  reference filename: testref/glb_forecast_persistence.ref
+  reference filename: testref/per_truth.ref
