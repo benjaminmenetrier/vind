@@ -53,6 +53,48 @@ Geometry::Geometry(const eckit::Configuration & config,
   halo_ = params.halo.value();
   gridType_ = params.grid.value().getString("type", "no_type");
 
+  // Deal with poles for structured grids
+  if (gridType_ == "structured") {
+    // Get structured function space and grid
+    const atlas::functionspace::StructuredColumns fs(functionSpace_);
+    const atlas::StructuredGrid & grid = fs.grid();
+
+    // Check whether the grid has duplicated points at the poles
+    bool duplicated = false;
+    int j = 0;
+    if (grid.nx(j) > 1) {
+      double lonlatPoint[] = {0, 0};
+      grid.lonlat(0, j, lonlatPoint);
+      double latRef = lonlatPoint[1];
+      for (size_t i = 1; i < grid.nx(j); ++i) {
+        grid.lonlat(i, j, lonlatPoint);
+        duplicated = duplicated || (lonlatPoint[1] == latRef);
+      }
+    }
+    j = grid.ny()-1;
+    if (grid.nx(j) > 1) {
+      double lonlatPoint[] = {0, 0};
+      grid.lonlat(0, j, lonlatPoint);
+      double latRef = lonlatPoint[1];
+      for (size_t i = 1; i < grid.nx(j); ++i) {
+        grid.lonlat(i, j, lonlatPoint);
+        duplicated = duplicated || (lonlatPoint[1] == latRef);
+      }
+    }
+
+    // Only keep the first of duplicated points in the owned mask
+    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
+    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+    auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask.field("owned"));
+    for (int jnode = 0; jnode < fs.size(); ++jnode) {
+      int i = view_i(jnode)-1;
+      int j = view_j(jnode)-1;
+      if (((j == 0) || (j == grid.ny()-1)) && (i > 0)) {
+        ownedView(jnode, 0) = 0;
+      }
+    }
+  }
+
   // Setup geometry fields
   fields_ = atlas::FieldSet();
 

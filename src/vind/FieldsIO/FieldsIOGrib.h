@@ -16,7 +16,7 @@
 #include "vind/FieldsIO/FieldsIOBase.h"
 
 namespace vind {
-  class Geometry;
+  class Fields;
 
 // -----------------------------------------------------------------------------
 ///  FieldsIOGrib class
@@ -32,10 +32,9 @@ class FieldsIOGrib : public FieldsIOBase {
   ~FieldsIOGrib() = default;
 
   // Read
-  void read(const Geometry &,
-            const oops::Variables &,
+  void read(const oops::Variables &,
             const eckit::Configuration &,
-            atlas::FieldSet &) const override;
+            Fields &) const override;
 };
 
 // -----------------------------------------------------------------------------

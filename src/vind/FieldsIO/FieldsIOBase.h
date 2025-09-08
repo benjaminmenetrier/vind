@@ -21,7 +21,7 @@
 #include "oops/base/Variables.h"
 
 namespace vind {
-  class Geometry;
+  class Fields;
 
 // -----------------------------------------------------------------------------
 ///  FieldsIOBase class
@@ -36,16 +36,14 @@ class FieldsIOBase : private eckit::NonCopyable {
     : ioFormat_(ioFormat) {}
 
   // Read
-  virtual void read(const Geometry &,
-                    const oops::Variables &,
+  virtual void read(const oops::Variables &,
                     const eckit::Configuration &,
-                    atlas::FieldSet &) const
+                    Fields &) const
     {throw eckit::Exception("read not implemented for this format", Here());}
 
   // Write
-  virtual void write(const Geometry &,
-                     const eckit::Configuration &,
-                     const atlas::FieldSet &) const
+  virtual void write(const eckit::Configuration &,
+                     const Fields &) const
     {throw eckit::Exception("read not implemented for this format", Here());}
 
  protected:

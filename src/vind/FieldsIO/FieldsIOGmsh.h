@@ -18,7 +18,7 @@
 #include "vind/FieldsIO/FieldsIOBase.h"
 
 namespace vind {
-  class Geometry;
+  class Fields;
 
 // -----------------------------------------------------------------------------
 ///  FieldsIOGmsh class
@@ -34,9 +34,8 @@ class FieldsIOGmsh : public FieldsIOBase {
   ~FieldsIOGmsh() = default;
 
   // Write
-  void write(const Geometry &,
-             const eckit::Configuration &,
-             const atlas::FieldSet &) const override;
+  void write(const eckit::Configuration &,
+             const Fields &) const override;
 };
 
 // -----------------------------------------------------------------------------

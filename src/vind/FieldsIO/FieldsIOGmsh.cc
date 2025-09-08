@@ -17,7 +17,7 @@
 #include "oops/util/FieldSetHelpers.h"
 #include "oops/util/Logger.h"
 
-#include "vind/Geometry.h"
+#include "vind/Fields.h"
 
 namespace vind {
 
@@ -27,14 +27,13 @@ static FieldsIOMaker<FieldsIOGmsh> makerGmsh_("gmsh");
 
 // -----------------------------------------------------------------------------
 
-void FieldsIOGmsh::write(const Geometry & geom,
-                         const eckit::Configuration & conf,
-                         const atlas::FieldSet & fset) const {
+void FieldsIOGmsh::write(const eckit::Configuration & conf,
+                         const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
-  if (!geom.mesh().generated()) {
+  if (!fields.geometry()->mesh().generated()) {
     const atlas::MeshGenerator gen("delaunay");
-    geom.mesh() = gen(geom.grid(), geom.partitioner());
+    fields.geometry()->mesh() = gen(fields.geometry()->grid(), fields.geometry()->partitioner());
   }
 
   // GMSH file path
@@ -49,8 +48,8 @@ void FieldsIOGmsh::write(const Geometry & geom,
   atlas::output::Gmsh gmsh(filePath, gmshConfig);
 
   // Write GMSH
-  gmsh.write(geom.mesh());
-  gmsh.write(fset, geom.functionSpace());
+  gmsh.write(fields.geometry()->mesh());
+  gmsh.write(fields.fieldSet(), fields.geometry()->functionSpace());
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
 }

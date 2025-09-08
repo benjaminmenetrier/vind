@@ -16,7 +16,7 @@
 
 #include "oops/util/Logger.h"
 
-#include "vind/Geometry.h"
+#include "vind/Fields.h"
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); \
   throw eckit::Exception(s + " : " + msg, Here());}
@@ -33,27 +33,26 @@ static std::vector<std::string> existingFiles_;
 
 // -----------------------------------------------------------------------------
 
-void FieldsIOBSC::read(const Geometry & geom,
-                       const oops::Variables & vars,
+void FieldsIOBSC::read(const oops::Variables & vars,
                        const eckit::Configuration & conf,
-                       atlas::FieldSet & fset) const {
+                       Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
+  const atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
 
   // Clear local fieldset
-  fset.clear();
+  fields.fieldSet().clear();
 
   // Create local fieldset
   for (const auto & var : vars) {
     atlas::Field field = fs.createField<double>(
       atlas::option::name(var.name()) | atlas::option::levels(var.getLevels()));
-    fset.add(field);
+    fields.fieldSet().add(field);
   }
 
   // Initialize local fieldset
-  for (auto & field : fset) {
+  for (auto & field : fields.fieldSet()) {
     auto view = atlas::array::make_view<double, 2>(field);
     view.assign(0.0);
   }
@@ -74,10 +73,10 @@ void FieldsIOBSC::read(const Geometry & geom,
   const std::string ncFilePath = conf.getString("filepath");
 
   // Get file initial time
-  const util::DateTime initialTime(geom.io().getString("initial date"));
+  const util::DateTime initialTime(fields.geometry()->io().getString("initial date"));
 
   // Get file final time
-  const util::DateTime finalTime(geom.io().getString("final date"));
+  const util::DateTime finalTime(fields.geometry()->io().getString("final date"));
 
   // Get total number of hours
   ASSERT(finalTime >= initialTime);
@@ -94,7 +93,7 @@ void FieldsIOBSC::read(const Geometry & geom,
   // NetCDF IDs
   int ncid, retval, time_id, var_id[vars.size()];
 
-  if (geom.getComm().rank() == 0) {
+  if (fields.geometry()->getComm().rank() == 0) {
     // Get grid
     const atlas::StructuredGrid grid = fs.grid();
 
@@ -141,7 +140,7 @@ void FieldsIOBSC::read(const Geometry & geom,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom.alias()) {
+        for (const auto & item : fields.geometry()->alias()) {
           if (item.getString("in file") == vars[jvar].name()) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
@@ -174,18 +173,18 @@ void FieldsIOBSC::read(const Geometry & geom,
         }
       } else {
         std::string var_in_code;
-        for (const auto & item : geom.alias()) {
+        for (const auto & item : fields.geometry()->alias()) {
           if (item.getString("in file") == vars[jvar].name()) {
             var_in_code = item.getString("in code");
           }
         }
-        size_t loopMax = geom.vertCoordAvg(var_in_code).size();
+        size_t loopMax = fields.geometry()->vertCoordAvg(var_in_code).size();
         for (size_t k = 0; k < loopMax; ++k) {
           // Read level
           std::vector<double> zvar(nx*ny);
           const std::vector<size_t> countp({1, 1, ny, nx});
           const std::vector<size_t>startp({time,
-              static_cast<size_t>(geom.vertCoordAvg(var_in_code)[k]), 0, 0});
+              static_cast<size_t>(fields.geometry()->vertCoordAvg(var_in_code)[k]), 0, 0});
           if ((retval = nc_get_vars_double(ncid, var_id[jvar], startp.data(), countp.data(),
                                 NULL, zvar.data()))) ERR(retval, vars[jvar].name());
 
@@ -210,26 +209,25 @@ void FieldsIOBSC::read(const Geometry & geom,
   }
 
   // Scatter data from main processor
-  fs.scatter(globalData, fset);
+  fs.scatter(globalData, fields.fieldSet());
 
   // Mark dirty to be safe
-  fset.set_dirty();
+  fields.fieldSet().set_dirty();
 
   oops::Log::trace() << classname() << "::read done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
-void FieldsIOBSC::write(const Geometry & geom,
-                        const eckit::Configuration & conf,
-                        const atlas::FieldSet & fset) const {
+void FieldsIOBSC::write(const eckit::Configuration & conf,
+                        const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
+  const atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
 
-  // Define variables vector from fset
-  const std::vector<std::string> vars = fset.field_names();
+  // Define variables vector from fields.fieldSet()
+  const std::vector<std::string> vars = fields.fieldSet().field_names();
 
   // Get filepath
   const std::string ncFilePath = conf.getString("filepath");
@@ -245,7 +243,7 @@ void FieldsIOBSC::write(const Geometry & geom,
   }
 
   // Get total number of levels (from geometry section)
-  const size_t lmMax = geom.io().getUnsigned("total number of levels");
+  const size_t lmMax = fields.geometry()->io().getUnsigned("total number of levels");
 
   // Get write time
   const util::DateTime validTime(conf.getString("date"));
@@ -260,10 +258,10 @@ void FieldsIOBSC::write(const Geometry & geom,
 
   if (!singleDate) {
     // Get file initial time
-    initialTime = util::DateTime(geom.io().getString("initial date"));
+    initialTime = util::DateTime(fields.geometry()->io().getString("initial date"));
 
     // Get file final time
-    finalTime = util::DateTime(geom.io().getString("final date"));
+    finalTime = util::DateTime(fields.geometry()->io().getString("final date"));
 
     // Reference for time coordinate
     timeOffset = 0;
@@ -275,7 +273,8 @@ void FieldsIOBSC::write(const Geometry & geom,
     finalTime = validTime;
 
     // Reference for time coordinate
-    timeOffset = (initialTime- util::DateTime(geom.io().getString("initial date"))).toSeconds()
+    timeOffset =
+      (initialTime- util::DateTime(fields.geometry()->io().getString("initial date"))).toSeconds()
       /3600;
   }
 
@@ -311,19 +310,19 @@ void FieldsIOBSC::write(const Geometry & geom,
     }
   }
   for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
-    localData.add(fset[vars[jvar]]);
+    localData.add(fields.fieldSet()[vars[jvar]]);
   }
   // Check if there are fields on secondary vertical coordinates.
   std::string var_in_code;
   std::vector<size_t> lev_vect;
   for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
-    for (const auto & item : geom.alias()) {
+    for (const auto & item : fields.geometry()->alias()) {
       if (item.getString("in file") == vars[jvar]) {
         var_in_code = item.getString("in code");
       }
     }
-    if (geom.levels(var_in_code) > 1) {
-      lev_vect.push_back(geom.levels(var_in_code));
+    if (fields.geometry()->levels(var_in_code) > 1) {
+      lev_vect.push_back(fields.geometry()->levels(var_in_code));
     }
   }
   std::set<size_t> lev_set(lev_vect.begin(), lev_vect.end());
@@ -344,14 +343,14 @@ void FieldsIOBSC::write(const Geometry & geom,
   }
   for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
     atlas::Field globalField = fs.createField<double>(atlas::option::name(vars[jvar]) |
-      atlas::option::levels(fset[vars[jvar]].shape(1)) | atlas::option::global());
+      atlas::option::levels(fields.fieldSet()[vars[jvar]].shape(1)) | atlas::option::global());
     globalData.add(globalField);
   }
 
   // Gather coordinates and data on main processor
   fs.gather(localData, globalData);
 
-  if (geom.getComm().rank() == 0) {
+  if (fields.geometry()->getComm().rank() == 0) {
     if (existingFile) {
       oops::Log::info() << "Info     : Updating file: " << ncFilePath << std::endl;
     } else {
@@ -487,7 +486,7 @@ void FieldsIOBSC::write(const Geometry & geom,
       double pole[2];
       pole[0] = 0.;
       pole[1] = 90.;
-      geom.grid().projection().xy2lonlat(pole);
+      fields.geometry()->grid().projection().xy2lonlat(pole);
       float_att = pole[1];
       if ((retval = nc_put_att_float(ncid, vrp_id, "grid_north_pole_latitude", NC_FLOAT, 1,
         &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_latitude");
@@ -499,8 +498,9 @@ void FieldsIOBSC::write(const Geometry & geom,
         &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_longitude");
       // Time steps
       if ((retval = nc_def_var(ncid, "time", NC_INT, 1, dTime_id, &vTime_id))) ERR(retval, "time");
-      strcpy(str_att, ("hours since "+geom.io().getString("initial date").substr(0, 10)+
-                       " "+geom.io().getString("initial date").substr(11, 5)+" UTC").c_str());
+      strcpy(str_att,
+        ("hours since "+fields.geometry()->io().getString("initial date").substr(0, 10)+
+        " "+fields.geometry()->io().getString("initial date").substr(11, 5)+" UTC").c_str());
       if ((retval = nc_put_att_text(ncid, vTime_id, "units", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time units");
       strcpy(str_att, "time");
@@ -591,7 +591,7 @@ void FieldsIOBSC::write(const Geometry & geom,
     };
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
-      for (const auto & item : geom.alias()) {
+      for (const auto & item : fields.geometry()->alias()) {
         if (item.getString("in file") == vars[jvar]) {
           var_in_code = item.getString("in code");
         }
@@ -599,8 +599,8 @@ void FieldsIOBSC::write(const Geometry & geom,
       // Check whether this variable exists
       if (nc_inq_varid(ncid, vars[jvar].c_str(), &var_id[jvar]) != NC_NOERR) {
         // Define variable
-        if (fset[vars[jvar]].shape(1) > 1) {
-          if (has_int_press && geom.levels(var_in_code) > *lev_set.begin()) {
+        if (fields.fieldSet()[vars[jvar]].shape(1) > 1) {
+          if (has_int_press && fields.geometry()->levels(var_in_code) > *lev_set.begin()) {
             if ((retval = nc_def_var(ncid, vars[jvar].c_str(), NC_FLOAT, 4, d4Dp_id,
               &var_id[jvar]))) ERR(retval, vars[jvar]);
           } else {
@@ -718,7 +718,7 @@ void FieldsIOBSC::write(const Geometry & geom,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom.alias()) {
+        for (const auto & item : fields.geometry()->alias()) {
           if (item.getString("in file") == vars[jvar]) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
@@ -729,7 +729,7 @@ void FieldsIOBSC::write(const Geometry & geom,
         }
       }
 
-      if (fset[vars[jvar]].shape(1) == 1) {
+      if (fields.fieldSet()[vars[jvar]].shape(1) == 1) {
         // Copy data
         std::vector<float> zvar(ny*nx);
         for (atlas::idx_t j = 0; j < ny; ++j) {
@@ -750,12 +750,12 @@ void FieldsIOBSC::write(const Geometry & geom,
         if ((retval = nc_put_vars_float(ncid, var_id[jvar], startp.data(), countp.data(), NULL,
                                         zvar.data()))) ERR(retval, vars[jvar]);
       } else {
-        for (const auto & item : geom.alias()) {
+        for (const auto & item : fields.geometry()->alias()) {
           if (item.getString("in file") == vars[jvar]) {
             var_in_code = item.getString("in code");
           }
         }
-        auto levels = geom.vertCoordAvg(var_in_code);
+        auto levels = fields.geometry()->vertCoordAvg(var_in_code);
         for (atlas::idx_t k = 0; k < levels.size(); ++k) {
           // Copy data
           std::vector<float> zvar(ny*nx);

@@ -19,7 +19,7 @@
 
 #include "oops/util/Logger.h"
 
-#include "vind/Geometry.h"
+#include "vind/Fields.h"
 
 namespace vind {
 
@@ -29,28 +29,27 @@ static FieldsIOMaker<FieldsIOGrib> makerGrib_("grib");
 
 // -----------------------------------------------------------------------------
 
-void FieldsIOGrib::read(const Geometry & geom,
-                        const oops::Variables & vars,
-                        const eckit::Configuration & config,
-                        atlas::FieldSet & fset) const {
+void FieldsIOGrib::read(const oops::Variables & vars,
+                        const eckit::Configuration & conf,
+                        Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
   // Build file path
-  std::string filePath = config.getString("filepath");
-  if (config.has("member")) {
+  std::string filePath = conf.getString("filepath");
+  if (conf.has("member")) {
     std::ostringstream out;
-    out << std::setfill('0') << std::setw(6) << config.getInt("member");
+    out << std::setfill('0') << std::setw(6) << conf.getInt("member");
     filePath.append("_");
     filePath.append(out.str());
   }
 
   // Grib file path
   filePath.append(".");
-  filePath.append(config.getString("grib extension", "grib2"));
+  filePath.append(conf.getString("grib extension", "grib2"));
 
   // Get levels
   std::vector<int> levels;
-  if (!config.get("levels", levels)) {
+  if (!conf.get("levels", levels)) {
     int levelMax = 0;
     for (const auto & var : vars) {
       levelMax = std::max(levelMax, var.getLevels());
@@ -61,17 +60,17 @@ void FieldsIOGrib::read(const Geometry & geom,
   }
 
   // Clear local fieldset
-  fset.clear();
+  fields.fieldSet().clear();
 
   // Create local fieldset
   for (const auto & var : vars) {
-    atlas::Field field = geom.functionSpace().createField<double>(
+    atlas::Field field = fields.geometry()->functionSpace().createField<double>(
       atlas::option::name(var.name()) | atlas::option::levels(var.getLevels()));
-    fset.add(field);
+    fields.fieldSet().add(field);
   }
 
   // Initialize local fieldset
-  for (auto & field : fset) {
+  for (auto & field : fields.fieldSet()) {
     auto view = atlas::array::make_view<double, 2>(field);
     view.assign(0.0);
   }
@@ -79,14 +78,14 @@ void FieldsIOGrib::read(const Geometry & geom,
   // Global data
   atlas::FieldSet globalData;
   for (const auto & var : vars) {
-    atlas::Field field = geom.functionSpace().createField<double>(
+    atlas::Field field = fields.geometry()->functionSpace().createField<double>(
       atlas::option::name(var.name())
       | atlas::option::levels(var.getLevels()) | atlas::option::global());
     globalData.add(field);
   }
 
   // Grib input
-  if (geom.getComm().rank() == 0) {
+  if (fields.geometry()->getComm().rank() == 0) {
     oops::Log::info() << "Info     : Reading file: " << filePath << std::endl;
 
     // Initialization
@@ -153,18 +152,18 @@ void FieldsIOGrib::read(const Geometry & geom,
   }
 
   // Scatter data from main processor
-  if (geom.functionSpace().type() == "StructuredColumns") {
+  if (fields.geometry()->functionSpace().type() == "StructuredColumns") {
     // StructuredColumns
-    atlas::functionspace::StructuredColumns fs(geom.functionSpace());
-    fs.scatter(globalData, fset);
-  } else if (geom.functionSpace().type() == "NodeColumns") {
+    atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
+    fs.scatter(globalData, fields.fieldSet());
+  } else if (fields.geometry()->functionSpace().type() == "NodeColumns") {
     // NodeColumns
-    atlas::functionspace::NodeColumns fs(geom.functionSpace());
-    fs.scatter(globalData, fset);
+    atlas::functionspace::NodeColumns fs(fields.geometry()->functionSpace());
+    fs.scatter(globalData, fields.fieldSet());
   }
 
   // Code is too complicated, mark dirty to be safe
-  fset.set_dirty();
+  fields.fieldSet().set_dirty();
 
   oops::Log::trace() << classname() << "::read done" << std::endl;
 }

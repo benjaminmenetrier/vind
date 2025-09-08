@@ -942,7 +942,7 @@ void Fields::read(const eckit::Configuration & config) {
   }
 
   // Read fieldset
-  fieldsIO->read(*geom_, vars_in_file, updatedConfig, fset_);
+  fieldsIO->read(vars_in_file, updatedConfig,  *this);
 
   // Rename fields
   for (auto & field : fset_) {
@@ -993,11 +993,8 @@ void Fields::write(const eckit::Configuration & config) const {
     }
   }
 
-  // Copy fieldset
-  atlas::FieldSet fset = util::copyFieldSet(fset_);
-
   // Rename fields
-  for (auto & field : fset) {
+  for (auto & field : fset_) {
     for (const auto & item : geom_->alias()) {
       if (item.getString("in code") == field.name()) {
         field.rename(item.getString("in file"));
@@ -1015,11 +1012,20 @@ void Fields::write(const eckit::Configuration & config) const {
   }
 
   for (const auto & ioFormat : ioFormats) {
-    // Set FieldsIO list
+    // Set FieldsIO
     std::unique_ptr<FieldsIOBase> fieldsIO(FieldsIOFactory::create(ioFormat));
 
     // Write fields
-    fieldsIO->write(*geom_, updatedConfig, fset);
+    fieldsIO->write(updatedConfig, *this);
+  }
+
+  // Rename fields
+  for (auto & field : fset_) {
+    for (const auto & item : geom_->alias()) {
+      if (item.getString("in file") == field.name()) {
+        field.rename(item.getString("in code"));
+      }
+    }
   }
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
@@ -1244,7 +1250,7 @@ void Fields::resetDuplicatePoints() {
   oops::Log::trace() << classname() << "::resetDuplicatePoints starting" << std::endl;
 
   if (geom_->duplicatePoints()) {
-    if (geom_->gridType() == "regular_lonlat") {
+    if ((geom_->gridType() == "regular_lonlat") || (geom_->gridType() == "structured")) {
       // Deal with poles
       for (auto field_internal : fset_) {
         // Get first longitude value

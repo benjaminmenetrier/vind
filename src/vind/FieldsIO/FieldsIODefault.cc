@@ -12,7 +12,7 @@
 #include "oops/util/FieldSetHelpers.h"
 #include "oops/util/Logger.h"
 
-#include "vind/Geometry.h"
+#include "vind/Fields.h"
 
 namespace vind {
 
@@ -22,10 +22,9 @@ static FieldsIOMaker<FieldsIODefault> makerDefault_("default");
 
 // -----------------------------------------------------------------------------
 
-void FieldsIODefault::read(const Geometry & geom,
-                           const oops::Variables & vars,
+void FieldsIODefault::read(const oops::Variables & vars,
                            const eckit::Configuration & conf,
-                           atlas::FieldSet & fset) const {
+                           Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
   // Create variableSizes
@@ -37,35 +36,36 @@ void FieldsIODefault::read(const Geometry & geom,
   // Update configuration
   eckit::LocalConfiguration updatedConf(conf);
   if (!updatedConf.has("latitude south to north")) {
-    updatedConf.set("latitude south to north", geom.io().getBool("latitude south to north", true));
+    updatedConf.set("latitude south to north",
+      fields.geometry()->io().getBool("latitude south to north", true));
   }
 
   // Read fieldset
-  util::readFieldSet(geom.getComm(),
-                     geom.functionSpace(),
+  util::readFieldSet(fields.geometry()->getComm(),
+                     fields.geometry()->functionSpace(),
                      variableSizes,
                      vars.variables(),
                      updatedConf,
-                     fset);
+                     fields.fieldSet());
 
   oops::Log::trace() << classname() << "::read done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
-void FieldsIODefault::write(const Geometry & geom,
-                            const eckit::Configuration & conf,
-                            const atlas::FieldSet & fset) const {
+void FieldsIODefault::write(const eckit::Configuration & conf,
+                            const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
   // Update configuration
   eckit::LocalConfiguration updatedConf(conf);
   if (!updatedConf.has("latitude south to north")) {
-    updatedConf.set("latitude south to north", geom.io().getBool("latitude south to north", true));
+    updatedConf.set("latitude south to north",
+      fields.geometry()->io().getBool("latitude south to north", true));
   }
 
   // Write fieldset
-  util::writeFieldSet(geom.getComm(), updatedConf, fset);
+  util::writeFieldSet(fields.geometry()->getComm(), updatedConf, fields.fieldSet());
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
 }
