@@ -51,6 +51,10 @@ if( ENABLE_OBS )
                             SOURCES vindHofX3D.cc
                             LIBS    ${LIBS} )
 
+    ecbuild_add_executable( TARGET  vind_hofx4d.x
+                            SOURCES vindHofX4D.cc
+                            LIBS    ${LIBS} )
+
     ecbuild_add_executable( TARGET  vind_letkf.x
                             SOURCES vindLETKF.cc
                             LIBS    ${LIBS} )

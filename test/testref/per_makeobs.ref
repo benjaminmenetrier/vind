@@ -1,5 +1,5 @@
 Initial state: 
-- Valid time: 2010-01-01T06:00:00Z
+- Valid time: 2010-01-01T12:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
@@ -12,3 +12,9 @@ Final state:
   - air_temperature (2 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
+H(x): 
+air_temperature nobs= 6 Min=0.0000000000000000e+00, Max=0.0000000000000000e+00, RMS=0.0000000000000000e+00
+End H(x)
+Perturbed H(x): 
+air_temperature nobs= 6 Min=-2.1998132002716242e-01, Max=1.1260210724671578e-01, RMS=1.1427983304354333e-01
+End Perturbed H(x)

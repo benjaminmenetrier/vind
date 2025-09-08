@@ -27,11 +27,12 @@ option( ENABLE_OBS "Compile IODA/UFO" ON )
 option( ENABLE_CRTM "Compile CRTM" OFF )
 
 # What tests to run?
+option( ENABLE_GLB_TESTS "Run global tests" ON )
+option( ENABLE_REG_TESTS "Run regional tests" ON )
+option( ENABLE_PER_TESTS "Run persistence tests" ON )
 option( ENABLE_GENINT_TESTS "Run genint tests" ON )
 option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
 option( ENABLE_AQ_TESTS "Run aq tests" OFF )
-option( ENABLE_GLB_TESTS "Run global tests" ON )
-option( ENABLE_REG_TESTS "Run regional tests" ON )
 
 # Setup
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/lib )

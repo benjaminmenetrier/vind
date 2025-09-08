@@ -20,7 +20,8 @@ static ModelMaker<ModelPersistence> makerPersistence_("persistence");
 
 ModelPersistence::ModelPersistence(const Geometry &,
                                    const eckit::Configuration & config)
-  : timeResolution_(config.getString("tstep")), sigma_(config.getDouble("sigma", 0.0)) {
+  : timeResolution_(config.getString("tstep")),
+    persistenceFactor_(config.getDouble("persistence factor", 1.0)) {
   oops::Log::trace() << classname() << "::ModelPersistence" << std::endl;
 }
 
@@ -43,12 +44,15 @@ void ModelPersistence::step(State & xx,
   xx.validTime().toYYYYMMDDhhmmss(YYYYMMDD, hhmmss);
   const int seed = YYYYMMDD*hhmmss;
 
+  // Scale input field
+  xx.fields() *= persistenceFactor_;
+
   // Generate random field
   Fields randomField(xx.fields(), false);
   randomField.random(seed);
 
   // Add scaled random field
-  xx.fields().axpy(sigma_, randomField);
+  xx.fields().axpy(1.0-persistenceFactor_, randomField);
 
   // Update valid time
   xx.validTime() += timeResolution_;
@@ -70,7 +74,7 @@ void ModelPersistence::print(std::ostream & os) const {
 
   os << "Persistence model:" << std::endl;
   os << "- dt = " << timeResolution_ << std::endl;
-  os << "- sigma = " << sigma_ << std::endl;
+  os << "- persistence factor = " << persistenceFactor_ << std::endl;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;
 }

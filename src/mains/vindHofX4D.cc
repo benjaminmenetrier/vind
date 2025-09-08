@@ -5,7 +5,7 @@
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-#include "oops/runs/HofX3D.h"
+#include "oops/runs/HofX4D.h"
 #include "oops/runs/Run.h"
 
 #include "ufo/instantiateObsErrorFactory.h"
@@ -18,6 +18,6 @@ int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
   ufo::instantiateObsErrorFactory();
   ufo::instantiateObsFilterFactory();
-  oops::HofX3D<vind::Traits, ufo::ObsTraits> h3;
-  return run.execute(h3);
+  oops::HofX4D<vind::Traits, ufo::ObsTraits> h4;
+  return run.execute(h4);
 }

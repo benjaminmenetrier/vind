@@ -47,18 +47,18 @@ VariableChange.cc
 VariableChange.h
 VariableChangeParameters.h
 
-FieldsIO/FieldsIOArome.cc
-FieldsIO/FieldsIOArome.h
+#FieldsIO/FieldsIOArome.cc
+#FieldsIO/FieldsIOArome.h
 FieldsIO/FieldsIOBase.cc
 FieldsIO/FieldsIOBase.h
-FieldsIO/FieldsIOBSC.cc
-FieldsIO/FieldsIOBSC.h
-FieldsIO/FieldsIOAQ.cc
-FieldsIO/FieldsIOAQ.h
+#FieldsIO/FieldsIOBSC.cc
+#FieldsIO/FieldsIOBSC.h
+#FieldsIO/FieldsIOAQ.cc
+#FieldsIO/FieldsIOAQ.h
 FieldsIO/FieldsIODefault.cc
 FieldsIO/FieldsIODefault.h
-FieldsIO/FieldsIOGmsh.cc
-FieldsIO/FieldsIOGmsh.h
+#FieldsIO/FieldsIOGmsh.cc
+#FieldsIO/FieldsIOGmsh.h
 
 Model/ModelBase.cc
 Model/ModelBase.h
@@ -82,9 +82,9 @@ if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS AND ectrans_HAVE_TRANSI ) AND falfil
     message( STATUS "- AROME-FA" )
     list( APPEND vind_src_files
 
-    FieldsIO/fieldsio_arome_fa.h
-    FieldsIO/fieldsio_arome_fa_interface.F90
-    FieldsIO/fieldsio_arome_fa_mod.F90
+#    FieldsIO/fieldsio_arome_fa.h
+#    FieldsIO/fieldsio_arome_fa_interface.F90
+#    FieldsIO/fieldsio_arome_fa_mod.F90
 
     )
 endif()
@@ -94,8 +94,8 @@ if( eccodes_FOUND )
     message( STATUS "- GRIB" )
     list( APPEND vind_src_files
 
-    FieldsIO/FieldsIOGrib.cc
-    FieldsIO/FieldsIOGrib.h
+#    FieldsIO/FieldsIOGrib.cc
+#    FieldsIO/FieldsIOGrib.h
 
     )
 endif()

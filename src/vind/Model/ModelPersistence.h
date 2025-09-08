@@ -57,7 +57,7 @@ class ModelPersistence: public ModelBase,
   void print(std::ostream &) const override;
 
   const util::Duration timeResolution_;
-  const double sigma_;
+  const double persistenceFactor_;
 };
 // -----------------------------------------------------------------------------
 
