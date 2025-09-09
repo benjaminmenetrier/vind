@@ -55,6 +55,13 @@ if( ENABLE_MONARCH_TESTS )
     testdata/006
     testdata/HDAT_AIRBASE_PM10-2022070112.nc
     testdata/HDAT_AIRBASE_O3-2022070112.nc
+    testdata/G000
+    testdata/G001
+    testdata/G002
+    testdata/G003
+    testdata/G004
+    testdata/G005
+    testdata/G006
     
     )
 
@@ -73,6 +80,7 @@ if( ENABLE_AQ_TESTS )
     testdata/forecast
     testdata/HDAT_AIRBASE_PM10-2022070112.nc
     testdata/HDAT_AIRBASE_O3-2022070112.nc
+    testdata/HDAT_AIRBASE_PM10-GLO-2017121612.nc
     
     )
 
@@ -185,12 +193,16 @@ testinput/monarch_3densvar.yaml
 testinput/monarch_3densvar_lt.yaml
 testinput/monarch_4densvar.yaml
 testinput/monarch_4densvar_lt.yaml
-
+# MONARCH GLOBAL
+testinput/monglob_geometry.yaml
+testinput/monglob_convertstate.yaml
+testinput/monglob_convertstate_levsel.yaml
+testinput/monglob_hofx3d_air_pressure.yaml
+testinput/monglob_dirac_3d.yaml
 )
 
 list( APPEND aq_testinput
-
-# AQ REGIONAL
+# MONARCH REGIONAL interpolated on CAMS regular grid
 testinput/aq_geometry.yaml
 testinput/aq_state.yaml
 testinput/aq_convertstate.yaml
@@ -314,12 +326,16 @@ testref/monarch_3densvar.ref
 testref/monarch_3densvar_lt.ref
 testref/monarch_4densvar.ref
 testref/monarch_4densvar_lt.ref
-
+# MONARCH GLOBAL
+testref/monglob_geometry.ref
+testref/monglob_convertstate.ref
+testref/monglob_convertstate_levsel.ref
+testref/monglob_hofx3d_air_pressure.ref
+testref/monglob_dirac_3d.ref
 )
 
 list( APPEND aq_testref
-
-# AQ REGIONAL
+# MONARCH REGIONAL interpolated on CAMS regular grid
 testref/aq_geometry.ref
 testref/aq_state.ref
 testref/aq_convertstate.ref
@@ -466,6 +482,20 @@ if( ENABLE_MONARCH_TESTS )
         create_test( monarch_4densvar 12 variational )
         create_test( monarch_4densvar_lt 12 variational )
     endif()
+
+    # MONARCH global BSC tests
+    create_test( monglob_geometry 8 test_geometry )
+    create_test( monglob_convertstate 8 convertstate )
+    create_test( monglob_convertstate_levsel 8 convertstate )
+
+    if( ENABLE_OBS )
+        create_test( monglob_hofx3d_air_pressure 8 hofx3d )
+    endif()
+      
+    if( ENABLE_SABER )
+        create_test( monglob_dirac_3d 8 error_covariance_toolbox )
+    endif()
+    
 endif()
 
 if( ENABLE_AQ_TESTS )

@@ -69,6 +69,9 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   // Set State or Increment flag
   const bool isState = conf.getBool("is state");
 
+  // Check if domain is global
+  const bool isGlobal = fields.geometry()->grid().domain().type() == "global";
+
   // Get filepath
   const std::string ncFilePath = conf.getString("filepath");
 
@@ -78,9 +81,12 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   // Get file final time
   const util::DateTime finalTime(fields.geometry()->io().getString("final date"));
 
+  // Get optional time step
+  const double timeStep = fields.geometry()->io().getDouble("time step", 3600.0);
+
   // Get total number of hours
   ASSERT(finalTime >= initialTime);
-  const size_t timeMax = (finalTime-initialTime).toSeconds()/3600+1;
+  const size_t timeMax = (finalTime-initialTime).toSeconds()/timeStep+1;
 
   // Get read time
   const util::DateTime validTime(conf.getString("date"));
@@ -88,7 +94,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   // Difference in hours
   ASSERT(validTime >= initialTime);
   ASSERT(validTime <= finalTime);
-  const size_t time = (validTime-initialTime).toSeconds()/3600;
+  const size_t time = (validTime-initialTime).toSeconds()/timeStep;
 
   // NetCDF IDs
   int ncid, retval, time_id, var_id[vars.size()];
@@ -184,7 +190,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
           std::vector<double> zvar(nx*ny);
           const std::vector<size_t> countp({1, 1, ny, nx});
           const std::vector<size_t>startp({time,
-              static_cast<size_t>(fields.geometry()->vertCoordAvg(var_in_code)[k]), 0, 0});
+          static_cast<size_t>(fields.geometry()->vertCoordAvg(var_in_code)[k]), 0, 0});
           if ((retval = nc_get_vars_double(ncid, var_id[jvar], startp.data(), countp.data(),
                                 NULL, zvar.data()))) ERR(retval, vars[jvar].name());
 
@@ -235,6 +241,9 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   // Set State or Increment flag
   const bool isState = conf.getBool("is state");
 
+  // Check if domain is global
+  const bool isGlobal = fields.geometry()->grid().domain().type() == "global";
+
   // Check if this file already exists
   const bool existingFile = std::find(existingFiles_.begin(), existingFiles_.end(), ncFilePath)
     != existingFiles_.end();
@@ -250,6 +259,9 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
   // Get timeseries mode
   const bool singleDate = conf.getBool("single date", false);
+
+  // Get optional time step
+  const double timeStep = fields.geometry()->io().getDouble("time step", 3600.0);
 
   // Get file initial and final time
   util::DateTime initialTime;
@@ -274,18 +286,18 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
     // Reference for time coordinate
     timeOffset =
-      (initialTime- util::DateTime(fields.geometry()->io().getString("initial date"))).toSeconds()
-      /3600;
+      (initialTime - util::DateTime(fields.geometry()->io().getString("initial date"))).toSeconds()
+      /timeStep;
   }
 
   // Get total number of hours
   ASSERT(finalTime >= initialTime);
-  const size_t timeMax = (finalTime-initialTime).toSeconds()/3600+1;
+  const size_t timeMax = (finalTime-initialTime).toSeconds()/timeStep+1;
 
   // Difference in hours
   ASSERT(validTime >= initialTime);
   ASSERT(validTime <= finalTime);
-  const size_t time = (validTime-initialTime).toSeconds()/3600;
+  const size_t time = (validTime-initialTime).toSeconds()/timeStep;
 
   // NetCDF IDs
   int retval, ncid, rlon_id, rlat_id, lm_id, lmp_id, time_id,
@@ -296,7 +308,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
   // Prepare local coordinates and data
   atlas::FieldSet localData;
-  if (!existingFile) {
+  if (!existingFile && !isGlobal) {
     atlas::Field lonLocal = fs.createField<double>(atlas::option::name("lon"));
     localData.add(lonLocal);
     atlas::Field latLocal = fs.createField<double>(atlas::option::name("lat"));
@@ -333,7 +345,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
   // Prepare global coordinates and data
   atlas::FieldSet globalData;
-  if (!existingFile) {
+  if (!existingFile && !isGlobal) {
     atlas::Field lonGlobal = fs.createField<double>(
       atlas::option::name("lon") | atlas::option::global());
     globalData.add(lonGlobal);
@@ -362,6 +374,8 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
     // Get sizes
     const size_t nx = grid.nxmax();
+    size_t nx_out = nx;
+    if (isGlobal) nx_out = nx+1;
     const size_t ny = grid.ny();
 
     // Definition mode
@@ -381,8 +395,13 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
     if (existingFile) {
       // Get dimension
-      if ((retval = nc_inq_dimid(ncid, "rlon", &rlon_id))) ERR(retval, "rlon");
-      if ((retval = nc_inq_dimid(ncid, "rlat", &rlat_id))) ERR(retval, "rlat");
+      if (isGlobal) {
+        if ((retval = nc_inq_dimid(ncid, "lon", &rlon_id))) ERR(retval, "lon");
+        if ((retval = nc_inq_dimid(ncid, "lat", &rlat_id))) ERR(retval, "lat");
+      } else {
+        if ((retval = nc_inq_dimid(ncid, "rlon", &rlon_id))) ERR(retval, "rlon");
+        if ((retval = nc_inq_dimid(ncid, "rlat", &rlat_id))) ERR(retval, "rlat");
+      }
       if ((retval = nc_inq_dimid(ncid, "lm", &lm_id))) ERR(retval, "lm");
       if (has_int_press) {
         if ((retval = nc_inq_dimid(ncid, "lmp", &lmp_id))) ERR(retval, "lmp");
@@ -390,8 +409,13 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       if ((retval = nc_inq_dimid(ncid, "time", &time_id))) ERR(retval, "time");
     } else {
       // Create dimensions
-      if ((retval = nc_def_dim(ncid, "rlon", nx, &rlon_id))) ERR(retval, "rlon");
-      if ((retval = nc_def_dim(ncid, "rlat", ny, &rlat_id))) ERR(retval, "rlat");
+      if (isGlobal) {
+        if ((retval = nc_def_dim(ncid, "lon", nx_out, &rlon_id))) ERR(retval, "lon");
+        if ((retval = nc_def_dim(ncid, "lat", ny, &rlat_id))) ERR(retval, "lat");
+      } else {
+        if ((retval = nc_def_dim(ncid, "rlon", nx_out, &rlon_id))) ERR(retval, "rlon");
+        if ((retval = nc_def_dim(ncid, "rlat", ny, &rlat_id))) ERR(retval, "rlat");
+      }
       if ((retval = nc_def_dim(ncid, "lm", lmMax, &lm_id))) ERR(retval, "lm");
       if (has_int_press) {
         if ((retval = nc_def_dim(ncid, "lmp", lmMax+1, &lmp_id))) ERR(retval, "lmp");
@@ -429,30 +453,57 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
     if (!existingFile) {
       // Define coordinates
-      // Rotated lon
-      if ((retval = nc_def_var(ncid, "rlon", NC_FLOAT, 1, dRlon_id, &vRlon_id)))
-        ERR(retval, "rlon");
-      strcpy(str_att, "longitude in rotated_pole grid");
-      if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: rlon long_name");
-      strcpy(str_att, "degrees");
-      if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: rlon units");
-      strcpy(str_att, "grid_longitude");
-      if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: rlon standard_name");
-      // Rotated lat
-      if ((retval = nc_def_var(ncid, "rlat", NC_FLOAT, 1, dRlat_id, &vRlat_id)))
-        ERR(retval, "rlat");
-      strcpy(str_att, "latitude in rotated_pole grid");
-      if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: rlat long_name");
-      strcpy(str_att, "degrees");
-      if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: rlat units");
-      strcpy(str_att, "grid_latitude");
-      if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: rlat standard_name");
+      if (isGlobal) {
+        // Lon
+        if ((retval = nc_def_var(ncid, "lon", NC_FLOAT, 1, dRlon_id, &vRlon_id)))
+          ERR(retval, "lon");
+        strcpy(str_att, "longitude");
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon long_name");
+        strcpy(str_att, "degrees");
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon units");
+        strcpy(str_att, "grid_longitude");
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon standard_name");
+        // Lat
+        if ((retval = nc_def_var(ncid, "lat", NC_FLOAT, 1, dRlat_id, &vRlat_id)))
+          ERR(retval, "lat");
+        strcpy(str_att, "latitude");
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat long_name");
+        strcpy(str_att, "degrees");
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat units");
+        strcpy(str_att, "grid_latitude");
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat standard_name");
+      } else {
+        // Rotated lon
+        if ((retval = nc_def_var(ncid, "rlon", NC_FLOAT, 1, dRlon_id, &vRlon_id)))
+          ERR(retval, "rlon");
+        strcpy(str_att, "longitude in rotated_pole grid");
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: rlon long_name");
+        strcpy(str_att, "degrees");
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: rlon units");
+        strcpy(str_att, "grid_longitude");
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: rlon standard_name");
+        // Rotated lat
+        if ((retval = nc_def_var(ncid, "rlat", NC_FLOAT, 1, dRlat_id, &vRlat_id)))
+          ERR(retval, "rlat");
+        strcpy(str_att, "latitude in rotated_pole grid");
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: rlat long_name");
+        strcpy(str_att, "degrees");
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: rlat units");
+        strcpy(str_att, "grid_latitude");
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: rlat standard_name");
+      }
       // Levels
       if ((retval = nc_def_var(ncid, "lm", NC_INT, 1, dLm_id, &vLm_id))) ERR(retval, "lm");
       strcpy(str_att, "unitless");
@@ -477,25 +528,27 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         if ((retval = nc_put_att_text(ncid, vLmp_id, "positive", strlen(str_att), &str_att[0])))
           ERR(retval, "Attr: lmp positive");
       }
-      // Rotated pole
-      if ((retval = nc_def_var(ncid, "rotated_pole", NC_CHAR, 0, dLm_id, &vrp_id))) ERR(retval,
-       "rotated_pole");
-      strcpy(str_att, "rotated_latitude_longitude");
-      if ((retval = nc_put_att_text(ncid, vrp_id, "grid_mapping_name", strlen(str_att),
-        &str_att[0]))) ERR(retval, "Attr: rotated_pole grid_mapping_name");
-      double pole[2];
-      pole[0] = 0.;
-      pole[1] = 90.;
-      fields.geometry()->grid().projection().xy2lonlat(pole);
-      float_att = pole[1];
-      if ((retval = nc_put_att_float(ncid, vrp_id, "grid_north_pole_latitude", NC_FLOAT, 1,
-        &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_latitude");
-      float_att = pole[0];
-      if (float_att > 180.) {
-            float_att -= 360.;
+      if (!isGlobal) {
+        // Rotated pole
+        if ((retval = nc_def_var(ncid, "rotated_pole", NC_CHAR, 0, dLm_id, &vrp_id))) ERR(retval,
+         "rotated_pole");
+        strcpy(str_att, "rotated_latitude_longitude");
+        if ((retval = nc_put_att_text(ncid, vrp_id, "grid_mapping_name", strlen(str_att),
+          &str_att[0]))) ERR(retval, "Attr: rotated_pole grid_mapping_name");
+        double pole[2];
+        pole[0] = 0.;
+        pole[1] = 90.;
+        fields.geometry()->grid().projection().xy2lonlat(pole);
+        float_att = pole[1];
+        if ((retval = nc_put_att_float(ncid, vrp_id, "grid_north_pole_latitude", NC_FLOAT, 1,
+          &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_latitude");
+        float_att = pole[0];
+        if (float_att > 180.) {
+          float_att -= 360.;
         }
-      if ((retval = nc_put_att_float(ncid, vrp_id, "grid_north_pole_longitude", NC_FLOAT, 1,
-        &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_longitude");
+        if ((retval = nc_put_att_float(ncid, vrp_id, "grid_north_pole_longitude", NC_FLOAT, 1,
+               &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_longitude");
+      }
       // Time steps
       if ((retval = nc_def_var(ncid, "time", NC_INT, 1, dTime_id, &vTime_id))) ERR(retval, "time");
       strcpy(str_att,
@@ -512,46 +565,48 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       strcpy(str_att, "time");
       if ((retval = nc_put_att_text(ncid, vTime_id, "standard_name", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time standard_name");
-      // Geographic lon
-      if ((retval = nc_def_var(ncid, "lon", NC_FLOAT, 2, d2D_id, &lon_id))) ERR(retval, "lon");
-      strcpy(str_att, "longitude");
-      if ((retval = nc_put_att_text(ncid, lon_id, "long_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lon long_name");
-      strcpy(str_att, "degrees_east");
-      if ((retval = nc_put_att_text(ncid, lon_id, "units", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lon units");
-      strcpy(str_att, "longitude");
-      if ((retval = nc_put_att_text(ncid, lon_id, "standard_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lon standard_name");
-      float_att = -999999.0;
-      if ((retval = nc_put_att_float(ncid, lon_id, "missing_value", NC_FLOAT, 1, &float_att)))
-        ERR(retval, "Attr: lon missing_value");
-      float_att = -32767.0;
-      if ((retval = nc_put_att_float(ncid, lon_id, "_FillValue", NC_FLOAT, 1, &float_att)))
-        ERR(retval, "Attr: lon _FillValue");
-      strcpy(str_att, "lon lat");
-      if ((retval = nc_put_att_text(ncid, lon_id, "coordinates", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lon coordinates");
-      // Geographic lat
-      if ((retval = nc_def_var(ncid, "lat", NC_FLOAT, 2, d2D_id, &lat_id))) ERR(retval, "lat");
-      strcpy(str_att, "latitude");
-      if ((retval = nc_put_att_text(ncid, lat_id, "long_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lat long_name");
-      strcpy(str_att, "degrees_north");
-      if ((retval = nc_put_att_text(ncid, lat_id, "units", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lat units");
-      strcpy(str_att, "latitude");
-      if ((retval = nc_put_att_text(ncid, lat_id, "standard_name", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lat standard_name");
-      float_att = -999999.0;
-      if ((retval = nc_put_att_float(ncid, lat_id, "missing_value", NC_FLOAT, 1, &float_att)))
-        ERR(retval, "Attr: lat missing_value");
-      float_att = -32767.0;
-      if ((retval = nc_put_att_float(ncid, lat_id, "_FillValue", NC_FLOAT, 1, &float_att)))
-        ERR(retval, "Attr: lat _FillValue");
-      strcpy(str_att, "lon lat");
-      if ((retval = nc_put_att_text(ncid, lat_id, "coordinates", strlen(str_att), &str_att[0])))
-        ERR(retval, "Attr: lat coordinates");
+      if (!isGlobal) {
+        // Geographic lon
+        if ((retval = nc_def_var(ncid, "lon", NC_FLOAT, 2, d2D_id, &lon_id))) ERR(retval, "lon");
+        strcpy(str_att, "longitude");
+        if ((retval = nc_put_att_text(ncid, lon_id, "long_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon long_name");
+        strcpy(str_att, "degrees_east");
+        if ((retval = nc_put_att_text(ncid, lon_id, "units", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon units");
+        strcpy(str_att, "longitude");
+        if ((retval = nc_put_att_text(ncid, lon_id, "standard_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon standard_name");
+        float_att = -999999.0;
+        if ((retval = nc_put_att_float(ncid, lon_id, "missing_value", NC_FLOAT, 1, &float_att)))
+          ERR(retval, "Attr: lon missing_value");
+        float_att = -32767.0;
+        if ((retval = nc_put_att_float(ncid, lon_id, "_FillValue", NC_FLOAT, 1, &float_att)))
+          ERR(retval, "Attr: lon _FillValue");
+        strcpy(str_att, "lon lat");
+        if ((retval = nc_put_att_text(ncid, lon_id, "coordinates", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lon coordinates");
+        // Geographic lat
+        if ((retval = nc_def_var(ncid, "lat", NC_FLOAT, 2, d2D_id, &lat_id))) ERR(retval, "lat");
+        strcpy(str_att, "latitude");
+        if ((retval = nc_put_att_text(ncid, lat_id, "long_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat long_name");
+        strcpy(str_att, "degrees_north");
+        if ((retval = nc_put_att_text(ncid, lat_id, "units", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat units");
+        strcpy(str_att, "latitude");
+        if ((retval = nc_put_att_text(ncid, lat_id, "standard_name", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat standard_name");
+        float_att = -999999.0;
+        if ((retval = nc_put_att_float(ncid, lat_id, "missing_value", NC_FLOAT, 1, &float_att)))
+          ERR(retval, "Attr: lat missing_value");
+        float_att = -32767.0;
+        if ((retval = nc_put_att_float(ncid, lat_id, "_FillValue", NC_FLOAT, 1, &float_att)))
+          ERR(retval, "Attr: lat _FillValue");
+        strcpy(str_att, "lon lat");
+        if ((retval = nc_put_att_text(ncid, lat_id, "coordinates", strlen(str_att), &str_att[0])))
+          ERR(retval, "Attr: lat coordinates");
+      }
     }
     struct sVarAttr {
       std::string longName;
@@ -642,36 +697,43 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
     // Data mode
 
     if (!existingFile) {
-      // Copy coordinates
-      const auto lonViewGlobal = atlas::array::make_view<double, 1>(globalData["lon"]);
-      const auto latViewGlobal = atlas::array::make_view<double, 1>(globalData["lat"]);
+      std::vector<float> zRlon(nx_out);
+      std::vector<float> zRlat(ny);
       std::vector<float> zlon(ny*nx);
       std::vector<float> zlat(ny*nx);
-      for (atlas::idx_t j = 0; j < ny; ++j) {
-        const atlas::idx_t jj = ny-1-j;
-        for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
-          atlas::gidx_t gidx = grid.index(i, jj);
-          zlon[jj*nx+i] = lonViewGlobal(gidx);
-          zlat[jj*nx+i] = latViewGlobal(gidx);
-        }
-      }
-
-      // Create rlon
-      std::vector<float> zRlon(nx);
+      // Create (r)lon
       const float rlonStart = grid.spec().getFloat("xspace.start");
       const float rlonEnd = grid.spec().getFloat("xspace.end");
-      for (size_t jLon = 0; jLon < nx; ++jLon) {
+      for (size_t jLon = 0; jLon < nx_out; ++jLon) {
         zRlon[jLon] = rlonStart + static_cast<float>(jLon)*(rlonEnd-rlonStart)
-          /static_cast<float>(nx-1);
+          /static_cast<float>(nx_out-1);
       }
-
-      // Create rlat
-      std::vector<float> zRlat(ny);
-      const float rlatStart = grid.spec().getFloat("yspace.start");
-      const float rlatEnd = grid.spec().getFloat("yspace.end");
+      
+      // Create (r)lat
+      float rlatStart = grid.spec().getFloat("yspace.start");
+      float rlatEnd = grid.spec().getFloat("yspace.end");
+      //AP if (isGlobal) {
+      //AP   const float dLat = (rlatEnd-rlatStart)/static_cast<float>(ny-1);
+      //AP   rlatStart -= dLat;
+      //AP   rlatEnd += dLat;
+      //AP }
       for (size_t jLat = 0; jLat < ny; ++jLat) {
         zRlat[jLat] = rlatStart + static_cast<float>(jLat)*(rlatEnd-rlatStart)
           /static_cast<float>(ny-1);
+      }
+      
+      if (!isGlobal) {
+        // Copy coordinates
+        const auto lonViewGlobal = atlas::array::make_view<double, 1>(globalData["lon"]);
+        const auto latViewGlobal = atlas::array::make_view<double, 1>(globalData["lat"]);
+        for (atlas::idx_t j = 0; j < ny; ++j) {
+          const atlas::idx_t jj = ny-1-j;
+          for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
+            atlas::gidx_t gidx = grid.index(i, jj);
+            zlon[jj*nx+i] = lonViewGlobal(gidx);
+            zlat[jj*nx+i] = latViewGlobal(gidx);
+          }
+        }
       }
 
       // Create lm
@@ -691,12 +753,16 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       // Create time
       std::vector<int> zTime(timeMax);
       for (size_t jTime = 0; jTime < timeMax; ++jTime) {
-        zTime[jTime] = jTime + timeOffset;
+        zTime[jTime] = jTime*timeStep/3600 + timeOffset;
       }
 
       // Write coordinates
-      if ((retval = nc_put_var_float(ncid, vRlon_id, zRlon.data()))) ERR(retval, "rlon");
-      if ((retval = nc_put_var_float(ncid, vRlat_id, zRlat.data()))) ERR(retval, "rlat");
+      if ((retval = nc_put_var_float(ncid, vRlon_id, zRlon.data()))) ERR(retval, "(r)lon");
+      if ((retval = nc_put_var_float(ncid, vRlat_id, zRlat.data()))) ERR(retval, "(r)lat");
+      if (!isGlobal) {
+        if ((retval = nc_put_var_float(ncid, lon_id, zlon.data()))) ERR(retval, "lon");
+        if ((retval = nc_put_var_float(ncid, lat_id, zlat.data()))) ERR(retval, "lat");
+      }
       if ((retval = nc_put_var_int(ncid, vLm_id, zLm.data()))) ERR(retval, "lm");
       if (has_int_press) {
         if ((retval = nc_put_var_int(ncid, vLmp_id, zLmp.data()))) ERR(retval, "lmp");
@@ -705,8 +771,6 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       const std::vector<size_t> countp({timeMax});
       if ((retval = nc_put_vars_int(ncid, vTime_id, startp.data(), countp.data(), NULL,
         zTime.data()))) ERR(retval, "time");
-      if ((retval = nc_put_var_float(ncid, lon_id, zlon.data()))) ERR(retval, "lon");
-      if ((retval = nc_put_var_float(ncid, lat_id, zlat.data()))) ERR(retval, "lat");
     }
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
@@ -731,22 +795,25 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
       if (fields.fieldSet()[vars[jvar]].shape(1) == 1) {
         // Copy data
-        std::vector<float> zvar(ny*nx);
+        std::vector<float> zvar(ny*nx_out);
         for (atlas::idx_t j = 0; j < ny; ++j) {
           const atlas::idx_t jj = ny-1-j;
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
             if (logTransf) {
-              zvar[jj*nx+i] = (pow(10, varView(gidx, 0)) - addConst) / scaleFactor;
+              zvar[jj*nx_out+i] = (pow(10, varView(gidx, 0)) - addConst) / scaleFactor;
             } else {
-              zvar[jj*nx+i] = varView(gidx, 0) / scaleFactor;
+              zvar[jj*nx_out+i] = varView(gidx, 0) / scaleFactor;
             }
+          }
+          if (isGlobal) {
+            zvar[jj*nx_out+grid.nx(jj)] = zvar[jj*nx_out];
           }
         }
 
         // Write data
         const std::vector<size_t> startp({time, 0, 0});
-        const std::vector<size_t> countp({1, ny, nx});
+        const std::vector<size_t> countp({1, ny, nx_out});
         if ((retval = nc_put_vars_float(ncid, var_id[jvar], startp.data(), countp.data(), NULL,
                                         zvar.data()))) ERR(retval, vars[jvar]);
       } else {
@@ -758,21 +825,24 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         auto levels = fields.geometry()->vertCoordAvg(var_in_code);
         for (atlas::idx_t k = 0; k < levels.size(); ++k) {
           // Copy data
-          std::vector<float> zvar(ny*nx);
+          std::vector<float> zvar(ny*nx_out);
           for (atlas::idx_t j = 0; j < ny; ++j) {
             const atlas::idx_t jj = ny-1-j;
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);
               if (logTransf) {
-                zvar[jj*nx+i] = (pow(10, varView(gidx, k)) - addConst) / scaleFactor;
+                zvar[jj*nx_out+i] = (pow(10, varView(gidx, k)) - addConst) / scaleFactor;
               } else {
-                zvar[jj*nx+i] = varView(gidx, k) / scaleFactor;
+                zvar[jj*nx_out+i] = varView(gidx, k) / scaleFactor;
               }
+            }
+            if (isGlobal) {
+              zvar[jj*nx_out+grid.nx(jj)] = zvar[jj*nx_out];
             }
           }
 
           // Write data
-          const std::vector<size_t> countp({1, 1, ny, nx});
+          const std::vector<size_t> countp({1, 1, ny, nx_out});
           const std::vector<size_t> startp({time, static_cast<size_t>(levels[k]), 0, 0});
           if ((retval = nc_put_vars_float(ncid, var_id[jvar], startp.data(), countp.data(),
                 NULL, zvar.data()))) ERR(retval, vars[jvar]);
@@ -789,4 +859,4 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
 // -----------------------------------------------------------------------------
 
-}  // namespace vind
+}  // namespace quenchxx

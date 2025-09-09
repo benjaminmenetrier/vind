@@ -1,0 +1,15 @@
+Testing geometry: VIND geometry grid:
+- name: structured
+- size: 184832
+Partitioner:
+- type: checkerboard
+Function space:
+- type: StructuredColumns
+- halo: 1
+Groups:
+- Group 0:
+  Vertical levels: 
+  - number: 5
+  - vertCoord: [4.3000000000000000e+01,4.4000000000000000e+01,4.5000000000000000e+01,4.6000000000000000e+01,4.7000000000000000e+01]
+  Mask size: 100%
+Model data: LocalConfiguration[root={top pressure => 5000}]
