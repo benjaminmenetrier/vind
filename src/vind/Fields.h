@@ -9,9 +9,11 @@
 #pragma once
 
 #include <algorithm>
+#include <map>
 #include <memory>
 #include <ostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "atlas/field.h"
@@ -120,6 +122,31 @@ class Fields : public util::Printable,
   // Duplicate points
   void resetDuplicatePoints();
 
+  // Attribute storage API (NetCDF-independent)
+  struct Attr {
+    int type{0};  // Stores NetCDF nc_type as integer
+    std::vector<std::string> tokens;
+  };
+
+  void setAttributes(const std::string & varName,
+                     const std::map<std::string, Attr> & attrs) {
+    varAttributes_[varName] = attrs;
+  }
+
+  const std::map<std::string, Attr> & getAttributes(const std::string & varName) const {
+    static const std::map<std::string, Attr> empty;
+    auto it = varAttributes_.find(varName);
+    return (it == varAttributes_.end()) ? empty : it->second;
+  }
+
+  void setAttribute(const std::string & varName,
+                    const std::string & attrName,
+                    const Attr & attrValue) {
+    varAttributes_[varName][attrName] = attrValue;
+  }
+
+  void clearAttributes() { varAttributes_.clear(); }
+
  private:
   // Print
   void print(std::ostream &) const;
@@ -141,6 +168,9 @@ class Fields : public util::Printable,
 
   // State flag (false if Increment)
   const bool isState_;
+
+  // Attribute storage
+  std::unordered_map<std::string, std::map<std::string, Attr>> varAttributes_;
 };
 
 // -----------------------------------------------------------------------------

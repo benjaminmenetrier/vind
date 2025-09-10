@@ -10,7 +10,9 @@
 #include <netcdf.h>
 
 #include <cmath>
+#include <map>
 #include <set>
+#include <stdint.h>
 #include <unordered_map>
 #include <vector>
 
@@ -20,6 +22,53 @@
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); \
   throw eckit::Exception(s + " : " + msg, Here());}
+
+// --- Helper to write attributes preserving nc_type ---
+static void writeAttributesTyped(int ncid, int varid, const vind::Fields & fields,
+                                 const std::string & varName, int &retval) {
+  const auto & attrs = fields.getAttributes(varName);
+  for (const auto & kv : attrs) {
+    const std::string & aname = kv.first;
+    const vind::Fields::Attr & a = kv.second;
+    nc_type atype = static_cast<nc_type>(a.type);
+    const auto & tokens = a.tokens;
+
+    if (atype == NC_CHAR) {
+      const std::string & txt = (tokens.empty() ? std::string() : tokens[0]);
+      if ((retval = nc_put_att_text(ncid, varid, aname.c_str(), txt.size(), txt.c_str())))
+        ERR(retval, ("Attr write text:"+aname).c_str());
+    } else if (atype == NC_INT) {
+      std::vector<int> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stoi(tokens[k]);
+      if ((retval = nc_put_att_int(ncid, varid, aname.c_str(), NC_INT, buf.size(), buf.data())))
+        ERR(retval, ("Attr write int:"+aname).c_str());
+    } else if (atype == NC_FLOAT) {
+      std::vector<float> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stof(tokens[k]);
+      if ((retval = nc_put_att_float(ncid, varid, aname.c_str(), NC_FLOAT, buf.size(), buf.data())))
+        ERR(retval, ("Attr write float:"+aname).c_str());
+    } else if (atype == NC_DOUBLE) {
+      std::vector<double> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stod(tokens[k]);
+      if ((retval = nc_put_att_double(ncid, varid, aname.c_str(),
+                                      NC_DOUBLE, buf.size(), buf.data())))
+        ERR(retval, ("Attr write double:"+aname).c_str());
+    } else if (atype == NC_SHORT) {
+      std::vector<int16_t> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = static_cast<int16_t>(std::stoi(tokens[k]));
+      if ((retval = nc_put_att_short(ncid, varid, aname.c_str(), NC_SHORT, buf.size(), buf.data())))
+        ERR(retval, ("Attr write short:"+aname).c_str());
+    } else {
+      std::string joined;
+      for (size_t i = 0; i < tokens.size(); ++i) {
+        if (i) joined += ",";
+        joined += tokens[i];
+      }
+      if ((retval = nc_put_att_text(ncid, varid, aname.c_str(), joined.size(), joined.c_str())))
+        ERR(retval, ("Attr write fallback text:"+aname).c_str());
+    }
+  }
+}
 
 namespace vind {
 
@@ -137,6 +186,53 @@ void FieldsIOBSC::read(const oops::Variables & vars,
       // Get variables ID
       if ((retval = nc_inq_varid(ncid, vars[jvar].name().c_str(), &var_id[jvar])))
         ERR(retval, vars[jvar].name());
+
+      // --- Dynamically read all NetCDF attributes for this variable and store them in Fields
+      int varid = var_id[jvar];
+      int natts = 0;
+      if ((retval = nc_inq_varnatts(ncid, varid, &natts))) ERR(retval, "inq_varnatts");
+      std::map<std::string, vind::Fields::Attr> attrs;
+      for (int att_i = 0; att_i < natts; ++att_i) {
+        char attName[NC_MAX_NAME + 1];
+        if ((retval = nc_inq_attname(ncid, varid, att_i, attName))) ERR(retval, "inq_attname");
+        nc_type attType; size_t attLen = 0;
+        if ((retval = nc_inq_att(ncid, varid, attName, &attType, &attLen))) ERR(retval, "inq_att");
+        vind::Fields::Attr A;
+        A.type = static_cast<int>(attType);
+        if (attType == NC_CHAR) {
+          std::vector<char> buf(attLen+1, '\0');
+          if ((retval = nc_get_att_text(ncid, varid, attName, buf.data())))
+            ERR(retval, "get_att_text");
+          A.tokens.push_back(std::string(buf.data()));
+        } else if (attType == NC_INT) {
+          std::vector<int> buf(attLen);
+          if ((retval = nc_get_att_int(ncid, varid, attName, buf.data())))
+            ERR(retval, "get_att_int");
+          for (size_t k=0; k < attLen; ++k) A.tokens.push_back(std::to_string(buf[k]));
+        } else if (attType == NC_FLOAT) {
+          std::vector<float> buf(attLen);
+          if ((retval = nc_get_att_float(ncid, varid, attName, buf.data())))
+            ERR(retval, "get_att_float");
+          for (size_t k=0; k < attLen; ++k) A.tokens.push_back(std::to_string(buf[k]));
+        } else if (attType == NC_DOUBLE) {
+          std::vector<double> buf(attLen);
+          if ((retval = nc_get_att_double(ncid, varid, attName, buf.data())))
+            ERR(retval, "get_att_double");
+          for (size_t k=0; k < attLen; ++k) A.tokens.push_back(std::to_string(buf[k]));
+        } else if (attType == NC_SHORT) {
+          std::vector<int16_t> buf(attLen);
+          if ((retval = nc_get_att_short(ncid, varid, attName, buf.data())))
+            ERR(retval, "get_att_short");
+          for (size_t k=0; k < attLen; ++k) A.tokens.push_back(std::to_string(buf[k]));
+        } else {
+          std::vector<char> buf(attLen+1, '\0');
+          if ((retval = nc_get_att_text(ncid, varid, attName, buf.data())))
+            ERR(retval, "get_att_text_fallback");
+          A.tokens.push_back(std::string(buf.data()));
+        }
+        attrs[std::string(attName)] = A;
+      }
+      fields.setAttributes(vars[jvar].name(), attrs);
 
       // Get variable view
       auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar].name()]);
@@ -458,79 +554,99 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         if ((retval = nc_def_var(ncid, "lon", NC_FLOAT, 1, dRlon_id, &vRlon_id)))
           ERR(retval, "lon");
         strcpy(str_att, "longitude");
-        if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon long_name");
         strcpy(str_att, "degrees");
-        if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon units");
         strcpy(str_att, "grid_longitude");
-        if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon standard_name");
         // Lat
         if ((retval = nc_def_var(ncid, "lat", NC_FLOAT, 1, dRlat_id, &vRlat_id)))
           ERR(retval, "lat");
         strcpy(str_att, "latitude");
-        if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat long_name");
         strcpy(str_att, "degrees");
-        if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat units");
         strcpy(str_att, "grid_latitude");
-        if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat standard_name");
       } else {
         // Rotated lon
         if ((retval = nc_def_var(ncid, "rlon", NC_FLOAT, 1, dRlon_id, &vRlon_id)))
           ERR(retval, "rlon");
         strcpy(str_att, "longitude in rotated_pole grid");
-        if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: rlon long_name");
         strcpy(str_att, "degrees");
-        if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: rlon units");
         strcpy(str_att, "grid_longitude");
-        if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlon_id, "standard_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: rlon standard_name");
         // Rotated lat
         if ((retval = nc_def_var(ncid, "rlat", NC_FLOAT, 1, dRlat_id, &vRlat_id)))
           ERR(retval, "rlat");
         strcpy(str_att, "latitude in rotated_pole grid");
-        if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: rlat long_name");
         strcpy(str_att, "degrees");
-        if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: rlat units");
         strcpy(str_att, "grid_latitude");
-        if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vRlat_id, "standard_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: rlat standard_name");
       }
       // Levels
       if ((retval = nc_def_var(ncid, "lm", NC_INT, 1, dLm_id, &vLm_id))) ERR(retval, "lm");
       strcpy(str_att, "unitless");
-      if ((retval = nc_put_att_text(ncid, vLm_id, "units", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vLm_id, "units", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: lm units");
       strcpy(str_att, "layer id");
-      if ((retval = nc_put_att_text(ncid, vLm_id, "long_name", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vLm_id, "long_name", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: lm long_name");
       strcpy(str_att, "down");
-      if ((retval = nc_put_att_text(ncid, vLm_id, "positive", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vLm_id, "positive", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: lm positive");
       if (has_int_press) {
         // Interface pressure levels
-        if ((retval = nc_def_var(ncid, "lmp", NC_INT, 1, dLmp_id, &vLmp_id))) ERR(retval, "lmp");
+        if ((retval = nc_def_var(ncid, "lmp", NC_INT, 1, dLmp_id, &vLmp_id)))
+          ERR(retval, "lmp");
         strcpy(str_att, "unitless");
-        if ((retval = nc_put_att_text(ncid, vLmp_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vLmp_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lmp units");
         strcpy(str_att, "interface layer id");
-        if ((retval = nc_put_att_text(ncid, vLmp_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vLmp_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lmp long_name");
         strcpy(str_att, "down");
-        if ((retval = nc_put_att_text(ncid, vLmp_id, "positive", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, vLmp_id, "positive", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lmp positive");
       }
       if (!isGlobal) {
         // Rotated pole
-        if ((retval = nc_def_var(ncid, "rotated_pole", NC_CHAR, 0, dLm_id, &vrp_id))) ERR(retval,
+        if ((retval = nc_def_var(ncid, "rotated_pole", NC_CHAR, 0, dLm_id, &vrp_id)))
+          ERR(retval,
          "rotated_pole");
         strcpy(str_att, "rotated_latitude_longitude");
         if ((retval = nc_put_att_text(ncid, vrp_id, "grid_mapping_name", strlen(str_att),
@@ -550,100 +666,83 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
                &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_longitude");
       }
       // Time steps
-      if ((retval = nc_def_var(ncid, "time", NC_INT, 1, dTime_id, &vTime_id))) ERR(retval, "time");
+      if ((retval = nc_def_var(ncid, "time", NC_INT, 1, dTime_id, &vTime_id)))
+        ERR(retval, "time");
       strcpy(str_att,
         ("hours since "+fields.geometry()->io().getString("initial date").substr(0, 10)+
         " "+fields.geometry()->io().getString("initial date").substr(11, 5)+" UTC").c_str());
-      if ((retval = nc_put_att_text(ncid, vTime_id, "units", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vTime_id, "units", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: time units");
       strcpy(str_att, "time");
-      if ((retval = nc_put_att_text(ncid, vTime_id, "long_name", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vTime_id, "long_name", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: time long_name");
       strcpy(str_att, "standard");
-      if ((retval = nc_put_att_text(ncid, vTime_id, "calendar", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vTime_id, "calendar", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: time calendar");
       strcpy(str_att, "time");
-      if ((retval = nc_put_att_text(ncid, vTime_id, "standard_name", strlen(str_att), &str_att[0])))
+      if ((retval = nc_put_att_text(ncid, vTime_id, "standard_name", strlen(str_att),
+                                    &str_att[0])))
         ERR(retval, "Attr: time standard_name");
       if (!isGlobal) {
         // Geographic lon
-        if ((retval = nc_def_var(ncid, "lon", NC_FLOAT, 2, d2D_id, &lon_id))) ERR(retval, "lon");
+        if ((retval = nc_def_var(ncid, "lon", NC_FLOAT, 2, d2D_id, &lon_id)))
+          ERR(retval, "lon");
         strcpy(str_att, "longitude");
-        if ((retval = nc_put_att_text(ncid, lon_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lon_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon long_name");
         strcpy(str_att, "degrees_east");
-        if ((retval = nc_put_att_text(ncid, lon_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lon_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon units");
         strcpy(str_att, "longitude");
-        if ((retval = nc_put_att_text(ncid, lon_id, "standard_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lon_id, "standard_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon standard_name");
         float_att = -999999.0;
-        if ((retval = nc_put_att_float(ncid, lon_id, "missing_value", NC_FLOAT, 1, &float_att)))
+        if ((retval = nc_put_att_float(ncid, lon_id, "missing_value", NC_FLOAT, 1,
+                                       &float_att)))
           ERR(retval, "Attr: lon missing_value");
         float_att = -32767.0;
-        if ((retval = nc_put_att_float(ncid, lon_id, "_FillValue", NC_FLOAT, 1, &float_att)))
+        if ((retval = nc_put_att_float(ncid, lon_id, "_FillValue", NC_FLOAT, 1,
+                                       &float_att)))
           ERR(retval, "Attr: lon _FillValue");
         strcpy(str_att, "lon lat");
-        if ((retval = nc_put_att_text(ncid, lon_id, "coordinates", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lon_id, "coordinates", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lon coordinates");
         // Geographic lat
-        if ((retval = nc_def_var(ncid, "lat", NC_FLOAT, 2, d2D_id, &lat_id))) ERR(retval, "lat");
+        if ((retval = nc_def_var(ncid, "lat", NC_FLOAT, 2, d2D_id, &lat_id)))
+          ERR(retval, "lat");
         strcpy(str_att, "latitude");
-        if ((retval = nc_put_att_text(ncid, lat_id, "long_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lat_id, "long_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat long_name");
         strcpy(str_att, "degrees_north");
-        if ((retval = nc_put_att_text(ncid, lat_id, "units", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lat_id, "units", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat units");
         strcpy(str_att, "latitude");
-        if ((retval = nc_put_att_text(ncid, lat_id, "standard_name", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lat_id, "standard_name", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat standard_name");
         float_att = -999999.0;
-        if ((retval = nc_put_att_float(ncid, lat_id, "missing_value", NC_FLOAT, 1, &float_att)))
+        if ((retval = nc_put_att_float(ncid, lat_id, "missing_value", NC_FLOAT, 1,
+                                       &float_att)))
           ERR(retval, "Attr: lat missing_value");
         float_att = -32767.0;
-        if ((retval = nc_put_att_float(ncid, lat_id, "_FillValue", NC_FLOAT, 1, &float_att)))
+        if ((retval = nc_put_att_float(ncid, lat_id, "_FillValue", NC_FLOAT, 1,
+                                       &float_att)))
           ERR(retval, "Attr: lat _FillValue");
         strcpy(str_att, "lon lat");
-        if ((retval = nc_put_att_text(ncid, lat_id, "coordinates", strlen(str_att), &str_att[0])))
+        if ((retval = nc_put_att_text(ncid, lat_id, "coordinates", strlen(str_att),
+                                      &str_att[0])))
           ERR(retval, "Attr: lat coordinates");
       }
     }
-    struct sVarAttr {
-      std::string longName;
-      std::string stdName;
-      std::string units;
-      sVarAttr(std::string _longName, std::string _stdName, std::string _units) {
-        longName = _longName;
-        stdName = _stdName;
-        units = _units;
-      }
-    };
-    static const std::unordered_map<std::string, sVarAttr> varAttr_ = {
-      {"mid_layer_height_agl",
-       sVarAttr("Mid-layer height above ground level", "height_agl", "m")},
-      {"mid_layer_pressure",
-       sVarAttr("Mid-layer hydrostatic pressure", "air_pressure", "Pa")},
-      {"interface_pressure",
-       sVarAttr("Interfacial hydrostatic pressure", "interface_pressure", "Pa")},
-      {"PSFC",
-       sVarAttr("PSFC", "PSFC", "unknown")},
-      {"FIS",
-       sVarAttr("FIS", "FIS", "unknown")},
-      {"air_density",
-       sVarAttr("Air density", "air_density", "kg/m3")},
-      {"dry_pm10_mass",
-       sVarAttr("PM10 dry mass conc.", "dry_PM10_mass", "kg m-3")},
-      {"dry_pm2p5_mass",
-       sVarAttr("PM2.5 dry mass conc.", "dry_PM2p5_mass", "kg m-3")},
-      {"O3",
-       sVarAttr("TRACERS_044", "TRACERS_044", "unknown")},
-      {"NO2",
-       sVarAttr("TRACERS_043", "TRACERS_043", "unknown")},
-      {"CO",
-       sVarAttr("TRACERS_057", "TRACERS_057", "unknown")},
-      {"SO2",
-       sVarAttr("TRACERS_076", "TRACERS_076", "unknown")}
-    };
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
       for (const auto & item : fields.geometry()->alias()) {
@@ -666,28 +765,8 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
           if ((retval = nc_def_var(ncid, vars[jvar].c_str(), NC_FLOAT, 3, d3D_id, &var_id[jvar])))
             ERR(retval, vars[jvar]);
         }
-        // Define attributes
-        strcpy(str_att, (varAttr_.find(vars[jvar])->second.longName).c_str());
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "long_name", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: long_name");
-        strcpy(str_att, (varAttr_.find(vars[jvar])->second.units).c_str());
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "units", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: units");
-        strcpy(str_att, (varAttr_.find(vars[jvar])->second.stdName).c_str());
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "standard_name", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: standard_name");
-        float_att = -999999.0;
-        if ((retval = nc_put_att_float(ncid, var_id[jvar], "missing_value", NC_FLOAT, 1,
-          &float_att))) ERR(retval, "Attr: missing_value");
-        float_att = -32767.0;
-        if ((retval = nc_put_att_float(ncid, var_id[jvar], "_FillValue", NC_FLOAT, 1,
-          &float_att))) ERR(retval, "Attr: _FillValue");
-        strcpy(str_att, "lon lat");
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "coordinates", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: coordinates");
-        strcpy(str_att, "rotated_pole");
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "grid_mapping", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: grid mapping");
+        // Write attributes stored in Fields (dynamic)
+        writeAttributesTyped(ncid, var_id[jvar], fields, vars[jvar], retval);
       }
     }
 
@@ -708,7 +787,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         zRlon[jLon] = rlonStart + static_cast<float>(jLon)*(rlonEnd-rlonStart)
           /static_cast<float>(nx_out-1);
       }
-      
+
       // Create (r)lat
       float rlatStart = grid.spec().getFloat("yspace.start");
       float rlatEnd = grid.spec().getFloat("yspace.end");
@@ -716,7 +795,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         zRlat[jLat] = rlatStart + static_cast<float>(jLat)*(rlatEnd-rlatStart)
           /static_cast<float>(ny-1);
       }
-      
+
       if (!isGlobal) {
         // Copy coordinates
         const auto lonViewGlobal = atlas::array::make_view<double, 1>(globalData["lon"]);
@@ -764,8 +843,8 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       }
       const std::vector<size_t> startp({0});
       const std::vector<size_t> countp({timeMax});
-      if ((retval = nc_put_vars_int(ncid, vTime_id, startp.data(), countp.data(), NULL,
-        zTime.data()))) ERR(retval, "time");
+      if ((retval = nc_put_vars_int(ncid, vTime_id, startp.data(), countp.data(), NULL, zTime.data())))
+        ERR(retval, "time");
     }
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
@@ -854,4 +933,4 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
 // -----------------------------------------------------------------------------
 
-}  // namespace quenchxx
+}  // namespace vind

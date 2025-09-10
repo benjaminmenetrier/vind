@@ -86,7 +86,8 @@ Fields::Fields(const Geometry & geom,
 
 Fields::Fields(const Fields & other,
                const Geometry & geom)
-  : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_), isState_(other.isState_) {
+  : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_),
+    isState_(other.isState_), varAttributes_(other.varAttributes_) {
   oops::Log::trace() << classname() << "::Fields starting" << std::endl;
 
   // Reset ATLAS fieldset
@@ -136,7 +137,8 @@ Fields::Fields(const Fields & other,
 
 Fields::Fields(const Fields & other,
                const bool copy)
-  : geom_(other.geom_), vars_(other.vars_), time_(other.time_), isState_(other.isState_) {
+  : geom_(other.geom_), vars_(other.vars_), time_(other.time_),
+    isState_(other.isState_), varAttributes_(other.varAttributes_) {
   oops::Log::trace() << classname() << "::Fields starting" << std::endl;
 
   // Reset ATLAS fieldset
@@ -183,7 +185,8 @@ Fields::Fields(const Fields & other,
 // -----------------------------------------------------------------------------
 
 Fields::Fields(const Fields & other)
-  : geom_(other.geom_), vars_(other.vars_), time_(other.time_), isState_(other.isState_) {
+  : geom_(other.geom_), vars_(other.vars_), time_(other.time_),
+    isState_(other.isState_), varAttributes_(other.varAttributes_) {
   oops::Log::trace() << classname() << "::Fields starting" << std::endl;
 
   // Reset ATLAS fieldset
@@ -333,6 +336,7 @@ Fields & Fields::operator=(const Fields & rhs) {
     }
   }
   time_ = rhs.time_;
+  varAttributes_ = rhs.varAttributes_;
 
   oops::Log::trace() << classname() << "::operator= end" << std::endl;
   return *this;
@@ -381,6 +385,10 @@ Fields & Fields::operator+=(const Fields & rhs) {
     }
   }
 
+  if (varAttributes_.empty() && !rhs.varAttributes_.empty()) {
+    varAttributes_ = rhs.varAttributes_;
+  }
+
   oops::Log::trace() << classname() << "::operator+= done" << std::endl;
   return *this;
 }
@@ -413,6 +421,10 @@ Fields & Fields::operator-=(const Fields & rhs) {
         throw eckit::Exception("Field " + var.name() + " not in rhs fieldset", Here());
       }
     }
+  }
+
+  if (varAttributes_.empty() && !rhs.varAttributes_.empty()) {
+    varAttributes_ = rhs.varAttributes_;
   }
 
   oops::Log::trace() << classname() << "::operator-= done" << std::endl;
@@ -469,6 +481,10 @@ void Fields::axpy(const double & zz,
     }
   }
 
+  if (varAttributes_.empty() && !rhs.varAttributes_.empty()) {
+    varAttributes_ = rhs.varAttributes_;
+  }
+
   oops::Log::trace() << classname() << "::axpy done" << std::endl;
 }
 
@@ -523,6 +539,10 @@ void Fields::schur_product_with(const Fields & fld2) {
       }
       field.set_dirty(field.dirty() || field2.dirty());
     }
+  }
+
+  if (varAttributes_.empty() && !fld2.varAttributes_.empty()) {
+    varAttributes_ = fld2.varAttributes_;
   }
 
   oops::Log::trace() << classname() << "::schur_product_with done" << std::endl;
@@ -844,6 +864,14 @@ void Fields::diff(const Fields & x1,
         }
       }
       field.set_dirty(fieldx1.dirty() || fieldx2.dirty());
+    }
+  }
+
+  if (varAttributes_.empty()) {
+    if (!x1.varAttributes_.empty()) {
+      varAttributes_ = x1.varAttributes_;
+    } else if (!x2.varAttributes_.empty()) {
+      varAttributes_ = x2.varAttributes_;
     }
   }
 
