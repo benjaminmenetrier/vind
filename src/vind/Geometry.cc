@@ -87,9 +87,7 @@ Geometry::Geometry(const eckit::Configuration & config,
     const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
     auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask.field("owned"));
     for (int jnode = 0; jnode < fs.size(); ++jnode) {
-      int i = view_i(jnode)-1;
-      int j = view_j(jnode)-1;
-      if (((j == 0) || (j == grid.ny()-1)) && (i > 0)) {
+      if (((view_j(jnode) == 1) || (view_j(jnode) == grid.ny())) && (view_i(jnode) > 1)) {
         ownedView(jnode, 0) = 0;
       }
     }
