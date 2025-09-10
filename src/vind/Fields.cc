@@ -334,6 +334,7 @@ Fields & Fields::operator=(const Fields & rhs) {
     }
   }
   time_ = rhs.time_;
+  isState_ = rhs.isState_;
 
   oops::Log::trace() << classname() << "::operator= end" << std::endl;
   return *this;
@@ -373,9 +374,7 @@ Fields & Fields::operator+=(const Fields & rhs) {
             }
           }
         }
-        if (field.metadata().empty() && !fieldRhs.metadata().empty()) {
-          field.metadata() = fieldRhs.metadata();
-        }
+        field.metadata() = util::mergeConfigs(field.metadata(), fieldRhs.metadata());
         field.set_dirty(field.dirty() || fieldRhs.dirty());
       }
     }  else {
@@ -410,9 +409,7 @@ Fields & Fields::operator-=(const Fields & rhs) {
             }
           }
         }
-        if (field.metadata().empty() && !fieldRhs.metadata().empty()) {
-          field.metadata() = fieldRhs.metadata();
-        }
+        field.metadata() = util::mergeConfigs(field.metadata(), fieldRhs.metadata());
         field.set_dirty(field.dirty() || fieldRhs.dirty());
       }
     } else {
@@ -472,9 +469,7 @@ void Fields::axpy(const double & zz,
           }
         }
       }
-      if (field.metadata().empty() && !fieldRhs.metadata().empty()) {
-        field.metadata() = fieldRhs.metadata();
-      }
+      field.metadata() = util::mergeConfigs(field.metadata(), fieldRhs.metadata());
       field.set_dirty(field.dirty() || fieldRhs.dirty());
     }
   }
@@ -531,9 +526,7 @@ void Fields::schur_product_with(const Fields & fld2) {
           }
         }
       }
-      if (field.metadata().empty() && !field2.metadata().empty()) {
-        field.metadata() = field2.metadata();
-      }
+      field.metadata() = util::mergeConfigs(field.metadata(), field2.metadata());
       field.set_dirty(field.dirty() || field2.dirty());
     }
   }
@@ -856,13 +849,8 @@ void Fields::diff(const Fields & x1,
           }
         }
       }
-      if (field.metadata().empty()) {
-        if (!fieldx1.metadata().empty()) {
-          field.metadata() = fieldx1.metadata();
-        } else if (!fieldx2.metadata().empty()) {
-          field.metadata() = fieldx2.metadata();
-        }
-      }
+      field.metadata() = util::mergeConfigs(field.metadata(), fieldx1.metadata());
+      field.metadata() = util::mergeConfigs(field.metadata(), fieldx2.metadata());
       field.set_dirty(fieldx1.dirty() || fieldx2.dirty());
     }
   }
