@@ -712,11 +712,6 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       // Create (r)lat
       float rlatStart = grid.spec().getFloat("yspace.start");
       float rlatEnd = grid.spec().getFloat("yspace.end");
-      //AP if (isGlobal) {
-      //AP   const float dLat = (rlatEnd-rlatStart)/static_cast<float>(ny-1);
-      //AP   rlatStart -= dLat;
-      //AP   rlatEnd += dLat;
-      //AP }
       for (size_t jLat = 0; jLat < ny; ++jLat) {
         zRlat[jLat] = rlatStart + static_cast<float>(jLat)*(rlatEnd-rlatStart)
           /static_cast<float>(ny-1);
