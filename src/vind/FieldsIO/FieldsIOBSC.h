@@ -7,7 +7,9 @@
 
 #pragma once
 
+#include <map>
 #include <string>
+#include <vector>
 
 #include "atlas/field.h"
 
@@ -41,6 +43,26 @@ class FieldsIOBSC : public FieldsIOBase {
   // Write
   void write(const eckit::Configuration &,
              const Fields &) const override;
+
+ private:
+  // Attribute storage API (NetCDF-independent)
+  struct Attr {
+    int type{0};  // Stores NetCDF nc_type as integer
+    std::vector<std::string> tokens;
+  };
+
+  // Set attributes
+  void setAttributes(eckit::LocalConfiguration &,
+                     const std::map<std::string, Attr> &) const;
+
+  // Get attributes
+  const std::map<std::string, Attr> getAttributes(const eckit::LocalConfiguration &) const;
+
+  // Write attributes
+  void writeAttributesTyped(const int &,
+                            const int &,
+                            const eckit::LocalConfiguration &,
+                            int &) const;
 };
 
 // -----------------------------------------------------------------------------

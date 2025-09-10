@@ -86,8 +86,7 @@ Fields::Fields(const Geometry & geom,
 
 Fields::Fields(const Fields & other,
                const Geometry & geom)
-  : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_),
-    isState_(other.isState_), varAttributes_(other.varAttributes_) {
+  : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_), isState_(other.isState_) {
   oops::Log::trace() << classname() << "::Fields starting" << std::endl;
 
   // Reset ATLAS fieldset
@@ -137,8 +136,7 @@ Fields::Fields(const Fields & other,
 
 Fields::Fields(const Fields & other,
                const bool copy)
-  : geom_(other.geom_), vars_(other.vars_), time_(other.time_),
-    isState_(other.isState_), varAttributes_(other.varAttributes_) {
+  : geom_(other.geom_), vars_(other.vars_), time_(other.time_), isState_(other.isState_) {
   oops::Log::trace() << classname() << "::Fields starting" << std::endl;
 
   // Reset ATLAS fieldset
@@ -185,8 +183,7 @@ Fields::Fields(const Fields & other,
 // -----------------------------------------------------------------------------
 
 Fields::Fields(const Fields & other)
-  : geom_(other.geom_), vars_(other.vars_), time_(other.time_),
-    isState_(other.isState_), varAttributes_(other.varAttributes_) {
+  : geom_(other.geom_), vars_(other.vars_), time_(other.time_), isState_(other.isState_) {
   oops::Log::trace() << classname() << "::Fields starting" << std::endl;
 
   // Reset ATLAS fieldset
@@ -332,11 +329,11 @@ Fields & Fields::operator=(const Fields & rhs) {
           view(jnode, jlevel) = viewRhs(jnode, jlevel);
         }
       }
+      field.metadata() = fieldRhs.metadata();
       field.set_dirty(fieldRhs.dirty());
     }
   }
   time_ = rhs.time_;
-  varAttributes_ = rhs.varAttributes_;
 
   oops::Log::trace() << classname() << "::operator= end" << std::endl;
   return *this;
@@ -376,6 +373,9 @@ Fields & Fields::operator+=(const Fields & rhs) {
             }
           }
         }
+        if (field.metadata().empty() && !fieldRhs.metadata().empty()) {
+          field.metadata() = fieldRhs.metadata();
+        }
         field.set_dirty(field.dirty() || fieldRhs.dirty());
       }
     }  else {
@@ -383,10 +383,6 @@ Fields & Fields::operator+=(const Fields & rhs) {
         throw eckit::Exception("Field " + var.name() + " not in rhs fieldset", Here());
       }
     }
-  }
-
-  if (varAttributes_.empty() && !rhs.varAttributes_.empty()) {
-    varAttributes_ = rhs.varAttributes_;
   }
 
   oops::Log::trace() << classname() << "::operator+= done" << std::endl;
@@ -414,6 +410,9 @@ Fields & Fields::operator-=(const Fields & rhs) {
             }
           }
         }
+        if (field.metadata().empty() && !fieldRhs.metadata().empty()) {
+          field.metadata() = fieldRhs.metadata();
+        }
         field.set_dirty(field.dirty() || fieldRhs.dirty());
       }
     } else {
@@ -421,10 +420,6 @@ Fields & Fields::operator-=(const Fields & rhs) {
         throw eckit::Exception("Field " + var.name() + " not in rhs fieldset", Here());
       }
     }
-  }
-
-  if (varAttributes_.empty() && !rhs.varAttributes_.empty()) {
-    varAttributes_ = rhs.varAttributes_;
   }
 
   oops::Log::trace() << classname() << "::operator-= done" << std::endl;
@@ -477,12 +472,11 @@ void Fields::axpy(const double & zz,
           }
         }
       }
+      if (field.metadata().empty() && !fieldRhs.metadata().empty()) {
+        field.metadata() = fieldRhs.metadata();
+      }
       field.set_dirty(field.dirty() || fieldRhs.dirty());
     }
-  }
-
-  if (varAttributes_.empty() && !rhs.varAttributes_.empty()) {
-    varAttributes_ = rhs.varAttributes_;
   }
 
   oops::Log::trace() << classname() << "::axpy done" << std::endl;
@@ -537,12 +531,11 @@ void Fields::schur_product_with(const Fields & fld2) {
           }
         }
       }
+      if (field.metadata().empty() && !field2.metadata().empty()) {
+        field.metadata() = field2.metadata();
+      }
       field.set_dirty(field.dirty() || field2.dirty());
     }
-  }
-
-  if (varAttributes_.empty() && !fld2.varAttributes_.empty()) {
-    varAttributes_ = fld2.varAttributes_;
   }
 
   oops::Log::trace() << classname() << "::schur_product_with done" << std::endl;
@@ -863,15 +856,14 @@ void Fields::diff(const Fields & x1,
           }
         }
       }
+      if (field.metadata().empty()) {
+        if (!fieldx1.metadata().empty()) {
+          field.metadata() = fieldx1.metadata();
+        } else if (!fieldx2.metadata().empty()) {
+          field.metadata() = fieldx2.metadata();
+        }
+      }
       field.set_dirty(fieldx1.dirty() || fieldx2.dirty());
-    }
-  }
-
-  if (varAttributes_.empty()) {
-    if (!x1.varAttributes_.empty()) {
-      varAttributes_ = x1.varAttributes_;
-    } else if (!x2.varAttributes_.empty()) {
-      varAttributes_ = x2.varAttributes_;
     }
   }
 

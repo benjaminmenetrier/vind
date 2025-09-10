@@ -272,14 +272,10 @@ Geometry::Geometry(const Geometry & other)
 // -----------------------------------------------------------------------------
 
 size_t Geometry::groupIndex(const std::string & var) const {
-  oops::Log::trace() << classname() << "::groupIndex starting" << std::endl;
-
   if (groupIndex_.find(var) == groupIndex_.end()) {
     throw eckit::Exception("cannot find group index for variable " + var, Here());
   }
   const size_t groupIndex = groupIndex_.at(var);
-
-  oops::Log::trace() << classname() << "::groupIndex done" << std::endl;
   return groupIndex;
 }
 

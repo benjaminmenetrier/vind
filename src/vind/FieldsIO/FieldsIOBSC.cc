@@ -8,11 +8,11 @@
 #include "vind/FieldsIO/FieldsIOBSC.h"
 
 #include <netcdf.h>
+#include <stdint.h>
 
 #include <cmath>
 #include <map>
 #include <set>
-#include <stdint.h>
 #include <unordered_map>
 #include <vector>
 
@@ -22,53 +22,6 @@
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); \
   throw eckit::Exception(s + " : " + msg, Here());}
-
-// --- Helper to write attributes preserving nc_type ---
-static void writeAttributesTyped(int ncid, int varid, const vind::Fields & fields,
-                                 const std::string & varName, int &retval) {
-  const auto & attrs = fields.getAttributes(varName);
-  for (const auto & kv : attrs) {
-    const std::string & aname = kv.first;
-    const vind::Fields::Attr & a = kv.second;
-    nc_type atype = static_cast<nc_type>(a.type);
-    const auto & tokens = a.tokens;
-
-    if (atype == NC_CHAR) {
-      const std::string & txt = (tokens.empty() ? std::string() : tokens[0]);
-      if ((retval = nc_put_att_text(ncid, varid, aname.c_str(), txt.size(), txt.c_str())))
-        ERR(retval, ("Attr write text:"+aname).c_str());
-    } else if (atype == NC_INT) {
-      std::vector<int> buf(tokens.size());
-      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stoi(tokens[k]);
-      if ((retval = nc_put_att_int(ncid, varid, aname.c_str(), NC_INT, buf.size(), buf.data())))
-        ERR(retval, ("Attr write int:"+aname).c_str());
-    } else if (atype == NC_FLOAT) {
-      std::vector<float> buf(tokens.size());
-      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stof(tokens[k]);
-      if ((retval = nc_put_att_float(ncid, varid, aname.c_str(), NC_FLOAT, buf.size(), buf.data())))
-        ERR(retval, ("Attr write float:"+aname).c_str());
-    } else if (atype == NC_DOUBLE) {
-      std::vector<double> buf(tokens.size());
-      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stod(tokens[k]);
-      if ((retval = nc_put_att_double(ncid, varid, aname.c_str(),
-                                      NC_DOUBLE, buf.size(), buf.data())))
-        ERR(retval, ("Attr write double:"+aname).c_str());
-    } else if (atype == NC_SHORT) {
-      std::vector<int16_t> buf(tokens.size());
-      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = static_cast<int16_t>(std::stoi(tokens[k]));
-      if ((retval = nc_put_att_short(ncid, varid, aname.c_str(), NC_SHORT, buf.size(), buf.data())))
-        ERR(retval, ("Attr write short:"+aname).c_str());
-    } else {
-      std::string joined;
-      for (size_t i = 0; i < tokens.size(); ++i) {
-        if (i) joined += ",";
-        joined += tokens[i];
-      }
-      if ((retval = nc_put_att_text(ncid, varid, aname.c_str(), joined.size(), joined.c_str())))
-        ERR(retval, ("Attr write fallback text:"+aname).c_str());
-    }
-  }
-}
 
 namespace vind {
 
@@ -191,13 +144,13 @@ void FieldsIOBSC::read(const oops::Variables & vars,
       int varid = var_id[jvar];
       int natts = 0;
       if ((retval = nc_inq_varnatts(ncid, varid, &natts))) ERR(retval, "inq_varnatts");
-      std::map<std::string, vind::Fields::Attr> attrs;
+      std::map<std::string, Attr> attrs;
       for (int att_i = 0; att_i < natts; ++att_i) {
         char attName[NC_MAX_NAME + 1];
         if ((retval = nc_inq_attname(ncid, varid, att_i, attName))) ERR(retval, "inq_attname");
         nc_type attType; size_t attLen = 0;
         if ((retval = nc_inq_att(ncid, varid, attName, &attType, &attLen))) ERR(retval, "inq_att");
-        vind::Fields::Attr A;
+        Attr A;
         A.type = static_cast<int>(attType);
         if (attType == NC_CHAR) {
           std::vector<char> buf(attLen+1, '\0');
@@ -232,7 +185,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
         }
         attrs[std::string(attName)] = A;
       }
-      fields.setAttributes(vars[jvar].name(), attrs);
+      setAttributes(globalData[vars[jvar].name()].metadata(), attrs);
 
       // Get variable view
       auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar].name()]);
@@ -766,7 +719,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
             ERR(retval, vars[jvar]);
         }
         // Write attributes stored in Fields (dynamic)
-        writeAttributesTyped(ncid, var_id[jvar], fields, vars[jvar], retval);
+        writeAttributesTyped(ncid, var_id[jvar], fields.fieldSet()[vars[jvar]].metadata(), retval);
       }
     }
 
@@ -843,8 +796,8 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       }
       const std::vector<size_t> startp({0});
       const std::vector<size_t> countp({timeMax});
-      if ((retval = nc_put_vars_int(ncid, vTime_id, startp.data(), countp.data(), NULL, zTime.data())))
-        ERR(retval, "time");
+      if ((retval = nc_put_vars_int(ncid, vTime_id, startp.data(), countp.data(), NULL,
+        zTime.data()))) ERR(retval, "time");
     }
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
@@ -929,6 +882,97 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   }
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void FieldsIOBSC::setAttributes(eckit::LocalConfiguration & metadata,
+                                const std::map<std::string, Attr> & attrs) const {
+  oops::Log::trace() << classname() << "::setAttributes starting" << std::endl;
+
+  eckit::LocalConfiguration attrsConfig;
+  for (const auto & kv : attrs) {
+    eckit::LocalConfiguration attrConfig;
+    attrConfig.set("type", kv.second.type);
+    attrConfig.set("tokens", kv.second.tokens);
+    attrsConfig.set(kv.first, attrConfig);
+  }
+  metadata.set("attributes", attrsConfig);
+
+  oops::Log::trace() << classname() << "::setAttributes done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+const std::map<std::string, FieldsIOBSC::Attr> FieldsIOBSC::getAttributes(
+  const eckit::LocalConfiguration & metadata) const {
+  oops::Log::trace() << classname() << "::getAttributes starting" << std::endl;
+
+  std::map<std::string, Attr> attrs;
+  eckit::LocalConfiguration attrsConfig;
+  if (metadata.get("attributes", attrsConfig)) {;
+    for (const auto & key : attrsConfig.keys()) {
+      const eckit::LocalConfiguration attrConfig(attrsConfig, key);
+      attrs[key] = {attrConfig.getInt("type"),  attrConfig.getStringVector("tokens")};
+    }
+  }
+
+  oops::Log::trace() << classname() << "::getAttributes done" << std::endl;
+  return attrs;
+}
+
+// -----------------------------------------------------------------------------
+
+void FieldsIOBSC::writeAttributesTyped(const int & ncid,
+                                       const int & varid,
+                                       const eckit::LocalConfiguration & config,
+                                       int & retval) const {
+  oops::Log::trace() << classname() << "::writeAttributesTyped starting" << std::endl;
+
+  for (const auto & kv : getAttributes(config)) {
+    const std::string & aname = kv.first;
+    const Attr & a = kv.second;
+    nc_type atype = static_cast<nc_type>(a.type);
+    const auto & tokens = a.tokens;
+
+    if (atype == NC_CHAR) {
+      const std::string & txt = (tokens.empty() ? std::string() : tokens[0]);
+      if ((retval = nc_put_att_text(ncid, varid, aname.c_str(), txt.size(), txt.c_str())))
+        ERR(retval, ("Attr write text:"+aname).c_str());
+    } else if (atype == NC_INT) {
+      std::vector<int> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stoi(tokens[k]);
+      if ((retval = nc_put_att_int(ncid, varid, aname.c_str(), NC_INT, buf.size(), buf.data())))
+        ERR(retval, ("Attr write int:"+aname).c_str());
+    } else if (atype == NC_FLOAT) {
+      std::vector<float> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stof(tokens[k]);
+      if ((retval = nc_put_att_float(ncid, varid, aname.c_str(), NC_FLOAT, buf.size(), buf.data())))
+        ERR(retval, ("Attr write float:"+aname).c_str());
+    } else if (atype == NC_DOUBLE) {
+      std::vector<double> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stod(tokens[k]);
+      if ((retval = nc_put_att_double(ncid, varid, aname.c_str(),
+                                      NC_DOUBLE, buf.size(), buf.data())))
+        ERR(retval, ("Attr write double:"+aname).c_str());
+    } else if (atype == NC_SHORT) {
+      std::vector<int16_t> buf(tokens.size());
+      for (size_t k = 0; k < tokens.size(); ++k) buf[k] =
+        static_cast<int16_t>(std::stoi(tokens[k]));
+      if ((retval = nc_put_att_short(ncid, varid, aname.c_str(), NC_SHORT, buf.size(), buf.data())))
+        ERR(retval, ("Attr write short:"+aname).c_str());
+    } else {
+      std::string joined;
+      for (size_t i = 0; i < tokens.size(); ++i) {
+        if (i) joined += ",";
+        joined += tokens[i];
+      }
+      if ((retval = nc_put_att_text(ncid, varid, aname.c_str(), joined.size(), joined.c_str())))
+        ERR(retval, ("Attr write fallback text:"+aname).c_str());
+    }
+  }
+
+  oops::Log::trace() << classname() << "::writeAttributesTyped done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
