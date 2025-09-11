@@ -12,7 +12,7 @@
 
 #include <cmath>
 #include <memory>
-#include <set>
+#include <unordered_map>
 #include <vector>
 
 #include "oops/util/Logger.h"

@@ -8,7 +8,6 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "atlas/field.h"
