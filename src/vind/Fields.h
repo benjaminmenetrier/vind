@@ -140,7 +140,7 @@ class Fields : public util::Printable,
   mutable atlas::FieldSet fset_;
 
   // State flag (false if Increment)
-  const bool isState_;
+  bool isState_;
 };
 
 // -----------------------------------------------------------------------------

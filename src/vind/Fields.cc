@@ -333,6 +333,7 @@ Fields & Fields::operator=(const Fields & rhs) {
     }
   }
   time_ = rhs.time_;
+  isState_ = rhs.isState_;
 
   oops::Log::trace() << classname() << "::operator= end" << std::endl;
   return *this;

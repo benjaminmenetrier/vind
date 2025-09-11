@@ -8,9 +8,11 @@
 #include "vind/FieldsIO/FieldsIOAQ.h"
 
 #include <netcdf.h>
+#include <stdint.h>
 
 #include <cmath>
-#include <unordered_map>
+#include <memory>
+#include <set>
 #include <vector>
 
 #include "oops/util/Logger.h"
@@ -29,6 +31,7 @@ static FieldsIOMaker<FieldsIOAQ> makerAQ_("aq");
 // -----------------------------------------------------------------------------
 
 static std::vector<std::string> existingFiles_;
+static eckit::LocalConfiguration attributes_;
 
 // -----------------------------------------------------------------------------
 
@@ -37,8 +40,11 @@ void FieldsIOAQ::read(const oops::Variables & vars,
                       Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
+  // Get geometry
+  std::shared_ptr<const Geometry> geom(fields.geometry());
+
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
+  const atlas::functionspace::StructuredColumns fs(geom->functionSpace());
 
   // Clear local fieldset
   fields.fieldSet().clear();
@@ -72,7 +78,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
   const std::string ncFilePath = conf.getString("filepath");
 
   // Get file reference time
-  const util::DateTime initialTime(fields.geometry()->io().getString("initial date"));
+  const util::DateTime initialTime(geom->io().getString("initial date"));
 
   // Get read time
   const util::DateTime validTime(conf.getString("date"));
@@ -83,7 +89,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
   // NetCDF IDs
   int ncid, retval, time_id, var_id[vars.size()];
 
-  if (fields.geometry()->getComm().rank() == 0) {
+  if (geom->getComm().rank() == 0) {
     // Get grid
     const atlas::StructuredGrid grid = fs.grid();
 
@@ -121,6 +127,82 @@ void FieldsIOAQ::read(const oops::Variables & vars,
       if ((retval = nc_inq_varid(ncid, vars[jvar].name().c_str(), &var_id[jvar])))
         ERR(retval, vars[jvar].name());
 
+      // Read and save all NetCDF for this variable, if necessary
+      if (!attributes_.has(geom->grid().uid() + "." + vars[jvar].name())) {
+        // Get variable ID
+        int varid = var_id[jvar];
+
+        // Get number of attributes
+        int natts = 0;
+        if ((retval = nc_inq_varnatts(ncid, varid, &natts))) ERR(retval, "inq_varnatts");
+
+        // Create attributes list
+        std::vector<eckit::LocalConfiguration> varAttrs(natts);
+
+        // Loop over attributes
+        for (int att_i = 0; att_i < natts; ++att_i) {
+          // Get attribute name
+          char attName[NC_MAX_NAME + 1];
+          if ((retval = nc_inq_attname(ncid, varid, att_i, attName))) ERR(retval, "inq_attname");
+          varAttrs[att_i].set("name", std::string(attName));
+
+          // Get attributes type
+          nc_type attType;
+          size_t attLen = 0;
+          if ((retval = nc_inq_att(ncid, varid, attName, &attType, &attLen)))
+            ERR(retval, "inq_att");
+          varAttrs[att_i].set("type", static_cast<int>(attType));
+
+          // Get attributes tokens
+          std::vector<std::string> tokens;
+          if (attType == NC_CHAR) {
+            std::vector<char> buf(attLen+1, '\0');
+            if ((retval = nc_get_att_text(ncid, varid, attName, buf.data())))
+              ERR(retval, "get_att_text");
+            tokens.push_back(std::string(buf.data()));
+          } else if (attType == NC_INT) {
+            std::vector<int> buf(attLen);
+            if ((retval = nc_get_att_int(ncid, varid, attName, buf.data())))
+              ERR(retval, "get_att_int");
+            for (size_t k=0; k < attLen; ++k) tokens.push_back(std::to_string(buf[k]));
+
+
+          } else if (attType == NC_FLOAT) {
+            std::vector<float> buf(attLen);
+            if ((retval = nc_get_att_float(ncid, varid, attName, buf.data())))
+              ERR(retval, "get_att_float");
+            for (size_t k=0; k < attLen; ++k) tokens.push_back(std::to_string(buf[k]));
+          } else if (attType == NC_DOUBLE) {
+            std::vector<double> buf(attLen);
+            if ((retval = nc_get_att_double(ncid, varid, attName, buf.data())))
+              ERR(retval, "get_att_double");
+            for (size_t k=0; k < attLen; ++k) tokens.push_back(std::to_string(buf[k]));
+          } else if (attType == NC_SHORT) {
+            std::vector<int16_t> buf(attLen);
+            if ((retval = nc_get_att_short(ncid, varid, attName, buf.data())))
+              ERR(retval, "get_att_short");
+            for (size_t k=0; k < attLen; ++k) tokens.push_back(std::to_string(buf[k]));
+          } else {
+            std::vector<char> buf(attLen+1, '\0');
+            if ((retval = nc_get_att_text(ncid, varid, attName, buf.data())))
+              ERR(retval, "get_att_text_fallback");
+            tokens.push_back(std::string(buf.data()));
+          }
+          varAttrs[att_i].set("tokens", tokens);
+        }
+
+        // Save attributes
+        if (!attributes_.has(geom->grid().uid())) {
+          // Create grid attributes and insert variable attributes
+          eckit::LocalConfiguration gridAttrs;
+          gridAttrs.set(vars[jvar].name(), varAttrs);
+          attributes_.set(geom->grid().uid(), gridAttrs);
+        } else {
+          // Insert variable attributes
+          attributes_.set(geom->grid().uid() + "." + vars[jvar].name(), varAttrs);
+        }
+      }
+
       // Get variable view
       auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar].name()]);
 
@@ -129,7 +211,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : fields.geometry()->alias()) {
+        for (const auto & item : geom->alias()) {
           if (item.getString("in file") == vars[jvar].name()) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
@@ -204,8 +286,11 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
                        const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
+  // Get geometry
+  std::shared_ptr<const Geometry> geom(fields.geometry());
+
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
+  const atlas::functionspace::StructuredColumns fs(geom->functionSpace());
 
   // Define variables vector from fields.fieldSet()
   const std::vector<std::string> vars = fields.fieldSet().field_names();
@@ -231,7 +316,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
 
   // Reference for time coordinate
   size_t timeOffset =
-    (validTime- util::DateTime(fields.geometry()->io().getString("initial date"))).toSeconds();
+    (validTime- util::DateTime(geom->io().getString("initial date"))).toSeconds();
 
   // Single date file
   const size_t time = 0;
@@ -281,7 +366,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
   // Gather coordinates and data on main processor
   fs.gather(localData, globalData);
 
-  if (fields.geometry()->getComm().rank() == 0) {
+  if (geom->getComm().rank() == 0) {
     if (existingFile) {
       oops::Log::info() << "Info     : Updating file: " << ncFilePath << std::endl;
     } else {
@@ -397,15 +482,15 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       if ((retval = nc_def_var(ncid, "time", NC_FLOAT, 1, dTime_id, &vTime_id)))
         ERR(retval, "time");
       strcpy(str_att,
-        ("seconds since "+fields.geometry()->io().getString("initial date").substr(0, 10)+
-        " "+fields.geometry()->io().getString("initial date").substr(11, 5)).c_str());
+        ("seconds since "+geom->io().getString("initial date").substr(0, 10)+
+        " "+geom->io().getString("initial date").substr(11, 5)).c_str());
       if ((retval = nc_put_att_text(ncid, vTime_id, "units", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time units");
       strcpy(str_att, "t");
       if ((retval = nc_put_att_text(ncid, vTime_id, "axis", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time axis");
-      strcpy(str_att, (fields.geometry()->io().getString("initial date").substr(0, 10)+
-        " "+fields.geometry()->io().getString("initial date").substr(11, 5)).c_str());
+      strcpy(str_att, (geom->io().getString("initial date").substr(0, 10)+
+        " "+geom->io().getString("initial date").substr(11, 5)).c_str());
       if ((retval = nc_put_att_text(ncid, vTime_id, "time_origin", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time time_origin");
       strcpy(str_att, "standard");
@@ -415,28 +500,10 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       if ((retval = nc_put_att_text(ncid, vTime_id, "standard_name", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time standard_name");
     }
-    struct sVarAttr {
-      std::string stdName;
-      std::string units;
-      sVarAttr(std::string _stdName, std::string _units) {
-        stdName = _stdName;
-        units = _units;
-      }
-    };
-    static const std::unordered_map<std::string, sVarAttr> varAttr_ = {
-      {"dry_pm10_mass",
-       sVarAttr("mole_fraction_of_dry_pm10_mass", "ppv")},
-      {"dry_pm2p5_mass",
-       sVarAttr("mole_fraction_of_dry_pm2p5_mass", "ppv")},
-      {"O3",
-       sVarAttr("mole_fraction_of_O3", "ppv")},
-      {"NO2",
-       sVarAttr("mole_fraction_of_NO2", "ppv")},
-      {"CO",
-       sVarAttr("mole_fraction_of_CO", "ppv")},
-      {"SO2",
-       sVarAttr("mole_fraction_of_SO2", "ppv")}
-    };
+
+    // Get attributes for this grid uid
+    ASSERT(attributes_.has(geom->grid().uid()));
+    const eckit::LocalConfiguration gridAttr(attributes_, geom->grid().uid());
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
       // Check whether this variable exists
@@ -449,14 +516,59 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
           if ((retval = nc_def_var(ncid, vars[jvar].c_str(), NC_FLOAT, 3, d3D_id, &var_id[jvar])))
             ERR(retval, vars[jvar]);
         }
-        // Define attributes
-        strcpy(str_att, (varAttr_.find(vars[jvar])->second.units).c_str());
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "units", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: units");
-        strcpy(str_att, (varAttr_.find(vars[jvar])->second.stdName).c_str());
-        if ((retval = nc_put_att_text(ncid, var_id[jvar], "standard_name", strlen(str_att),
-          &str_att[0]))) ERR(retval, "Attr: standard_name");
-        float_att = -999999.0;
+
+        // Get attributes list for this variable
+        ASSERT(gridAttr.has(vars[jvar]));
+        const auto & varAttrs = gridAttr.getSubConfigurations(vars[jvar]);
+
+        // Write attributes
+        for (const auto & attr : varAttrs) {
+          // Get attributes name/type/tokens
+          const std::string aname = attr.getString("name");
+          const nc_type atype = static_cast<nc_type>(attr.getInt("type"));
+          const std::vector<std::string> tokens = attr.getStringVector("tokens");
+
+          if (atype == NC_CHAR) {
+            const std::string & txt = (tokens.empty() ? std::string() : tokens[0]);
+            if ((retval = nc_put_att_text(ncid, var_id[jvar], aname.c_str(), txt.size(),
+                                          txt.c_str())))
+              ERR(retval, ("Attr write text:"+aname).c_str());
+          } else if (atype == NC_INT) {
+            std::vector<int> buf(tokens.size());
+            for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stoi(tokens[k]);
+            if ((retval = nc_put_att_int(ncid, var_id[jvar], aname.c_str(), NC_INT, buf.size(),
+                                         buf.data())))
+              ERR(retval, ("Attr write int:"+aname).c_str());
+          } else if (atype == NC_FLOAT) {
+            std::vector<float> buf(tokens.size());
+            for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stof(tokens[k]);
+            if ((retval = nc_put_att_float(ncid, var_id[jvar], aname.c_str(), NC_FLOAT, buf.size(),
+                                           buf.data())))
+              ERR(retval, ("Attr write float:"+aname).c_str());
+          } else if (atype == NC_DOUBLE) {
+            std::vector<double> buf(tokens.size());
+            for (size_t k = 0; k < tokens.size(); ++k) buf[k] = std::stod(tokens[k]);
+            if ((retval = nc_put_att_double(ncid, var_id[jvar], aname.c_str(),
+                                            NC_DOUBLE, buf.size(), buf.data())))
+              ERR(retval, ("Attr write double:"+aname).c_str());
+          } else if (atype == NC_SHORT) {
+            std::vector<int16_t> buf(tokens.size());
+            for (size_t k = 0; k < tokens.size(); ++k) buf[k] =
+              static_cast<int16_t>(std::stoi(tokens[k]));
+            if ((retval = nc_put_att_short(ncid, var_id[jvar], aname.c_str(), NC_SHORT, buf.size(),
+                                           buf.data())))
+              ERR(retval, ("Attr write short:"+aname).c_str());
+          } else {
+            std::string joined;
+            for (size_t i = 0; i < tokens.size(); ++i) {
+              if (i) joined += ",";
+              joined += tokens[i];
+            }
+            if ((retval = nc_put_att_text(ncid, var_id[jvar], aname.c_str(), joined.size(),
+                                          joined.c_str())))
+              ERR(retval, ("Attr write fallback text:"+aname).c_str());
+          }
+        }
       }
     }
 
@@ -486,7 +598,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
 
       // Recover geometry levels
       std::string vunits;
-      std::vector<double> zlev = fields.geometry()->verticalCoord(vunits);
+      std::vector<double> zlev = geom->verticalCoord(vunits);
       std::vector<int> zLm(lmMax);
       for (size_t jLm = 0; jLm < lmMax; ++jLm) {
         zLm[jLm] = static_cast<int>(zlev[jLm]);
@@ -512,7 +624,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : fields.geometry()->alias()) {
+        for (const auto & item : geom->alias()) {
           if (item.getString("in file") == vars[jvar]) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
