@@ -30,6 +30,7 @@ option( ENABLE_CRTM "Compile CRTM" OFF )
 option( ENABLE_GLB_TESTS "Run global tests" ON )
 option( ENABLE_REG_TESTS "Run regional tests" ON )
 option( ENABLE_PER_TESTS "Run persistence tests" ON )
+option( ENABLE_PYQG_TESTS "Run pyQG tests" ON )
 option( ENABLE_GENINT_TESTS "Run genint tests" ON )
 option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
 option( ENABLE_AQ_TESTS "Run aq tests" OFF )
@@ -68,6 +69,7 @@ ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.40.
 
 # oops
 ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
+#ecbuild_bundle( PROJECT oops )
 
 # vader
 #ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" BRANCH develop UPDATE )
@@ -82,6 +84,7 @@ if( ENABLE_SABER )
     # saber
 #    ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
     ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" BRANCH feature/nicas_article UPDATE )
+#    ecbuild_bundle( PROJECT saber )
 endif()
 
 if( ENABLE_CRTM )

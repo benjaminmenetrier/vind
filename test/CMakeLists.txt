@@ -153,6 +153,10 @@ testinput/per_makeobs.yaml
 testinput/per_stddev.yaml
 testinput/per_truth.yaml
 
+# PYQG
+testinput/pyqg_attractor.yaml
+testinput/pyqg_truth.yaml
+
 # GENINT
 testinput/genint_convertstate_nonuni_lonlat.yaml
 testinput/genint_convertstate_regular_lonlat.yaml
@@ -193,6 +197,7 @@ testinput/monarch_3densvar.yaml
 testinput/monarch_3densvar_lt.yaml
 testinput/monarch_4densvar.yaml
 testinput/monarch_4densvar_lt.yaml
+
 # MONARCH GLOBAL
 testinput/monglob_geometry.yaml
 testinput/monglob_convertstate.yaml
@@ -202,6 +207,7 @@ testinput/monglob_dirac_3d.yaml
 )
 
 list( APPEND aq_testinput
+
 # MONARCH REGIONAL interpolated on CAMS regular grid
 testinput/aq_geometry.yaml
 testinput/aq_state.yaml
@@ -287,6 +293,10 @@ testref/per_makeobs.ref
 testref/per_stddev.ref
 testref/per_truth.ref
 
+# PYQG
+testref/pyqg_attractor.ref
+testref/pyqg_truth.ref
+
 # GENINT
 testref/genint_geometry_regular_lonlat.ref
 testref/genint_geometry_lambertCC.ref
@@ -326,6 +336,7 @@ testref/monarch_3densvar.ref
 testref/monarch_3densvar_lt.ref
 testref/monarch_4densvar.ref
 testref/monarch_4densvar_lt.ref
+
 # MONARCH GLOBAL
 testref/monglob_geometry.ref
 testref/monglob_convertstate.ref
@@ -335,6 +346,7 @@ testref/monglob_dirac_3d.ref
 )
 
 list( APPEND aq_testref
+
 # MONARCH REGIONAL interpolated on CAMS regular grid
 testref/aq_geometry.ref
 testref/aq_state.ref
@@ -429,6 +441,14 @@ if( ENABLE_PER_TESTS )
         create_test( per_background ${mpi} forecast )
         create_test( per_makeobs ${mpi} hofx4d )
         create_test( per_3dvar ${mpi} variational )
+    endforeach()
+endif()
+
+if( ENABLE_PYQG_TESTS )
+    # PERSISTENCE tests
+    foreach( mpi ${mpi_list} )
+        create_test( pyqg_attractor ${mpi} forecast )
+        create_test( pyqg_truth ${mpi} forecast )
     endforeach()
 endif()
 

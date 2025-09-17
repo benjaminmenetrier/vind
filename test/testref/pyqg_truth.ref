@@ -1,0 +1,18 @@
+Initial state: 
+- Valid time: 2010-01-01T06:00:00Z
+  Geometry: structured [4096]
+  Fields:
+  - air_upward_absolute_vorticity (3 levels):
+    + min    = -1.9283278004969399e-04
+    + max    = 1.8646260018235944e-04
+    + mean   = 1.6758947005667198e-09
+    + stddev = 3.4553652254455409e-05
+Final state: 
+- Valid time: 2010-01-01T18:00:00Z
+  Geometry: structured [4096]
+  Fields:
+  - air_upward_absolute_vorticity (3 levels):
+    + min    = -1.8870125827189527e-04
+    + max    = 1.9524731037427056e-04
+    + mean   = 1.6758947005685476e-09
+    + stddev = 3.4697735334539471e-05

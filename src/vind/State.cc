@@ -57,6 +57,10 @@ State::State(const Geometry & geom,
     oops::Log::info() << "Info     : Create state with a constant group-specific value"
                       << std::endl;
     fields_->constantValue(file);
+  } else if (file.has("random sigma")) {
+    oops::Log::info() << "Info     : Create a random state" << std::endl;
+    fields_->random();
+    *fields_ *= file.getDouble("random sigma");
   } else {
     oops::Log::info() << "Info     : Create empty state" << std::endl;
     fields_->zero();

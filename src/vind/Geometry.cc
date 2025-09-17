@@ -54,7 +54,8 @@ Geometry::Geometry(const eckit::Configuration & config,
   gridType_ = params.grid.value().getString("type", "no_type");
 
   // Deal with poles for structured grids
-  if (gridType_ == "structured") {
+  if ((gridType_ == "structured") || (gridType_ == "regular_lonlat")
+    || (gridType_ == "zonal_band")) {
     // Get structured function space and grid
     const atlas::functionspace::StructuredColumns fs(functionSpace_);
     const atlas::StructuredGrid & grid = fs.grid();
@@ -66,7 +67,7 @@ Geometry::Geometry(const eckit::Configuration & config,
       double lonlatPoint[] = {0, 0};
       grid.lonlat(0, j, lonlatPoint);
       double latRef = lonlatPoint[1];
-      for (size_t i = 1; i < grid.nx(j); ++i) {
+      for (int i = 1; i < grid.nx(j); ++i) {
         grid.lonlat(i, j, lonlatPoint);
         duplicated = duplicated || (lonlatPoint[1] == latRef);
       }
@@ -76,7 +77,7 @@ Geometry::Geometry(const eckit::Configuration & config,
       double lonlatPoint[] = {0, 0};
       grid.lonlat(0, j, lonlatPoint);
       double latRef = lonlatPoint[1];
-      for (size_t i = 1; i < grid.nx(j); ++i) {
+      for (int i = 1; i < grid.nx(j); ++i) {
         grid.lonlat(i, j, lonlatPoint);
         duplicated = duplicated || (lonlatPoint[1] == latRef);
       }

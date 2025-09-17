@@ -221,7 +221,7 @@ void FieldsIOArome::read(const oops::Variables & vars,
           ++iVar2D;
 
           // Copy data
-          for (int j = 0; j < ny; ++j) {
+          for (size_t j = 0; j < ny; ++j) {
             for (int i = 0; i < grid.nx(j); ++i) {
               atlas::gidx_t gidx = grid.index(i, j);
               varView(gidx, jlevel) = zvar[j*nx+i];
@@ -541,7 +541,7 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
   atlas::FieldSet globalData;
   for (const auto & field : fsetToWrite) {
     atlas::Field glbField = fs.createField<double>(atlas::option::name(field.name())
-     | atlas::option::levels(field.levels()) | atlas::option::global());
+      | atlas::option::levels(field.levels()) | atlas::option::global());
     globalData.add(glbField);
   }
 
@@ -571,8 +571,6 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
   // Get sizes
   const atlas::util::Config xspec = grid.xspace().spec();
   const atlas::util::Config yspec = grid.yspace().spec();
-  const size_t nx = xspec.getInt("N");
-  const size_t ny = yspec.getInt("N");
 
   oops::Log::info() << "Info     : Writing file: " << filePath << std::endl;
 

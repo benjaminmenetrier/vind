@@ -1251,7 +1251,8 @@ void Fields::resetDuplicatePoints() {
   oops::Log::trace() << classname() << "::resetDuplicatePoints starting" << std::endl;
 
   if (geom_->duplicatePoints()) {
-    if ((geom_->gridType() == "regular_lonlat") || (geom_->gridType() == "structured")) {
+    if ((geom_->gridType() == "structured") || (geom_->gridType() == "regular_lonlat")
+      || (geom_->gridType() == "zonal_band")) {
       // Deal with poles
       for (auto field_internal : fset_) {
         // Get first longitude value

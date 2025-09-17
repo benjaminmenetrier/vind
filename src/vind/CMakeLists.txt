@@ -67,6 +67,23 @@ Model/ModelPersistence.h
 
 )
 
+if( pybind11_FOUND )
+    # Python-based model
+    list( APPEND vind_src_files
+
+    Model/ModelPython.cc
+    Model/ModelPython.h
+
+    )
+
+    # Python modules
+    list( APPEND python_modules
+
+    ModelPythonPyQG.py
+
+    )
+endif()
+
 if( ENABLE_OBS )
     # Common sources, obs-related
     list( APPEND vind_src_files
@@ -115,6 +132,18 @@ if( eccodes_FOUND )
 endif()
 if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS ) AND falfilfa_FOUND )
     target_link_libraries( vind PUBLIC trans_dp transi_dp fa_dp )
+endif()
+if( pybind11_FOUND )
+    target_link_libraries( vind PUBLIC pybind11::embed )
+endif()
+
+if( pybind11_FOUND )
+    # Link python modules
+    message(STATUS "Available Python modules for model propagation:")
+    foreach( pyMod ${python_modules} )
+        execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Model/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
+        message(STATUS "- ${CMAKE_BINARY_DIR}/${pyMod}")
+    endforeach()
 endif()
 
 #Configure include directory layout for build-tree to match install-tree

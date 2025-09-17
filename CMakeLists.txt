@@ -45,15 +45,9 @@ set( VIND_LINKER_LANGUAGE CXX )
 # Compiler flags
 ################################################################################
 
-set( CMAKE_CXX_STANDARD 17 )
-set( CMAKE_CXX_STANDARD_REQUIRED ON )
-set( CMAKE_CXX_EXTENSIONS OFF )
-set( CMAKE_C_STANDARD 11 )
-set( CMAKE_C_STANDARD_REQUIRED ON )
-set( CMAKE_C_EXTENSIONS OFF )
-set( CMAKE_FORTRAN_STANDARD 08 )
-set( CMAKE_FORTRAN_STANDARD_REQUIRED ON )
-set( CMAKE_FORTRAN_EXTENSIONS OFF )
+list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+set( CMAKE_DIRECTORY_LABELS ${PROJECT_NAME} )
+include( ${PROJECT_NAME}_compiler_flags )
 
 ################################################################################
 # Dependencies
@@ -110,6 +104,9 @@ endif()
 
 # MPI
 ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
+
+# Pybind11
+find_package( pybind11 CONFIG QUIET )
 
 ################################################################################
 # Export package info

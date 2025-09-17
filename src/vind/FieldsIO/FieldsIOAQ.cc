@@ -231,7 +231,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
           zvar.data()))) ERR(retval, vars[jvar].name());
 
         // Deserialize data to view
-        for (atlas::idx_t j = 0; j < ny; ++j) {
+        for (size_t j = 0; j < ny; ++j) {
           const atlas::idx_t jj = ny-1-j;
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
@@ -243,7 +243,8 @@ void FieldsIOAQ::read(const oops::Variables & vars,
           }
         }
       } else {
-        for (size_t k = 0; k < fields.fieldSet()[vars[jvar].name()].shape(1); ++k) {
+        const size_t nlev = fields.fieldSet()[vars[jvar].name()].shape(1);
+        for (size_t k = 0; k < nlev; ++k) {
           // Read level
           std::vector<double> zvar(nx*ny);
           const std::vector<size_t> startp({time, k, 0, 0});
@@ -252,7 +253,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
             zvar.data()))) ERR(retval, vars[jvar].name());
 
           // Deserialize data to view
-          for (atlas::idx_t j = 0; j < ny; ++j) {
+          for (size_t j = 0; j < ny; ++j) {
             const atlas::idx_t jj = ny-1-j;
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);
@@ -324,7 +325,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
   // NetCDF IDs
   int retval, ncid, lon_id, lat_id, lev_id, time_id,
     dlon_id[1], dlat_id[1], dlev_id[1], dTime_id[1],
-    d2D_id[2], d3D_id[3], d4D_id[4],
+    d3D_id[3], d4D_id[4],
     vlon_id, vlat_id, vlev_id, vTime_id,
     var_id[vars.size()];
 
@@ -414,8 +415,6 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
     dlat_id[0] = lat_id;
     dlev_id[0] = lev_id;
     dTime_id[0] = time_id;
-    d2D_id[0] = lat_id;
-    d2D_id[1] = lon_id;
     d3D_id[0] = time_id;
     d3D_id[1] = lat_id;
     d3D_id[2] = lon_id;
@@ -425,7 +424,6 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
     d4D_id[3] = lon_id;
 
     // Attributes storage
-    float float_att;
     char str_att[128];
 
     if (!existingFile) {
@@ -638,7 +636,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       if (fields.fieldSet()[vars[jvar]].shape(1) == 1) {
         // Copy data
         std::vector<float> zvar(ny*nx);
-        for (atlas::idx_t j = 0; j < ny; ++j) {
+        for (size_t j = 0; j < ny; ++j) {
           const atlas::idx_t jj = ny-1-j;
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
@@ -659,7 +657,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
         for (atlas::idx_t k = 0; k < fields.fieldSet()[vars[jvar]].shape(1); ++k) {
           // Copy data
           std::vector<float> zvar(ny*nx);
-          for (atlas::idx_t j = 0; j < ny; ++j) {
+          for (size_t j = 0; j < ny; ++j) {
             const atlas::idx_t jj = ny-1-j;
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);

@@ -18,7 +18,8 @@ model:
 forecast length: PT12H
 output:
   filepath: testdata/per_truth___RANGE__
-  range pattern: __RANGE__
+  range pattern: __RANGE__$
+  frequency: PT3H
 prints:
   frequency: PT3H
 test:

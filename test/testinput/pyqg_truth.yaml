@@ -1,0 +1,31 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type : zonal_band
+    nx : 64
+    ny : 64
+    north : 70
+    south : 30
+  groups:
+  - variables:
+    - air_upward_absolute_vorticity
+    levels: 3
+  halo: 1
+initial condition:
+  date: 2010-01-01T06:00:00Z
+  state variables:
+  - air_upward_absolute_vorticity
+  filepath: testdata/pyqg_attractor_P365D
+model:
+  name: python
+  python module: ModelPythonPyQG
+  tstep: PT1800S
+forecast length: PT12H
+output:
+  filepath: testdata/pyqg_truth___RANGE__
+  range pattern: __RANGE__
+  frequency: PT3H
+prints:
+  frequency: PT3H
+test:
+  reference filename: testref/pyqg_truth.ref

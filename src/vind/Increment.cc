@@ -145,7 +145,7 @@ oops::LocalIncrement Increment::getLocal(const GeometryIterator & geometryIterat
     std::vector<double> values(valuesSize);
     for (const auto & var : this->variables()) {
       const auto view = atlas::array::make_view<double, 2>(this->fields().fieldSet()[var.name()]);
-      for (size_t jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
+      for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
         values[index] = view(geometryIterator.jnode(), jlevel);
         ++index;
       }
@@ -173,7 +173,7 @@ void Increment::setLocal(const oops::LocalIncrement & localIncrement,
   if (this->geometry()->iteratorDimension() == 2) {
     for (const auto & var : this->variables()) {
       auto view = atlas::array::make_view<double, 2>(this->fields().fieldSet()[var.name()]);
-      for (size_t jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
+      for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
         view(geometryIterator.jnode(), jlevel) = values[index];
         ++index;
       }

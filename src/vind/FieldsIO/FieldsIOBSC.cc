@@ -74,9 +74,6 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   // Set State or Increment flag
   const bool isState = conf.getBool("is state");
 
-  // Check if domain is global
-  const bool isGlobal = geom->grid().domain().type() == "global";
-
   // Get filepath
   const std::string ncFilePath = conf.getString("filepath");
 
@@ -247,7 +244,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
           zvar.data()))) ERR(retval, vars[jvar].name());
 
         // Deserialize data to view
-        for (atlas::idx_t j = 0; j < ny; ++j) {
+        for (size_t j = 0; j < ny; ++j) {
           const atlas::idx_t jj = ny-1-j;
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
@@ -276,7 +273,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
                                 NULL, zvar.data()))) ERR(retval, vars[jvar].name());
 
           // Deserialize data to view
-          for (atlas::idx_t j = 0; j < ny; ++j) {
+          for (size_t j = 0; j < ny; ++j) {
             const atlas::idx_t jj = ny-1-j;
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);
@@ -843,7 +840,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         // Copy coordinates
         const auto lonViewGlobal = atlas::array::make_view<double, 1>(globalData["lon"]);
         const auto latViewGlobal = atlas::array::make_view<double, 1>(globalData["lat"]);
-        for (atlas::idx_t j = 0; j < ny; ++j) {
+        for (size_t j = 0; j < ny; ++j) {
           const atlas::idx_t jj = ny-1-j;
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
@@ -913,7 +910,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       if (fields.fieldSet()[vars[jvar]].shape(1) == 1) {
         // Copy data
         std::vector<float> zvar(ny*nx_out);
-        for (atlas::idx_t j = 0; j < ny; ++j) {
+        for (size_t j = 0; j < ny; ++j) {
           const atlas::idx_t jj = ny-1-j;
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
@@ -940,10 +937,10 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
           }
         }
         auto levels = geom->vertCoordAvg(var_in_code);
-        for (atlas::idx_t k = 0; k < levels.size(); ++k) {
+        for (size_t k = 0; k < levels.size(); ++k) {
           // Copy data
           std::vector<float> zvar(ny*nx_out);
-          for (atlas::idx_t j = 0; j < ny; ++j) {
+          for (size_t j = 0; j < ny; ++j) {
             const atlas::idx_t jj = ny-1-j;
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);
