@@ -13,8 +13,6 @@
 #include "vind/Fields.h"
 #include "vind/State.h"
 
-using namespace py::literals;
-
 namespace vind {
 
 // -----------------------------------------------------------------------------
@@ -37,14 +35,15 @@ ModelPython::ModelPython(const Geometry & geom,
 #else
   char path[FILENAME_MAX];
   ssize_t count = readlink("/proc/self/exe", path, FILENAME_MAX);
-  pythonDir_ = std::filesystem::path(std::string(path, (count > 0) ? count: 0)).parent_path().string();
+  pythonDir_ = std::filesystem::path(std::string(path, (count > 0) ? count : 0))
+    .parent_path().string();
 #endif
 
   // Intialize pybind11 interpreter
-  py::initialize_interpreter();
+  pybind11::initialize_interpreter();
 
   // Create data dictionary
-  initData_.reset(new py::dict());
+  initData_.reset(new pybind11::dict());
 
   // Add time-step
   (*initData_)["tstep"] = timeResolution_.toSeconds();
@@ -67,11 +66,11 @@ ModelPython::ModelPython(const Geometry & geom,
   }
 
   // Insert python module into PYTHONPATH
-  py::module_ sys = py::module_::import("sys");
+  pybind11::module_ sys = pybind11::module_::import("sys");
   sys.attr("path").attr("insert")(1, pythonDir_.c_str());
 
   // Load python module
-  py::module_ exec = py::module_::import(pythonModule_.c_str());
+  pybind11::module_ exec = pybind11::module_::import(pythonModule_.c_str());
 
   if (comm_.rank() == 0) {
     // Execute initialization
@@ -93,7 +92,7 @@ ModelPython::~ModelPython() {
   model_.reset();
 
   // Finalize pybind11 interpreter
-  py::finalize_interpreter();
+  pybind11::finalize_interpreter();
 
   oops::Log::trace() << classname() << "::~ModelPython done" << std::endl;
 }
@@ -130,14 +129,14 @@ void ModelPython::step(State & xx,
 
   if (comm_.rank() == 0) {
     // Create data dictionary
-    auto stepData = py::dict();
+    auto stepData = pybind11::dict();
 
     for (const auto & var : xx.variables()) {
       atlas::Field field = globalData[var.name()];
       if (pythonModule_ == "ModelPythonPyQG") {
         // Create numpy array
         const int nx = (*initData_)["nx"].cast<size_t>();
-        py::array_t<double> dataNp({field.shape(1), nx, nx});
+        pybind11::array_t<double> dataNp({field.shape(1), nx, nx});
 
         // Copy data to numpy array
         auto dataView = dataNp.mutable_unchecked<3>();
@@ -159,16 +158,17 @@ void ModelPython::step(State & xx,
     }
 
     // Load python module
-    py::module_ exec = py::module_::import(pythonModule_.c_str());
+    pybind11::module_ exec = pybind11::module_::import(pythonModule_.c_str());
 
     // Execute time step
-    py::object result = exec.attr("step")(*model_, stepData);
+    pybind11::object result = exec.attr("step")(*model_, stepData);
 
     for (const auto & var : xx.variables()) {
       atlas::Field field = globalData[var.name()];
       if (pythonModule_ == "ModelPythonPyQG") {
         // Copy data from numpy array
-        const auto dataView = stepData[var.name().c_str()].cast<py::array_t<double>>().unchecked<3>();
+        const auto dataView = stepData[var.name().c_str()].cast<pybind11::array_t<double>>()
+          .unchecked<3>();
         auto view = atlas::array::make_view<double, 2>(field);
         const atlas::StructuredGrid grid(xx.fields().geometry()->grid());
         int i, j;

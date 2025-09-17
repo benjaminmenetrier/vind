@@ -5,10 +5,11 @@
 
 #pragma once
 
+#include <pybind11/embed.h>
+
+#include <memory>
 #include <ostream>
 #include <string>
-
-#include <pybind11/embed.h>
 
 #include "oops/base/Variables.h"
 #include "oops/util/Duration.h"
@@ -16,8 +17,6 @@
 #include "oops/util/Printable.h"
 
 #include "vind/Model/ModelBase.h"
-
-namespace py = pybind11;
 
 // Forward declarations
 namespace eckit {
@@ -63,8 +62,8 @@ class __attribute__((visibility("hidden"))) ModelPython: public ModelBase,
   const util::Duration timeResolution_;
   const std::string pythonModule_;
   std::string pythonDir_;
-  std::unique_ptr<py::dict> initData_;
-  std::unique_ptr<py::object> model_;
+  std::unique_ptr<pybind11::dict> initData_;
+  std::unique_ptr<pybind11::object> model_;
 };
 // -----------------------------------------------------------------------------
 
