@@ -580,6 +580,8 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
 #ifdef READFA
     if (!transSetup) {
       // Get cell sizes
+      const size_t nx = xspec.getInt("N");
+      const size_t ny = yspec.getInt("N");
       const double startx = xspec.getDouble("start");
       const double endx = xspec.getDouble("end");
       const double dx = (endx-startx)/static_cast<double>(nx-1);

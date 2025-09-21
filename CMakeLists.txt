@@ -61,6 +61,9 @@ find_package( NetCDF REQUIRED COMPONENTS C Fortran )
 
 # atlas
 find_package( atlas 0.35.0 REQUIRED )
+if( atlas_VERSION VERSION_GREATER "0.41" )
+    add_definitions(-DATLAS_MAKE_SPARSE)
+endif()
 
 # eccodes
 find_package( eccodes QUIET )

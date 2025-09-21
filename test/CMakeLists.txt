@@ -97,29 +97,29 @@ file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
 list( APPEND vind_testinput
 
 # GLOBAL
-testinput/3dvar.yaml
-testinput/3densvar.yaml
-testinput/4densvar.yaml
-testinput/4densvar_parallel.yaml
-testinput/background_06.yaml
-testinput/background_12.yaml
-testinput/background_18.yaml
-testinput/ensemble_06.yaml
-testinput/ensemble_12.yaml
-testinput/ensemble_18.yaml
-testinput/getkf_nonlinear.yaml
-testinput/letkf_linear.yaml
-testinput/letkf_linear_4d.yaml
-testinput/letkf_nonlinear.yaml
-testinput/letkf_nonlinear_4d.yaml
-testinput/letkf_read_members.yaml
-testinput/makeobs_06.yaml
-testinput/makeobs_12.yaml
-testinput/makeobs_18.yaml
-testinput/stddev.yaml
-testinput/truth_06.yaml
-testinput/truth_12.yaml
-testinput/truth_18.yaml
+testinput/glb_3dvar.yaml
+testinput/glb_3densvar.yaml
+testinput/glb_4densvar.yaml
+testinput/glb_4densvar_parallel.yaml
+testinput/glb_background_06.yaml
+testinput/glb_background_12.yaml
+testinput/glb_background_18.yaml
+testinput/glb_ensemble_06.yaml
+testinput/glb_ensemble_12.yaml
+testinput/glb_ensemble_18.yaml
+testinput/glb_getkf_nonlinear.yaml
+testinput/glb_letkf_linear.yaml
+testinput/glb_letkf_linear_4d.yaml
+testinput/glb_letkf_nonlinear.yaml
+testinput/glb_letkf_nonlinear_4d.yaml
+testinput/glb_letkf_read_members.yaml
+testinput/glb_makeobs_06.yaml
+testinput/glb_makeobs_12.yaml
+testinput/glb_makeobs_18.yaml
+testinput/glb_stddev.yaml
+testinput/glb_truth_06.yaml
+testinput/glb_truth_12.yaml
+testinput/glb_truth_18.yaml
 
 # REGIONAL
 testinput/reg_3dvar.yaml
@@ -237,29 +237,29 @@ testinput/aq_4densvar_lt.yaml
 list( APPEND vind_testref
 
 # GLOBAL
-testref/3dvar.ref
-testref/3densvar.ref
-testref/4densvar.ref
-testref/4densvar_parallel.ref
-testref/background_06.ref
-testref/background_12.ref
-testref/background_18.ref
-testref/ensemble_06.ref
-testref/ensemble_12.ref
-testref/ensemble_18.ref
-testref/getkf_nonlinear.ref
-testref/letkf_linear.ref
-testref/letkf_linear_4d.ref
-testref/letkf_nonlinear.ref
-testref/letkf_nonlinear_4d.ref
-testref/letkf_read_members.ref
-testref/makeobs_06.ref
-testref/makeobs_12.ref
-testref/makeobs_18.ref
-testref/stddev.ref
-testref/truth_06.ref
-testref/truth_12.ref
-testref/truth_18.ref
+testref/glb_3dvar.ref
+testref/glb_3densvar.ref
+testref/glb_4densvar.ref
+testref/glb_4densvar_parallel.ref
+testref/glb_background_06.ref
+testref/glb_background_12.ref
+testref/glb_background_18.ref
+testref/glb_ensemble_06.ref
+testref/glb_ensemble_12.ref
+testref/glb_ensemble_18.ref
+testref/glb_getkf_nonlinear.ref
+testref/glb_letkf_linear.ref
+testref/glb_letkf_linear_4d.ref
+testref/glb_letkf_nonlinear.ref
+testref/glb_letkf_nonlinear_4d.ref
+testref/glb_letkf_read_members.ref
+testref/glb_makeobs_06.ref
+testref/glb_makeobs_12.ref
+testref/glb_makeobs_18.ref
+testref/glb_stddev.ref
+testref/glb_truth_06.ref
+testref/glb_truth_12.ref
+testref/glb_truth_18.ref
 
 # REGIONAL
 testref/reg_3dvar.ref
