@@ -12,13 +12,16 @@
 #include <string>
 #include <vector>
 
-#include "atlas/field.h"
-
-#include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/NonCopyable.h"
 
-#include "oops/base/Variables.h"
+namespace eckit {
+  class Configuration;
+}
+
+namespace oops {
+  class Variables;
+}
 
 namespace vind {
   class Fields;

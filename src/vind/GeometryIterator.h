@@ -21,6 +21,7 @@
 namespace vind {
 
 // -----------------------------------------------------------------------------
+/// GeometryIterator class
 
 class GeometryIterator: public util::Printable,
                         private util::ObjectCounter<GeometryIterator> {

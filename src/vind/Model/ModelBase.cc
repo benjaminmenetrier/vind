@@ -32,9 +32,6 @@ ModelBase * ModelFactory::create(const Geometry & geom,
   const std::string id = config.getString("name");
   typename std::map<std::string, ModelFactory*>::iterator imodel = getMakers().find(id);
   if (imodel == getMakers().end()) {
-    std::cout << "TOTO: " << std::endl;
-    std::cout << getMakers() << std::endl;
-    std::cout << "TATA: " << std::endl;
     throw std::runtime_error(id + " does not exist in the model factory");
   }
   ModelBase * ptr = imodel->second->make(geom, config);

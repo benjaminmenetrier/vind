@@ -13,6 +13,7 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 
 namespace vind {
 
@@ -27,6 +28,9 @@ void FieldsIODefault::read(const oops::Variables & vars,
                            Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
+  // Get geometry
+  const Geometry & geom(fields.geometry());
+
   // Create variableSizes
   std::vector<size_t> variableSizes;
   for (const auto & var : vars) {
@@ -37,12 +41,12 @@ void FieldsIODefault::read(const oops::Variables & vars,
   eckit::LocalConfiguration updatedConf(conf);
   if (!updatedConf.has("latitude south to north")) {
     updatedConf.set("latitude south to north",
-      fields.geometry()->io().getBool("latitude south to north", true));
+      geom.io().getBool("latitude south to north", true));
   }
 
   // Read fieldset
-  util::readFieldSet(fields.geometry()->getComm(),
-                     fields.geometry()->functionSpace(),
+  util::readFieldSet(geom.getComm(),
+                     geom.functionSpace(),
                      variableSizes,
                      vars.variables(),
                      updatedConf,
@@ -57,15 +61,18 @@ void FieldsIODefault::write(const eckit::Configuration & conf,
                             const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
+  // Get geometry
+  const Geometry & geom(fields.geometry());
+
   // Update configuration
   eckit::LocalConfiguration updatedConf(conf);
   if (!updatedConf.has("latitude south to north")) {
     updatedConf.set("latitude south to north",
-      fields.geometry()->io().getBool("latitude south to north", true));
+      geom.io().getBool("latitude south to north", true));
   }
 
   // Write fieldset
-  util::writeFieldSet(fields.geometry()->getComm(), updatedConf, fields.fieldSet());
+  util::writeFieldSet(geom.getComm(), updatedConf, fields.fieldSet());
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
 }

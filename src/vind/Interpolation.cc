@@ -14,35 +14,34 @@
 #include "oops/base/Variables.h"
 #include "oops/util/FieldSetHelpers.h"
 
+#include "vind/Geometry.h"
+
 // -----------------------------------------------------------------------------
 
 namespace vind {
 
 // -----------------------------------------------------------------------------
 
-Interpolation::Interpolation(const Geometry & geom,
-                             const std::string & srcUid,
-                             const atlas::Grid & tgtGrid,
-                             const atlas::FunctionSpace & tgtFspace,
-                             const std::string & tgtUid)
-  : srcUid_(srcUid), tgtUid_(tgtUid), tgtFspace_(tgtFspace) {
+Interpolation::Interpolation(const Geometry & srcGeom,
+                             const Geometry & tgtGeom)
+  : tgtFspace_(tgtGeom.functionSpace()) {
   oops::Log::trace() << classname() << "::Interpolation starting" << std::endl;
 
   // Get interpolation type
-  const std::string type = geom.interpolation().getString("interpolation type");
+  const std::string type = srcGeom.interpolation().getString("interpolation type");
 
   // Setup interpolation
   if (type == "atlas interpolation wrapper") {
 #ifdef ENABLE_SABER
     atlasInterpWrapper_ = std::make_shared<saber::interpolation::AtlasInterpWrapper>(
-      geom.partitioner(), geom.functionSpace(), tgtGrid, tgtFspace_);
+      srcGeom.partitioner(), srcGeom.functionSpace(), tgtGeom.grid(), tgtFspace_);
 #else
     throw eckit::Exception("SABER required for AtlasInterpWrapper-based interpolation", Here());
 #endif
   } else if (type == "regional") {
     regionalInterp_ = std::make_shared<atlas::Interpolation>(
       atlas::util::Config("type", "regional-linear-2d"),
-      geom.functionSpace(), tgtFspace_);
+      srcGeom.functionSpace(), tgtFspace_);
   } else if (type == "unstructured") {
     // Get longitudes/latitudes
     std::vector<double> lons;
@@ -58,8 +57,8 @@ Interpolation::Interpolation(const Geometry & geom,
     }
 
     // Setup unstructured interpolator
-    unstructuredInterp_ = std::make_shared<oops::UnstructuredInterpolator>(geom.interpolation(),
-      geom.generic(), lats, lons);
+    unstructuredInterp_ = std::make_shared<oops::UnstructuredInterpolator>(srcGeom.interpolation(),
+      srcGeom.generic(), lats, lons);
   } else {
     throw eckit::Exception("wrong interpolation type", Here());
   }
@@ -214,6 +213,26 @@ void Interpolation::executeVerticalAdjoint(atlas::FieldSet & srcFieldSet,
   }
 
   oops::Log::trace() << classname() << "::executeVerticalAdjoint done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void Interpolation::print(std::ostream & os) const {
+  oops::Log::trace() << classname() << "::print starting" << std::endl;
+
+#ifdef ENABLE_SABER
+  if (atlasInterpWrapper_) {
+    os << "ATLAS interpolation wrapper from SABER";
+  }
+#endif
+  if (regionalInterp_) {
+    os << "Regional ATLAS interpolation";
+  }
+  if (unstructuredInterp_) {
+    os << "OOPS unstructured interpolation";
+  }
+
+  oops::Log::trace() << classname() << "::print done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

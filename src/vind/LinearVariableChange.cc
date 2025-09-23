@@ -14,7 +14,10 @@
 #include "oops/util/ConfigFunctions.h"
 #include "oops/util/FieldSetHelpers.h"
 #include "oops/util/FieldSetOperations.h"
+#include "oops/util/Logger.h"
 
+#include "vind/Geometry.h"
+#include "vind/Increment.h"
 #include "vind/LinearVariableChangeParameters.h"
 
 namespace vind {

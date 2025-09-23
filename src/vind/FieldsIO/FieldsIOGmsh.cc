@@ -18,6 +18,7 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 
 namespace vind {
 
@@ -31,9 +32,12 @@ void FieldsIOGmsh::write(const eckit::Configuration & conf,
                          const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
-  if (!fields.geometry()->mesh().generated()) {
+  // Get geometry
+  const Geometry & geom(fields.geometry());
+
+  if (!geom.mesh().generated()) {
     const atlas::MeshGenerator gen("delaunay");
-    fields.geometry()->mesh() = gen(fields.geometry()->grid(), fields.geometry()->partitioner());
+    geom.mesh() = gen(geom.grid(), geom.partitioner());
   }
 
   // GMSH file path
@@ -48,8 +52,8 @@ void FieldsIOGmsh::write(const eckit::Configuration & conf,
   atlas::output::Gmsh gmsh(filePath, gmshConfig);
 
   // Write GMSH
-  gmsh.write(fields.geometry()->mesh());
-  gmsh.write(fields.fieldSet(), fields.geometry()->functionSpace());
+  gmsh.write(geom.mesh());
+  gmsh.write(fields.fieldSet(), geom.functionSpace());
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
 }

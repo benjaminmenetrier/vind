@@ -12,17 +12,24 @@
 #include <string>
 #include <boost/noncopyable.hpp>
 
-#include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "oops/base/Variables.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 #include "vind/Increment.h"
 
+namespace eckit {
+  class Configuration;
+}
+
+namespace oops {
+  class Variables;
+}
+
 namespace vind {
   class Geometry;
+  class Increment;
   class State;
 
 // -----------------------------------------------------------------------------

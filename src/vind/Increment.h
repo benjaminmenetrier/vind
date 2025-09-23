@@ -16,8 +16,6 @@
 
 #include "atlas/field.h"
 
-#include "eckit/exception/Exceptions.h"
-
 #include "oops/base/LocalIncrement.h"
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
@@ -26,11 +24,11 @@
 #include "oops/util/Serializable.h"
 
 #include "vind/Fields.h"
-#include "vind/GeometryIterator.h"
 #include "vind/State.h"
 
 namespace vind {
   class Geometry;
+  class GeometryIterator;
 
 // -----------------------------------------------------------------------------
 /// Increment class
@@ -106,7 +104,7 @@ class Increment : public util::Printable,
     {return *fields_;}
   const Fields & fields() const
     {return *fields_;}
-  std::shared_ptr<const Geometry> geometry() const
+  const Geometry & geometry() const
     {return fields_->geometry();}
 
   // Other
@@ -126,9 +124,9 @@ class Increment : public util::Printable,
     {fields_->deserialize(vect, index);}
 
   // Local increment
-  oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const;
-  void setLocal(const oops::LocalIncrement & localIncrement,
-                const GeometryIterator & geometryIterator);
+  oops::LocalIncrement getLocal(const GeometryIterator &) const;
+  void setLocal(const oops::LocalIncrement &,
+                const GeometryIterator &);
 
  private:
   // Print

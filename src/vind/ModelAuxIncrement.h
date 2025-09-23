@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 
+#include "eckit/memory/NonCopyable.h"
+
+#include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 namespace eckit {
@@ -24,8 +27,11 @@ namespace vind {
   class ModelAuxCovariance;
 
 // -----------------------------------------------------------------------------
+/// ModelAuxIncrement class
 
-class ModelAuxIncrement : public util::Printable {
+class ModelAuxIncrement : public util::Printable,
+                          private eckit::NonCopyable,
+                          private util::ObjectCounter<ModelAuxIncrement> {
  public:
   static const std::string classname()
     {return "vind::ModelAuxIncrement";}

@@ -8,24 +8,17 @@
 
 #pragma once
 
-#include <algorithm>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
 #include "atlas/field.h"
-#include "atlas/grid.h"
-#include "atlas/mesh.h"
-#include "atlas/meshgenerator.h"
-
-#include "eckit/serialisation/Stream.h"
 
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
-#include "oops/util/Serializable.h"
 
 #include "vind/Interpolation.h"
 
@@ -36,7 +29,6 @@ namespace vind {
 /// Fields class
 
 class Fields : public util::Printable,
-               public util::Serializable,
                private util::ObjectCounter<Fields> {
  public:
   static const std::string classname()
@@ -93,7 +85,7 @@ class Fields : public util::Printable,
   void read(const eckit::Configuration &);
   void write(const eckit::Configuration &) const;
   double norm() const;
-  std::shared_ptr<const Geometry> geometry() const
+  const Geometry & geometry() const
     {return geom_;}
   const oops::Variables & variables() const
     {return vars_;}
@@ -109,13 +101,6 @@ class Fields : public util::Printable,
   void serialize(std::vector<double> &) const;
   void deserialize(const std::vector<double> &,
                    size_t &);
-  friend eckit::Stream & operator<<(eckit::Stream &,
-                                    const Fields &);
-  friend eckit::Stream & operator>>(eckit::Stream &,
-                                    Fields &);
-
-  // Grid interpolations
-  static std::vector<vind::Interpolation>& interpolations();
 
   // Duplicate points
   void resetDuplicatePoints();
@@ -124,11 +109,11 @@ class Fields : public util::Printable,
   // Print
   void print(std::ostream &) const;
 
-  // Return grid interpolation
-  std::vector<vind::Interpolation>::iterator setupGridInterpolation(const Geometry &) const;
+  // Check that fields are compatible
+  bool checkFieldsCompatible(const Fields &) const;
 
   // Geometry
-  std::shared_ptr<const Geometry> geom_;
+  const Geometry & geom_;
 
   // Variables
   oops::Variables vars_;

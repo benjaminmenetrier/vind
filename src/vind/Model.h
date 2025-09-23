@@ -10,13 +10,15 @@
 #include <string>
 #include <vector>
 
-#include "eckit/config/Configuration.h"
-
 #include "oops/util/Duration.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 #include "vind/Model/ModelBase.h"
+
+namespace eckit {
+  class Configuration;
+}
 
 namespace vind {
   class Geometry;

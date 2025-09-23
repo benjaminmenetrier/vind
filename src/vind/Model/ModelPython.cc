@@ -11,6 +11,7 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 #include "vind/State.h"
 
 namespace vind {
@@ -23,8 +24,7 @@ static ModelMaker<ModelPython> makerPython_("python");
 
 ModelPython::ModelPython(const Geometry & geom,
                          const eckit::Configuration & config)
-  : comm_(geom.getComm()), timeResolution_(config.getString("tstep")),
-  pythonModule_(config.getString("python module")) {
+  : ModelBase(config), comm_(geom.getComm()), pythonModule_(config.getString("python module")) {
   oops::Log::trace() << classname() << "::ModelPython starting" << std::endl;
 
   // Get executable directory
@@ -113,8 +113,11 @@ void ModelPython::step(State & xx,
                        const ModelAuxControl & xxAux) const {
   oops::Log::trace() << classname() << "::step starting" << std::endl;
 
+  // Get geometry
+  const Geometry & geom(xx.fields().geometry());
+
   // Get function space
-  const atlas::FunctionSpace fs(xx.fields().geometry()->functionSpace());
+  const atlas::FunctionSpace fs(geom.functionSpace());
 
   // Global data
   atlas::FieldSet globalData;
@@ -141,7 +144,7 @@ void ModelPython::step(State & xx,
         // Copy data to numpy array
         auto dataView = dataNp.mutable_unchecked<3>();
         const auto view = atlas::array::make_view<double, 2>(field);
-        const atlas::StructuredGrid grid(xx.fields().geometry()->grid());
+        const atlas::StructuredGrid grid(geom.grid());
         int i, j;
         for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
           grid.index2ij(jnode, i, j);
@@ -170,7 +173,7 @@ void ModelPython::step(State & xx,
         const auto dataView = stepData[var.name().c_str()].cast<pybind11::array_t<double>>()
           .unchecked<3>();
         auto view = atlas::array::make_view<double, 2>(field);
-        const atlas::StructuredGrid grid(xx.fields().geometry()->grid());
+        const atlas::StructuredGrid grid(geom.grid());
         int i, j;
         for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
           grid.index2ij(jnode, i, j);

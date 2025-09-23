@@ -9,12 +9,6 @@
 
 #include <string>
 
-#include "atlas/field.h"
-
-#include "eckit/config/Configuration.h"
-
-#include "oops/base/Variables.h"
-
 #include "vind/FieldsIO/FieldsIOBase.h"
 
 namespace vind {

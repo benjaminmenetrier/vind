@@ -11,21 +11,26 @@
 #include <string>
 #include <vector>
 
-#include "eckit/config/Configuration.h"
-
-#include "ioda/ObsSpace.h"
-#include "ioda/ObsVector.h"
-
 #include "oops/base/ObsLocalizationBase.h"
 
 #include "vind/Traits.h"
 
 #include "ufo/ObsTraits.h"
 
+namespace eckit {
+  class Configuration;
+}
+
+namespace ioda {
+  class ObsSpace;
+  class ObsVector;
+}
+
 namespace vind {
   class GeometryIterator;
 
 // -----------------------------------------------------------------------------
+/// ObsLocalization class
 
 class ObsLocalization: public oops::ObsLocalizationBase<Traits, ufo::ObsTraits> {
  public:

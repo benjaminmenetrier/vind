@@ -20,8 +20,7 @@ static ModelMaker<ModelPersistence> makerPersistence_("persistence");
 
 ModelPersistence::ModelPersistence(const Geometry &,
                                    const eckit::Configuration & config)
-  : timeResolution_(config.getString("tstep")),
-    persistenceFactor_(config.getDouble("persistence factor", 1.0)) {
+  : ModelBase(config), persistenceFactor_(config.getDouble("persistence factor", 1.0)) {
   oops::Log::trace() << classname() << "::ModelPersistence" << std::endl;
 }
 

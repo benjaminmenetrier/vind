@@ -14,6 +14,9 @@
 #include "eckit/config/Configuration.h"
 #include "eckit/geometry/Point3.h"
 
+#include "ioda/ObsSpace.h"
+#include "ioda/ObsVector.h"
+
 #include "oops/generic/gc99.h"
 
 #include "vind/GeometryIterator.h"

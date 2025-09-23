@@ -11,10 +11,9 @@
 #include <ostream>
 #include <string>
 
-#include "oops/base/Variables.h"
-#include "oops/util/Duration.h"
+#include "eckit/mpi/Comm.h"
+
 #include "oops/util/ObjectCounter.h"
-#include "oops/util/Printable.h"
 
 #include "vind/Model/ModelBase.h"
 
@@ -51,15 +50,10 @@ class __attribute__((visibility("hidden"))) ModelPython: public ModelBase,
 /// Finish model integration
   void finalize(State &) const override;
 
-/// Utilities
-  const util::Duration & timeResolution() const override
-    {return timeResolution_;}
-
  private:
   void print(std::ostream &) const override;
 
   const eckit::mpi::Comm & comm_;
-  const util::Duration timeResolution_;
   const std::string pythonModule_;
   std::string pythonDir_;
   std::unique_ptr<pybind11::dict> initData_;

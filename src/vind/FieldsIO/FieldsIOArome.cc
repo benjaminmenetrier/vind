@@ -21,6 +21,7 @@
 #include "vind/FieldsIO/fieldsio_arome_fa.h"
 #endif
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); \
   throw eckit::Exception(s + " : " + msg, Here());}
@@ -46,8 +47,11 @@ void FieldsIOArome::read(const oops::Variables & vars,
                          Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
+  // Get geometry
+  const Geometry & geom(fields.geometry());
+
   // StructuredColumns
-  atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
+  atlas::functionspace::StructuredColumns fs(geom.functionSpace());
 
   // Get grid
   atlas::StructuredGrid grid = fs.grid();
@@ -180,7 +184,7 @@ void FieldsIOArome::read(const oops::Variables & vars,
       }
     }
 
-    if (fields.geometry()->getComm().rank() == 0) {
+    if (geom.getComm().rank() == 0) {
       // Open NetCDF file
       if ((retval = nc_open(filePath.c_str(), NC_NOWRITE, &ncid))) ERR(retval, filePath);
 
@@ -201,13 +205,13 @@ void FieldsIOArome::read(const oops::Variables & vars,
     }
 
     // Broadcast hybrid coordinates dimension
-    fields.geometry()->getComm().broadcast(nab, 0);
+    geom.getComm().broadcast(nab, 0);
 
     // Allocate hybrid coordinates
     akFromFile.resize(nab);
     bkFromFile.resize(nab);
 
-    if (fields.geometry()->getComm().rank() == 0) {
+    if (geom.getComm().rank() == 0) {
       size_t iVar2D = 0;
       for (const auto & var : varsToRead) {
         auto varField = globalData[var.name()];
@@ -241,8 +245,8 @@ void FieldsIOArome::read(const oops::Variables & vars,
     }
 
     // Broadcast hybrid coordinates
-    fields.geometry()->getComm().broadcast(akFromFile.begin(), akFromFile.end(), 0);
-    fields.geometry()->getComm().broadcast(bkFromFile.begin(), bkFromFile.end(), 0);
+    geom.getComm().broadcast(akFromFile.begin(), akFromFile.end(), 0);
+    geom.getComm().broadcast(bkFromFile.begin(), bkFromFile.end(), 0);
   } else if (ioFormat_ == "arome fa") {
 #ifdef READFA
     if (!transSetup) {
@@ -258,7 +262,7 @@ void FieldsIOArome::read(const oops::Variables & vars,
       trans_use_mpi(true);
       trans_set_leq_regions(false);
       const int nprgpew = std::min(1,
-        static_cast<int>(std::sqrt(static_cast<double>(fields.geometry()->getComm().size()))));
+        static_cast<int>(std::sqrt(static_cast<double>(geom.getComm().size()))));
       trans_set_nprgpew(nprgpew);
 
       // Setup transform structure
@@ -281,23 +285,23 @@ void FieldsIOArome::read(const oops::Variables & vars,
     atlas::FieldSet akbkData;
 
     // Read FA file
-    fieldsio_arome_fa_read_f90(updatedConfig, &fields.geometry()->getComm(), fs.get(), &trans,
+    fieldsio_arome_fa_read_f90(updatedConfig, &geom.getComm(), fs.get(), &trans,
       akbkData.get(), globalData.get());
 
     // Get hybrid coordinates dimension
-    if (fields.geometry()->getComm().rank() == 0) {
+    if (geom.getComm().rank() == 0) {
       nab = akbkData["ak"].shape(0);
     }
 
     // Broadcast hybrid coordinates dimension
-    fields.geometry()->getComm().broadcast(nab, 0);
+    geom.getComm().broadcast(nab, 0);
 
     // Allocate hybrid coordinates
     akFromFile.resize(nab);
     bkFromFile.resize(nab);
 
     // Get hybrid coordinates
-    if (fields.geometry()->getComm().rank() == 0) {
+    if (geom.getComm().rank() == 0) {
       // Get ak/bk views
       const auto akView = atlas::array::make_view<double, 1>(akbkData["ak"]);
       const auto bkView = atlas::array::make_view<double, 1>(akbkData["bk"]);
@@ -310,8 +314,8 @@ void FieldsIOArome::read(const oops::Variables & vars,
     }
 
     // Broadcast hybrid coordinates
-    fields.geometry()->getComm().broadcast(akFromFile.begin(), akFromFile.end(), 0);
-    fields.geometry()->getComm().broadcast(bkFromFile.begin(), bkFromFile.end(), 0);
+    geom.getComm().broadcast(akFromFile.begin(), akFromFile.end(), 0);
+    geom.getComm().broadcast(bkFromFile.begin(), bkFromFile.end(), 0);
 #else
     // Format not available
     throw eckit::Exception("arome fa format not available", Here());
@@ -412,8 +416,8 @@ void FieldsIOArome::read(const oops::Variables & vars,
 
         if (var.name() == "eastward_wind") {
           // Get local Jacobian
-          double dx_dlon = fields.geometry()->grid().projection().jacobian(p).dx_dlon();
-          double dy_dlon = fields.geometry()->grid().projection().jacobian(p).dy_dlon();
+          double dx_dlon = geom.grid().projection().jacobian(p).dx_dlon();
+          double dy_dlon = geom.grid().projection().jacobian(p).dy_dlon();
 
           // Normalize Jacobian
           const double dlonNorm = 1.0/std::sqrt(dx_dlon*dx_dlon+dy_dlon*dy_dlon);
@@ -426,8 +430,8 @@ void FieldsIOArome::read(const oops::Variables & vars,
           }
         } else if (var.name() == "northward_wind") {
           // Get local Jacobian
-          double dx_dlat = fields.geometry()->grid().projection().jacobian(p).dx_dlat();
-          double dy_dlat = fields.geometry()->grid().projection().jacobian(p).dy_dlat();
+          double dx_dlat = geom.grid().projection().jacobian(p).dx_dlat();
+          double dy_dlat = geom.grid().projection().jacobian(p).dy_dlat();
 
           // Normalize Jacobian
           const double dlatNorm = 1.0/std::sqrt(dx_dlat*dx_dlat+dy_dlat*dy_dlat);
@@ -483,8 +487,11 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
                           const Fields & fields) const {
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
+  // Get geometry
+  const Geometry & geom(fields.geometry());
+
   // StructuredColumns
-  atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
+  atlas::functionspace::StructuredColumns fs(geom.functionSpace());
 
   // Get grid
   atlas::StructuredGrid grid = fs.grid();
@@ -593,7 +600,7 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
       trans_use_mpi(true);
       trans_set_leq_regions(false);
       const int nprgpew = std::min(1,
-        static_cast<int>(std::sqrt(static_cast<double>(fields.geometry()->getComm().size()))));
+        static_cast<int>(std::sqrt(static_cast<double>(geom.getComm().size()))));
       trans_set_nprgpew(nprgpew);
 
       // Setup transform structure
@@ -613,16 +620,16 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
     updatedConfig.set("variable vector", varVec);
 
     // Copy existing FA file
-    if (fields.geometry()->getComm().rank() == 0) {
+    if (geom.getComm().rank() == 0) {
       const std::string originFilePath = conf.getString("origin filepath");
       std::ifstream src(originFilePath, std::ios::binary);
       std::ofstream dst(filePath, std::ios::binary);
       dst << src.rdbuf() << std::flush;
     }
-    fields.geometry()->getComm().barrier();
+    geom.getComm().barrier();
 
     // Write FA file
-    fieldsio_arome_fa_write_f90(updatedConfig, &fields.geometry()->getComm(), fs.get(), &trans,
+    fieldsio_arome_fa_write_f90(updatedConfig, &geom.getComm(), fs.get(), &trans,
       globalData.get());
 #else
     // Format not available

@@ -21,6 +21,7 @@ Fields.cc
 Fields.h
 Geometry.cc
 Geometry.h
+GeometryParameters.h
 GeometryIterator.cc
 GeometryIterator.h
 Increment.cc
@@ -123,8 +124,6 @@ ecbuild_add_library( TARGET   vind
                      HEADER_DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/vind
                      INSTALL_HEADERS LISTED
                      LINKER_LANGUAGE CXX )
-
-target_include_directories( vind PUBLIC "$<BUILD_INTERFACE:${VIND_INCLUDE_DIRS}>" "$<BUILD_INTERFACE:${VIND_EXTRA_INCLUDE_DIRS}>" )
 
 target_link_libraries( vind PUBLIC NetCDF::NetCDF_Fortran NetCDF::NetCDF_C )
 if( eccodes_FOUND )

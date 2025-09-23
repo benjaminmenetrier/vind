@@ -8,14 +8,6 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
-#include <vector>
-
-#include "atlas/field.h"
-
-#include "eckit/config/Configuration.h"
-
-#include "oops/base/Variables.h"
 
 #include "vind/FieldsIO/FieldsIOBase.h"
 

@@ -13,21 +13,29 @@
 #include <string>
 #include <vector>
 
-#include "eckit/config/Configuration.h"
-
-#include "oops/base/Variables.h"
+#include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
-
-#include "vind/Geometry.h"
-#include "vind/State.h"
 
 #include "vader/vader.h"
 
+#include "vind/Geometry.h"
+
+namespace eckit {
+  class Configuration;
+}
+
+namespace oops {
+  class Variables;
+}
+
 namespace vind {
+  class State;
 
 // -----------------------------------------------------------------------------
+/// VariableChange class
 
-class VariableChange : public util::Printable {
+class VariableChange : public util::Printable,
+                       private util::ObjectCounter<VariableChange> {
  public:
   static const std::string classname()
     {return "vind::VariableChange";}

@@ -5,20 +5,19 @@
 
 #pragma once
 
-#include <map>
-#include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
-#include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 
 #include "oops/util/Duration.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-#include "vind/Traits.h"
+namespace eckit {
+  class Configuration;
+}
 
 namespace vind {
   class Geometry;

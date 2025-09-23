@@ -14,6 +14,8 @@
 
 #include "oops/util/Logger.h"
 
+#include "vind/GeometryIterator.h"
+
 namespace vind {
 
 // -----------------------------------------------------------------------------
@@ -136,7 +138,7 @@ void Increment::axpy(const double & zz,
 
 oops::LocalIncrement Increment::getLocal(const GeometryIterator & geometryIterator) const {
   int index = 0;
-  if (this->geometry()->iteratorDimension() == 2) {
+  if (this->geometry().iteratorDimension() == 2) {
     std::vector<int> variableSizes;
     for (const auto & var : this->variables()) {
       variableSizes.push_back(static_cast<int>(var.getLevels()));
@@ -170,7 +172,7 @@ void Increment::setLocal(const oops::LocalIncrement & localIncrement,
                          const GeometryIterator & geometryIterator) {
   std::vector<double> values = localIncrement.getVals();
   size_t index = 0;
-  if (this->geometry()->iteratorDimension() == 2) {
+  if (this->geometry().iteratorDimension() == 2) {
     for (const auto & var : this->variables()) {
       auto view = atlas::array::make_view<double, 2>(this->fields().fieldSet()[var.name()]);
       for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {

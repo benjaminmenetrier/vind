@@ -8,15 +8,9 @@
 #include <memory>
 #include <string>
 
-#include "atlas/field.h"
-
-#include "eckit/config/Configuration.h"
-
 #ifdef READFA
 #include "ectrans/transi.h"
 #endif
-
-#include "oops/base/Variables.h"
 
 #include "vind/FieldsIO/FieldsIOBase.h"
 

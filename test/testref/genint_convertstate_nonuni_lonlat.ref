@@ -24,13 +24,13 @@ Output state:
   - volume_mixing_ratio_of_no2 (56 levels):
     + min    = 1.2487224314153652e-19
     + max    = 2.0266769726767478e-08
-    + mean   = 1.6263364285975666e-09
-    + stddev = 3.4416743871449242e-09
+    + mean   = 1.6263364285975678e-09
+    + stddev = 3.4416743871449217e-09
   - volume_mixing_ratio_of_co (56 levels):
     + min    = 8.2421079865342771e-09
     + max    = 5.3956628373397541e-07
-    + mean   = 4.5942895263222006e-08
-    + stddev = 2.9009651429592781e-08
+    + mean   = 4.5942895263222072e-08
+    + stddev = 2.9009651429592801e-08
   - air_pressure_at_surface (1 levels):
     + min    = 5.7414762795172719e+04
     + max    = 1.0319030916246402e+05

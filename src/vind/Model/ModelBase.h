@@ -15,9 +15,8 @@
 #include "oops/util/Logger.h"
 #include "oops/util/Printable.h"
 
-#include "vind/Geometry.h"
-
 namespace vind {
+  class Geometry;
   class ModelAuxControl;
   class State;
 
@@ -26,7 +25,10 @@ namespace vind {
 
 class ModelBase : public util::Printable {
  public:
-  // Constructor/destructor
+  // Constructors/destructor
+  explicit ModelBase(const eckit::Configuration & config)
+    : timeResolution_(config.getString("tstep"))
+    {}
   ModelBase() = default;
   virtual ~ModelBase() = default;
 
@@ -41,7 +43,11 @@ class ModelBase : public util::Printable {
   virtual void finalize(State &) const = 0;
 
   // Utilities
-  virtual const util::Duration & timeResolution() const = 0;
+  const util::Duration & timeResolution() const
+    {return timeResolution_;}
+
+ protected:
+  const util::Duration timeResolution_;
 
  private:
   void print(std::ostream &) const override = 0;

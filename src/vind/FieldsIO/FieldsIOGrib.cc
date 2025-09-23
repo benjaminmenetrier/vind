@@ -15,11 +15,14 @@
 
 #include "atlas/functionspace.h"
 
+#include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 
+#include "oops/base/Variables.h"
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 
 namespace vind {
 
@@ -33,6 +36,9 @@ void FieldsIOGrib::read(const oops::Variables & vars,
                         const eckit::Configuration & conf,
                         Fields & fields) const {
   oops::Log::trace() << classname() << "::read starting" << std::endl;
+
+  // Get geometry
+  const Geometry & geom(fields.geometry());
 
   // Build file path
   std::string filePath = conf.getString("filepath");
@@ -64,7 +70,7 @@ void FieldsIOGrib::read(const oops::Variables & vars,
 
   // Create local fieldset
   for (const auto & var : vars) {
-    atlas::Field field = fields.geometry()->functionSpace().createField<double>(
+    atlas::Field field = geom.functionSpace().createField<double>(
       atlas::option::name(var.name()) | atlas::option::levels(var.getLevels()));
     fields.fieldSet().add(field);
   }
@@ -78,14 +84,14 @@ void FieldsIOGrib::read(const oops::Variables & vars,
   // Global data
   atlas::FieldSet globalData;
   for (const auto & var : vars) {
-    atlas::Field field = fields.geometry()->functionSpace().createField<double>(
+    atlas::Field field = geom.functionSpace().createField<double>(
       atlas::option::name(var.name())
       | atlas::option::levels(var.getLevels()) | atlas::option::global());
     globalData.add(field);
   }
 
   // Grib input
-  if (fields.geometry()->getComm().rank() == 0) {
+  if (geom.getComm().rank() == 0) {
     oops::Log::info() << "Info     : Reading file: " << filePath << std::endl;
 
     // Initialization
@@ -152,13 +158,13 @@ void FieldsIOGrib::read(const oops::Variables & vars,
   }
 
   // Scatter data from main processor
-  if (fields.geometry()->functionSpace().type() == "StructuredColumns") {
+  if (geom.functionSpace().type() == "StructuredColumns") {
     // StructuredColumns
-    atlas::functionspace::StructuredColumns fs(fields.geometry()->functionSpace());
+    atlas::functionspace::StructuredColumns fs(geom.functionSpace());
     fs.scatter(globalData, fields.fieldSet());
-  } else if (fields.geometry()->functionSpace().type() == "NodeColumns") {
+  } else if (geom.functionSpace().type() == "NodeColumns") {
     // NodeColumns
-    atlas::functionspace::NodeColumns fs(fields.geometry()->functionSpace());
+    atlas::functionspace::NodeColumns fs(geom.functionSpace());
     fs.scatter(globalData, fields.fieldSet());
   }
 

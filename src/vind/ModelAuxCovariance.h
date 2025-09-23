@@ -11,7 +11,7 @@
 #include <ostream>
 #include <string>
 
-#include "eckit/config/LocalConfiguration.h"
+#include "eckit/config/Configuration.h"
 #include "eckit/memory/NonCopyable.h"
 
 #include "oops/util/ObjectCounter.h"
@@ -24,6 +24,7 @@ namespace vind {
   class Geometry;
 
 // -----------------------------------------------------------------------------
+/// ModelAuxCovariance class
 
 class ModelAuxCovariance : public util::Printable,
                            private eckit::NonCopyable,

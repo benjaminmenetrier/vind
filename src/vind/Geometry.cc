@@ -124,11 +124,6 @@ Geometry::Geometry(const eckit::Configuration & config,
     interpolation_.set("interpolation type", "unstructured");
   }
 
-  // GeometryData
-  if (interpolation_.getString("interpolation type") == "unstructured") {
-    geomData_.reset(new oops::GeometryData(functionSpace_, fields_, levelsAreTopDown_, comm_));
-  }
-
   // Check for duplicate points
   const auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
   const auto ownedView = atlas::array::make_view<int, 2>(fields_.field("owned"));
@@ -204,74 +199,6 @@ Geometry::Geometry(const eckit::Configuration & config,
 
 // -----------------------------------------------------------------------------
 
-Geometry::Geometry(const Geometry & other)
-  : comm_(other.comm_), halo_(other.halo_), grid_(other.grid_), gridType_(other.gridType_),
-  partitioner_(other.partitioner_), mesh_(other.mesh_), groupIndex_(other.groupIndex_),
-  levelsAreTopDown_(other.levelsAreTopDown_), levelsCountFrom_(other.levelsCountFrom_),
-  modelData_(other.modelData_), alias_(other.alias_),
-  io_(other.io_), interpolation_(other.interpolation_),
-  duplicatePoints_(other.duplicatePoints_), iteratorDimension_(other.iteratorDimension_),
-  nnodes_(other.nnodes_), nlevs_(other.nlevs_), vertCoordAvg_(other.vertCoordAvg_) {
-  oops::Log::trace() << classname() << "::Geometry starting" << std::endl;
-
-  // Copy function space
-  if (other.functionSpace_.type() == "StructuredColumns") {
-    // StructuredColumns
-    functionSpace_ = atlas::functionspace::StructuredColumns(other.functionSpace_);
-  } else if (other.functionSpace_.type() == "NodeColumns") {
-    // NodeColumns
-    if (grid_.name().compare(0, 2, std::string{"CS"}) == 0) {
-      // CubedSphere
-      functionSpace_ = atlas::functionspace::CubedSphereNodeColumns(other.functionSpace_);
-    } else {
-      // Other NodeColumns
-      functionSpace_ = atlas::functionspace::NodeColumns(other.functionSpace_);
-    }
-  } else if (other.functionSpace_.type() == "PointCloud") {
-    throw eckit::NotImplemented(other.functionSpace_.type() + " function space not supported",
-      Here());
-  } else {
-    throw eckit::NotImplemented(other.functionSpace_.type() + " function space not supported yet",
-      Here());
-  }
-
-  // Copy geometry fields
-  fields_ = util::shareFields(other.fields_);
-
-  // Copy groups
-  for (size_t groupIndex = 0; groupIndex < other.groups_.size(); ++groupIndex) {
-    // Define group
-    groupData group;
-
-    // Copy number of levels
-    group.levels_ = other.groups_[groupIndex].levels_;
-
-    // Copy corresponding level for 2D variables (first or last)
-    group.lev2d_ = other.groups_[groupIndex].lev2d_;
-
-    // Copy vertical coordinate
-    group.vertCoord_ = other.groups_[groupIndex].vertCoord_;
-
-    // Copy averaged vertical coordinate
-    group.vertCoordAvg_ = other.groups_[groupIndex].vertCoordAvg_;
-
-    // Copy mask size
-    group.gmaskSize_ = other.groups_[groupIndex].gmaskSize_;
-
-    // Save group
-    groups_.push_back(group);
-  }
-
-  // Geometry data
-  if (interpolation_.getString("interpolation type") == "unstructured") {
-    geomData_.reset(new oops::GeometryData(functionSpace_, fields_, levelsAreTopDown_, comm_));
-  }
-
-  oops::Log::trace() << classname() << "::Geometry done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
 size_t Geometry::groupIndex(const std::string & var) const {
   oops::Log::trace() << classname() << "::groupIndex starting" << std::endl;
 
@@ -308,6 +235,49 @@ std::vector<size_t> Geometry::variableSizes(const std::vector<std::string> & var
 
   oops::Log::trace() << classname() << "::variableSizes done" << std::endl;
   return variableSizes(vars);
+}
+
+// -----------------------------------------------------------------------------
+
+Interpolation & Geometry::getInterpolation(const Geometry & tgtGeom) const {
+  oops::Log::trace() << classname() << "::getInterpolation starting" << std::endl;
+
+  // Get target geometry UID (grid + "_" + paritioner + "@" + interpolation type)
+  const std::string interpolationType = tgtGeom.interpolation().getString("interpolation type");
+  const std::string tgtGeomUid = tgtGeom.grid().uid() + "_" + tgtGeom.partitioner().type()
+    + "@" + interpolationType;
+
+  // Look for this UID in the existing interpolations
+  const auto it = interpolations_.find(tgtGeomUid);
+
+  if (it != interpolations_.end()) {
+    // Found existing interpolation
+    oops::Log::info() << "Info     : Found existing interpolation for UID: " << tgtGeomUid
+      << std::endl;
+
+    // Return interpolation
+    oops::Log::trace() << classname() << "::getInterpolation done" << std::endl;
+    return *(it->second);
+  } else {
+    // Create GeometryData if needed
+    if ((interpolationType == "unstructured") && !geomData_) {
+      geomData_.reset(new oops::GeometryData(functionSpace_, fields_, levelsAreTopDown_, comm_));
+    }
+
+    // Create new interpolation
+    std::shared_ptr<Interpolation> interpolation(new Interpolation(*this, tgtGeom));
+
+    // Print interpolation type
+    oops::Log::info() << "Info     : New interpolation created for UID: " << tgtGeomUid
+      << std::endl;
+
+    // Store interpolation
+    interpolations_.insert({tgtGeomUid, interpolation});
+
+    // Return interpolation
+    oops::Log::trace() << classname() << "::getInterpolation done" << std::endl;
+    return *interpolation;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -585,32 +555,29 @@ void Geometry::setupMask(groupData & group) {
     // Coordinates and land-sea mask
     std::vector<double> lon(nlon);
     std::vector<double> lat(nlat);
-    std::vector<int> lsm(nlat*nlon);
+    std::vector<double> lsm(nlat*nlon);
 
     if (comm_.rank() == 0) {
       // Get lon/lat
       if ((retval = nc_inq_varid(ncid, "lon", &lon_id))) ERR(retval, "lon");
       if ((retval = nc_inq_varid(ncid, "lat", &lat_id))) ERR(retval, "lat");
-      if ((retval = nc_inq_varid(ncid, "LSMASK", &lsm_id))) ERR(retval, "LMASK");
+      if ((retval = nc_inq_varid(ncid, "landseamask", &lsm_id))) ERR(retval, "landseamask");
 
       // Read data
-      std::vector<float> zlon(nlon);
-      std::vector<float> zlat(nlat);
-      std::vector<uint8_t> zlsm(nlat*nlon);
-      if ((retval = nc_get_var_float(ncid, lon_id, zlon.data()))) ERR(retval, "lon");
-      if ((retval = nc_get_var_float(ncid, lat_id, zlat.data()))) ERR(retval, "lat");
-      if ((retval = nc_get_var_ubyte(ncid, lsm_id, zlsm.data()))) ERR(retval, "LMASK");
+      std::vector<float> zlsm(nlat*nlon);
+      if ((retval = nc_get_var_double(ncid, lon_id, lon.data()))) ERR(retval, "lon");
+      if ((retval = nc_get_var_double(ncid, lat_id, lat.data()))) ERR(retval, "lat");
+      if ((retval = nc_get_var_float(ncid, lsm_id, zlsm.data()))) ERR(retval, "landseamask");
 
-      // Copy data
+      // Process data
       for (size_t ilon = 0; ilon < nlon; ++ilon) {
-        lon[ilon] = static_cast<double>(zlon[ilon]);
-      }
-      for (size_t ilat = 0; ilat < nlat; ++ilat) {
-        lat[ilat] = static_cast<double>(zlat[ilat]);
+        if (lon[ilon] > 180.0) {
+          lon[ilon] -= 360.0;
+        }
       }
       for (size_t ilat = 0; ilat < nlat; ++ilat) {
        for (size_t ilon = 0; ilon < nlon; ++ilon) {
-          lsm[ilat*nlon+ilon] = static_cast<int>(zlsm[ilat*nlon+ilon]);
+          lsm[ilat*nlon+ilon] = static_cast<double>(zlsm[ilat*nlon+ilon]);
         }
       }
 
@@ -654,19 +621,10 @@ void Geometry::setupMask(groupData & group) {
 
           // Ocean points for all levels
           for (size_t jlevel = 0; jlevel < group.levels_; ++jlevel) {
-            if (lsm[nn] == 0) {
-               maskView(jnode, jlevel) = 1;
-             } else {
-               maskView(jnode, jlevel) = 0;
-             }
-           }
-
-          // Ocean + small islands for:
-          // - the first level of 3D fields,
-          // - the 2D fields if lev2d = "first"
-          if (lsm[nn] == 3) {
-            if ((group.levels_ > 1) || (group.lev2d_ == "first")) {
-              maskView(jnode, 0) = 1;
+            if (lsm[nn] == 100.0) {
+              maskView(jnode, jlevel) = 1;
+            } else {
+              maskView(jnode, jlevel) = 0;
             }
           }
         }
@@ -757,7 +715,6 @@ void Geometry::checkLonLat(const eckit::Configuration & checkLonLatConf) {
 
   oops::Log::trace() << classname() << "::checkLonLat starting" << std::endl;
 }
-
 
 // -----------------------------------------------------------------------------
 

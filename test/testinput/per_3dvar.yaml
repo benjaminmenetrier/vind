@@ -87,3 +87,4 @@ output:
   filepath: testdata/per_3dvar_analysis
 test:
   reference filename: testref/per_3dvar.ref
+  float absolute tolerance: 1.0e-12

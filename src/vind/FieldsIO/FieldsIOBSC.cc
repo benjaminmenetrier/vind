@@ -18,6 +18,7 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); \
   throw eckit::Exception(s + " : " + msg, Here());}
@@ -41,10 +42,10 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
   // Get geometry
-  std::shared_ptr<const Geometry> geom(fields.geometry());
+  const Geometry & geom(fields.geometry());
 
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom->functionSpace());
+  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
 
   // Clear local fieldset
   fields.fieldSet().clear();
@@ -78,13 +79,13 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   const std::string ncFilePath = conf.getString("filepath");
 
   // Get file initial time
-  const util::DateTime initialTime(geom->io().getString("initial date"));
+  const util::DateTime initialTime(geom.io().getString("initial date"));
 
   // Get file final time
-  const util::DateTime finalTime(geom->io().getString("final date"));
+  const util::DateTime finalTime(geom.io().getString("final date"));
 
   // Get optional time step
-  const double timeStep = geom->io().getDouble("time step", 3600.0);
+  const double timeStep = geom.io().getDouble("time step", 3600.0);
 
   // Get total number of hours
   ASSERT(finalTime >= initialTime);
@@ -101,7 +102,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   // NetCDF IDs
   int ncid, retval, time_id, var_id[vars.size()];
 
-  if (geom->getComm().rank() == 0) {
+  if (geom.getComm().rank() == 0) {
     // Get grid
     const atlas::StructuredGrid grid = fs.grid();
 
@@ -141,7 +142,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
         ERR(retval, vars[jvar].name());
 
       // Read and save all NetCDF for this variable, if necessary
-      if (!attributes_.has(geom->grid().uid() + "." + vars[jvar].name())) {
+      if (!attributes_.has(geom.grid().uid() + "." + vars[jvar].name())) {
         // Get variable ID
         int varid = var_id[jvar];
 
@@ -205,14 +206,14 @@ void FieldsIOBSC::read(const oops::Variables & vars,
         }
 
         // Save attributes
-        if (!attributes_.has(geom->grid().uid())) {
+        if (!attributes_.has(geom.grid().uid())) {
           // Create grid attributes and insert variable attributes
           eckit::LocalConfiguration gridAttrs;
           gridAttrs.set(vars[jvar].name(), varAttrs);
-          attributes_.set(geom->grid().uid(), gridAttrs);
+          attributes_.set(geom.grid().uid(), gridAttrs);
         } else {
           // Insert variable attributes
-          attributes_.set(geom->grid().uid() + "." + vars[jvar].name(), varAttrs);
+          attributes_.set(geom.grid().uid() + "." + vars[jvar].name(), varAttrs);
         }
       }
 
@@ -224,7 +225,7 @@ void FieldsIOBSC::read(const oops::Variables & vars,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom->alias()) {
+        for (const auto & item : geom.alias()) {
           if (item.getString("in file") == vars[jvar].name()) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
@@ -257,18 +258,18 @@ void FieldsIOBSC::read(const oops::Variables & vars,
         }
       } else {
         std::string var_in_code;
-        for (const auto & item : geom->alias()) {
+        for (const auto & item : geom.alias()) {
           if (item.getString("in file") == vars[jvar].name()) {
             var_in_code = item.getString("in code");
           }
         }
-        size_t loopMax = geom->vertCoordAvg(var_in_code).size();
+        size_t loopMax = geom.vertCoordAvg(var_in_code).size();
         for (size_t k = 0; k < loopMax; ++k) {
           // Read level
           std::vector<double> zvar(nx*ny);
           const std::vector<size_t> countp({1, 1, ny, nx});
           const std::vector<size_t>startp({time,
-          static_cast<size_t>(geom->vertCoordAvg(var_in_code)[k]), 0, 0});
+          static_cast<size_t>(geom.vertCoordAvg(var_in_code)[k]), 0, 0});
           if ((retval = nc_get_vars_double(ncid, var_id[jvar], startp.data(), countp.data(),
                                 NULL, zvar.data()))) ERR(retval, vars[jvar].name());
 
@@ -308,10 +309,10 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
   // Get geometry
-  std::shared_ptr<const Geometry> geom(fields.geometry());
+  const Geometry & geom(fields.geometry());
 
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom->functionSpace());
+  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
 
   // Define variables vector from fields.fieldSet()
   const std::vector<std::string> vars = fields.fieldSet().field_names();
@@ -323,7 +324,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   const bool isState = conf.getBool("is state");
 
   // Check if domain is global
-  const bool isGlobal = geom->grid().domain().type() == "global";
+  const bool isGlobal = geom.grid().domain().type() == "global";
 
   // Check if this file already exists
   const bool existingFile = std::find(existingFiles_.begin(), existingFiles_.end(), ncFilePath)
@@ -333,7 +334,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   }
 
   // Get total number of levels (from geometry section)
-  const size_t lmMax = geom->io().getUnsigned("total number of levels");
+  const size_t lmMax = geom.io().getUnsigned("total number of levels");
 
   // Get write time
   const util::DateTime validTime(conf.getString("date"));
@@ -342,7 +343,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   const bool singleDate = conf.getBool("single date", false);
 
   // Get optional time step
-  const double timeStep = geom->io().getDouble("time step", 3600.0);
+  const double timeStep = geom.io().getDouble("time step", 3600.0);
 
   // Get file initial and final time
   util::DateTime initialTime;
@@ -351,10 +352,10 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
   if (!singleDate) {
     // Get file initial time
-    initialTime = util::DateTime(geom->io().getString("initial date"));
+    initialTime = util::DateTime(geom.io().getString("initial date"));
 
     // Get file final time
-    finalTime = util::DateTime(geom->io().getString("final date"));
+    finalTime = util::DateTime(geom.io().getString("final date"));
 
     // Reference for time coordinate
     timeOffset = 0;
@@ -367,7 +368,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
     // Reference for time coordinate
     timeOffset =
-      (initialTime - util::DateTime(geom->io().getString("initial date"))).toSeconds()
+      (initialTime - util::DateTime(geom.io().getString("initial date"))).toSeconds()
       /timeStep;
   }
 
@@ -409,13 +410,13 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   std::string var_in_code;
   std::vector<size_t> lev_vect;
   for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
-    for (const auto & item : geom->alias()) {
+    for (const auto & item : geom.alias()) {
       if (item.getString("in file") == vars[jvar]) {
         var_in_code = item.getString("in code");
       }
     }
-    if (geom->levels(var_in_code) > 1) {
-      lev_vect.push_back(geom->levels(var_in_code));
+    if (geom.levels(var_in_code) > 1) {
+      lev_vect.push_back(geom.levels(var_in_code));
     }
   }
   std::set<size_t> lev_set(lev_vect.begin(), lev_vect.end());
@@ -443,7 +444,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   // Gather coordinates and data on main processor
   fs.gather(localData, globalData);
 
-  if (geom->getComm().rank() == 0) {
+  if (geom.getComm().rank() == 0) {
     if (existingFile) {
       oops::Log::info() << "Info     : Updating file: " << ncFilePath << std::endl;
     } else {
@@ -639,7 +640,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         double pole[2];
         pole[0] = 0.;
         pole[1] = 90.;
-        geom->grid().projection().xy2lonlat(pole);
+        geom.grid().projection().xy2lonlat(pole);
         float_att = pole[1];
         if ((retval = nc_put_att_float(ncid, vrp_id, "grid_north_pole_latitude", NC_FLOAT, 1,
           &float_att))) ERR(retval, "Attr: rotated_pole grid_north_pole_latitude");
@@ -654,8 +655,8 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       if ((retval = nc_def_var(ncid, "time", NC_INT, 1, dTime_id, &vTime_id)))
         ERR(retval, "time");
       strcpy(str_att,
-        ("hours since "+geom->io().getString("initial date").substr(0, 10)+
-        " "+geom->io().getString("initial date").substr(11, 5)+" UTC").c_str());
+        ("hours since "+geom.io().getString("initial date").substr(0, 10)+
+        " "+geom.io().getString("initial date").substr(11, 5)+" UTC").c_str());
       if ((retval = nc_put_att_text(ncid, vTime_id, "units", strlen(str_att),
                                     &str_att[0])))
         ERR(retval, "Attr: time units");
@@ -730,11 +731,11 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
     }
 
     // Get attributes for this grid uid
-    ASSERT(attributes_.has(geom->grid().uid()));
-    const eckit::LocalConfiguration gridAttr(attributes_, geom->grid().uid());
+    ASSERT(attributes_.has(geom.grid().uid()));
+    const eckit::LocalConfiguration gridAttr(attributes_, geom.grid().uid());
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
-      for (const auto & item : geom->alias()) {
+      for (const auto & item : geom.alias()) {
         if (item.getString("in file") == vars[jvar]) {
           var_in_code = item.getString("in code");
         }
@@ -743,7 +744,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       if (nc_inq_varid(ncid, vars[jvar].c_str(), &var_id[jvar]) != NC_NOERR) {
         // Define variable
         if (fields.fieldSet()[vars[jvar]].shape(1) > 1) {
-          if (has_int_press && geom->levels(var_in_code) > *lev_set.begin()) {
+          if (has_int_press && geom.levels(var_in_code) > *lev_set.begin()) {
             if ((retval = nc_def_var(ncid, vars[jvar].c_str(), NC_FLOAT, 4, d4Dp_id,
               &var_id[jvar]))) ERR(retval, vars[jvar]);
           } else {
@@ -896,7 +897,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom->alias()) {
+        for (const auto & item : geom.alias()) {
           if (item.getString("in file") == vars[jvar]) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
@@ -931,12 +932,12 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         if ((retval = nc_put_vars_float(ncid, var_id[jvar], startp.data(), countp.data(), NULL,
                                         zvar.data()))) ERR(retval, vars[jvar]);
       } else {
-        for (const auto & item : geom->alias()) {
+        for (const auto & item : geom.alias()) {
           if (item.getString("in file") == vars[jvar]) {
             var_in_code = item.getString("in code");
           }
         }
-        auto levels = geom->vertCoordAvg(var_in_code);
+        auto levels = geom.vertCoordAvg(var_in_code);
         for (size_t k = 0; k < levels.size(); ++k) {
           // Copy data
           std::vector<float> zvar(ny*nx_out);

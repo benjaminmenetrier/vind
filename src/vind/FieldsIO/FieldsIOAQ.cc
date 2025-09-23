@@ -18,6 +18,7 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
+#include "vind/Geometry.h"
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); \
   throw eckit::Exception(s + " : " + msg, Here());}
@@ -41,10 +42,10 @@ void FieldsIOAQ::read(const oops::Variables & vars,
   oops::Log::trace() << classname() << "::read starting" << std::endl;
 
   // Get geometry
-  std::shared_ptr<const Geometry> geom(fields.geometry());
+  const Geometry & geom(fields.geometry());
 
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom->functionSpace());
+  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
 
   // Clear local fieldset
   fields.fieldSet().clear();
@@ -78,7 +79,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
   const std::string ncFilePath = conf.getString("filepath");
 
   // Get file reference time
-  const util::DateTime initialTime(geom->io().getString("initial date"));
+  const util::DateTime initialTime(geom.io().getString("initial date"));
 
   // Get read time
   const util::DateTime validTime(conf.getString("date"));
@@ -89,7 +90,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
   // NetCDF IDs
   int ncid, retval, time_id, var_id[vars.size()];
 
-  if (geom->getComm().rank() == 0) {
+  if (geom.getComm().rank() == 0) {
     // Get grid
     const atlas::StructuredGrid grid = fs.grid();
 
@@ -128,7 +129,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
         ERR(retval, vars[jvar].name());
 
       // Read and save all NetCDF for this variable, if necessary
-      if (!attributes_.has(geom->grid().uid() + "." + vars[jvar].name())) {
+      if (!attributes_.has(geom.grid().uid() + "." + vars[jvar].name())) {
         // Get variable ID
         int varid = var_id[jvar];
 
@@ -192,14 +193,14 @@ void FieldsIOAQ::read(const oops::Variables & vars,
         }
 
         // Save attributes
-        if (!attributes_.has(geom->grid().uid())) {
+        if (!attributes_.has(geom.grid().uid())) {
           // Create grid attributes and insert variable attributes
           eckit::LocalConfiguration gridAttrs;
           gridAttrs.set(vars[jvar].name(), varAttrs);
-          attributes_.set(geom->grid().uid(), gridAttrs);
+          attributes_.set(geom.grid().uid(), gridAttrs);
         } else {
           // Insert variable attributes
-          attributes_.set(geom->grid().uid() + "." + vars[jvar].name(), varAttrs);
+          attributes_.set(geom.grid().uid() + "." + vars[jvar].name(), varAttrs);
         }
       }
 
@@ -211,7 +212,7 @@ void FieldsIOAQ::read(const oops::Variables & vars,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom->alias()) {
+        for (const auto & item : geom.alias()) {
           if (item.getString("in file") == vars[jvar].name()) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);
@@ -288,10 +289,10 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
   oops::Log::trace() << classname() << "::write starting" << std::endl;
 
   // Get geometry
-  std::shared_ptr<const Geometry> geom(fields.geometry());
+  const Geometry & geom(fields.geometry());
 
   // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom->functionSpace());
+  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
 
   // Define variables vector from fields.fieldSet()
   const std::vector<std::string> vars = fields.fieldSet().field_names();
@@ -317,7 +318,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
 
   // Reference for time coordinate
   size_t timeOffset =
-    (validTime- util::DateTime(geom->io().getString("initial date"))).toSeconds();
+    (validTime- util::DateTime(geom.io().getString("initial date"))).toSeconds();
 
   // Single date file
   const size_t time = 0;
@@ -367,7 +368,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
   // Gather coordinates and data on main processor
   fs.gather(localData, globalData);
 
-  if (geom->getComm().rank() == 0) {
+  if (geom.getComm().rank() == 0) {
     if (existingFile) {
       oops::Log::info() << "Info     : Updating file: " << ncFilePath << std::endl;
     } else {
@@ -480,15 +481,15 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       if ((retval = nc_def_var(ncid, "time", NC_FLOAT, 1, dTime_id, &vTime_id)))
         ERR(retval, "time");
       strcpy(str_att,
-        ("seconds since "+geom->io().getString("initial date").substr(0, 10)+
-        " "+geom->io().getString("initial date").substr(11, 5)).c_str());
+        ("seconds since "+geom.io().getString("initial date").substr(0, 10)+
+        " "+geom.io().getString("initial date").substr(11, 5)).c_str());
       if ((retval = nc_put_att_text(ncid, vTime_id, "units", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time units");
       strcpy(str_att, "t");
       if ((retval = nc_put_att_text(ncid, vTime_id, "axis", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time axis");
-      strcpy(str_att, (geom->io().getString("initial date").substr(0, 10)+
-        " "+geom->io().getString("initial date").substr(11, 5)).c_str());
+      strcpy(str_att, (geom.io().getString("initial date").substr(0, 10)+
+        " "+geom.io().getString("initial date").substr(11, 5)).c_str());
       if ((retval = nc_put_att_text(ncid, vTime_id, "time_origin", strlen(str_att), &str_att[0])))
         ERR(retval, "Attr: time time_origin");
       strcpy(str_att, "standard");
@@ -500,8 +501,8 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
     }
 
     // Get attributes for this grid uid
-    ASSERT(attributes_.has(geom->grid().uid()));
-    const eckit::LocalConfiguration gridAttr(attributes_, geom->grid().uid());
+    ASSERT(attributes_.has(geom.grid().uid()));
+    const eckit::LocalConfiguration gridAttr(attributes_, geom.grid().uid());
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
       // Check whether this variable exists
@@ -596,7 +597,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
 
       // Recover geometry levels
       std::string vunits;
-      std::vector<double> zlev = geom->verticalCoord(vunits);
+      std::vector<double> zlev = geom.verticalCoord(vunits);
       std::vector<int> zLm(lmMax);
       for (size_t jLm = 0; jLm < lmMax; ++jLm) {
         zLm[jLm] = static_cast<int>(zlev[jLm]);
@@ -622,7 +623,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom->alias()) {
+        for (const auto & item : geom.alias()) {
           if (item.getString("in file") == vars[jvar]) {
             scaleFactor = item.getDouble("scaling factor", 1.0);
             logTransf = item.getBool("log transform", false);

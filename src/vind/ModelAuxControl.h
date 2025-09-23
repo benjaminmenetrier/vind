@@ -15,8 +15,6 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-#include "vind/Geometry.h"
-
 namespace eckit {
   class Configuration;
 }
@@ -26,6 +24,7 @@ namespace vind {
   class ModelAuxIncrement;
 
 // -----------------------------------------------------------------------------
+/// ModelAuxControl class
 
 class ModelAuxControl : public util::Printable,
                         private eckit::NonCopyable,
