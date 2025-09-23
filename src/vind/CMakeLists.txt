@@ -4,13 +4,6 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
-message( STATUS "Found vind I/O formats:" )
-message( STATUS "- AROME-NetCDF" )
-message( STATUS "- BSC" )
-message( STATUS "- AQ" )
-message( STATUS "- Default (NetCDF)" )
-message( STATUS "- GMSH" )
-
 # Common sources, not obs-related
 list( APPEND vind_src_files
 
@@ -21,9 +14,9 @@ Fields.cc
 Fields.h
 Geometry.cc
 Geometry.h
-GeometryParameters.h
 GeometryIterator.cc
 GeometryIterator.h
+GeometryParameters.h
 Increment.cc
 Increment.h
 Interpolation.cc
@@ -68,22 +61,12 @@ Model/ModelPersistence.h
 
 )
 
-if( pybind11_FOUND )
-    # Python-based model
-    list( APPEND vind_src_files
-
-    Model/ModelPython.cc
-    Model/ModelPython.h
-
-    )
-
-    # Python modules
-    list( APPEND python_modules
-
-    ModelPythonPyQG.py
-
-    )
-endif()
+message( STATUS "Found vind I/O formats:" )
+message( STATUS "- AROME-NetCDF" )
+message( STATUS "- BSC" )
+message( STATUS "- AQ" )
+message( STATUS "- Default (NetCDF)" )
+message( STATUS "- GMSH" )
 
 if( ENABLE_OBS )
     # Common sources, obs-related
@@ -114,6 +97,27 @@ if( eccodes_FOUND )
 
     FieldsIO/FieldsIOGrib.cc
     FieldsIO/FieldsIOGrib.h
+
+    )
+endif()
+
+message( STATUS "Found vind models:" )
+message( STATUS "- Persistence" )
+
+if( pybind11_FOUND )
+    # Python-based model
+    message( STATUS "- Python" )
+    list( APPEND vind_src_files
+
+    Model/ModelPython.cc
+    Model/ModelPython.h
+
+    )
+
+    # Python modules
+    list( APPEND python_modules
+
+    ModelPythonPyQG.py
 
     )
 endif()

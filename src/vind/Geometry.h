@@ -51,7 +51,6 @@ class Geometry : public util::Printable,
   // Constructors
   Geometry(const eckit::Configuration &,
            const eckit::mpi::Comm & comm = oops::mpi::world());
-//  Geometry(const Geometry &);
 
   // Variables sizes
   std::vector<size_t> variableSizes(const oops::Variables &) const;

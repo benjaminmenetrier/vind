@@ -8,12 +8,6 @@
 
 #include "vind/VariableChange.h"
 
-#include <map>
-#include <ostream>
-#include <string>
-#include <typeinfo>
-#include <vector>
-
 #include "oops/base/Variables.h"
 #include "oops/util/ConfigFunctions.h"
 #include "oops/util/FieldSetHelpers.h"

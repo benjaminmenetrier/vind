@@ -103,7 +103,6 @@ Fields::Fields(const Fields & other,
         atlas::option::name(var.name()) | atlas::option::levels(var.getLevels()));
       fset_.add(field);
     }
-    util::zeroFieldSet(fset_);
 
     // Set interpolation type
     for (auto field : fset_) {
@@ -119,6 +118,7 @@ Fields::Fields(const Fields & other,
     // Horizontal interpolation
     interpolation.execute(fset, fset_);
   }
+
   oops::Log::trace() << classname() << "::Fields done" << std::endl;
 }
 
@@ -913,17 +913,6 @@ void Fields::fromFieldSet(const atlas::FieldSet & fset) {
   resetDuplicatePoints();
 
   oops::Log::trace() << classname() << "::fromFieldSet done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-void Fields::synchronizeFields() {
-  oops::Log::trace() << classname() << "::synchronizeFields starting" << std::endl;
-
-  // Set duplicate points to the same value
-  resetDuplicatePoints();
-
-  oops::Log::trace() << classname() << "::synchronizeFields done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

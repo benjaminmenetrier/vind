@@ -79,7 +79,8 @@ class Fields : public util::Printable,
     {return fset_;}
   atlas::FieldSet & fieldSet()
     {return fset_;}
-  void synchronizeFields();
+  void synchronizeFields()
+    {resetDuplicatePoints();}
 
   // Utilities
   void read(const eckit::Configuration &);
@@ -102,12 +103,12 @@ class Fields : public util::Printable,
   void deserialize(const std::vector<double> &,
                    size_t &);
 
-  // Duplicate points
-  void resetDuplicatePoints();
-
  private:
   // Print
   void print(std::ostream &) const;
+
+  // Duplicate points
+  void resetDuplicatePoints();
 
   // Check that fields are compatible
   bool checkFieldsCompatible(const Fields &) const;
