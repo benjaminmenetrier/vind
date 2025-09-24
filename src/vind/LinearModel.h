@@ -5,15 +5,17 @@
 
 #pragma once
 
+#include <map>
+#include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "oops/util/Duration.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
+
+#include "vind/LinearModel/LinearModelBase.h"
 
 namespace eckit {
   class Configuration;
@@ -35,53 +37,48 @@ class LinearModel: public util::Printable,
   static const std::string classname()
     {return "vind::LinearModel";}
   static std::vector<std::string> names()
-    {return {"vind"};}
+    {return {"persistence"};}
 
-/// OOPS interface
-
-// Constructors/destructor
+  // Constructors/destructor
   LinearModel(const Geometry &,
-              const eckit::Configuration &)
-    {throw eckit::NotImplemented(Here());}
-  ~LinearModel()
-    {}
+              const eckit::Configuration &);
+  ~LinearModel() = default;
 
-// Set the linearization trajectory
+  // Set the linearization trajectory
   void setTrajectory(const State &,
                      State &,
-                     const ModelAuxControl &)
-    {throw eckit::NotImplemented(Here());}
+                     const ModelAuxControl &);
 
-// TL forecast
-  void initializeTL(Increment &) const
-    {throw eckit::NotImplemented(Here());}
+  // Prepare TL model integration
+  void initializeTL(Increment &) const;
+
+  // TL model integration
   void stepTL(Increment &,
-              const ModelAuxIncrement &) const
-    {throw eckit::NotImplemented(Here());}
-  void finalizeTL(Increment &) const
-    {throw eckit::NotImplemented(Here());}
+              const ModelAuxIncrement &) const;
 
-// AD forecast
-  void initializeAD(Increment &) const
-    {throw eckit::NotImplemented(Here());}
+  // Finish TL model integration
+  void finalizeTL(Increment &) const;
+
+  // Prepare AD model integration
+  void initializeAD(Increment &) const;
+
+  // Prepare AD model integration
   void stepAD(Increment &,
-              ModelAuxIncrement &) const
-    {throw eckit::NotImplemented(Here());}
-  void finalizeAD(Increment &) const
-    {throw eckit::NotImplemented(Here());}
+              const ModelAuxIncrement &) const;
 
-// Information and diagnostics
+  // Finish AD model integration
+  void finalizeAD(Increment &) const;
+
+  // Utilities
   const util::Duration & timeResolution() const
-    {return timeResolution_;}
+    {return linearModel_->timeResolution();}
   const util::Duration & stepTrajectory() const
-    {return stepTraj_;}
+    {return linearModel_->stepTrajectory();}
 
  private:
-  void print(std::ostream &) const
-    {throw eckit::NotImplemented(Here());}
+  void print(std::ostream &) const;
 
-  const util::Duration timeResolution_;
-  const util::Duration stepTraj_;
+  std::unique_ptr<LinearModelBase> linearModel_;
 };
 // -----------------------------------------------------------------------------
 

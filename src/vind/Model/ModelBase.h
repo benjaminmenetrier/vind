@@ -26,9 +26,6 @@ namespace vind {
 class ModelBase : public util::Printable {
  public:
   // Constructors/destructor
-  explicit ModelBase(const eckit::Configuration & config)
-    : timeResolution_(config.getString("tstep"))
-    {}
   ModelBase() = default;
   virtual ~ModelBase() = default;
 
@@ -43,11 +40,7 @@ class ModelBase : public util::Printable {
   virtual void finalize(State &) const = 0;
 
   // Utilities
-  const util::Duration & timeResolution() const
-    {return timeResolution_;}
-
- protected:
-  const util::Duration timeResolution_;
+  virtual const util::Duration & timeResolution() const = 0;
 
  private:
   void print(std::ostream &) const override = 0;
@@ -84,7 +77,8 @@ class ModelMaker : public ModelFactory {
  public:
   explicit ModelMaker(const std::string & name) : ModelFactory(name) {}
 
-  ModelBase * make(const Geometry & geom, const eckit::Configuration & config) override {
+  ModelBase * make(const Geometry & geom,
+                   const eckit::Configuration & config) override {
     oops::Log::trace() << "ModelBase::make starting" << std::endl;
     return new T(geom, config);
   }

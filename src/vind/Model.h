@@ -56,7 +56,7 @@ class Model: public util::Printable,
     {return model_->timeResolution();}
 
  private:
-  void print(std::ostream &) const override;
+  void print(std::ostream &) const;
 
   std::unique_ptr<ModelBase> model_;
 };

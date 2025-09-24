@@ -19,7 +19,7 @@ initial condition:
 model:
   name: python
   python module: ModelPythonPyQG
-  tstep: PT1800S
+  time step: PT1800S
 forecast length: P365D
 output:
   filepath: testdata/pyqg_attractor___RANGE__

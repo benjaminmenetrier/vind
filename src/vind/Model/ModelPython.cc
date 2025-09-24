@@ -24,7 +24,8 @@ static ModelMaker<ModelPython> makerPython_("python");
 
 ModelPython::ModelPython(const Geometry & geom,
                          const eckit::Configuration & config)
-  : ModelBase(config), comm_(geom.getComm()), pythonModule_(config.getString("python module")) {
+  : timeResolution_(config.getString("time step")),
+  comm_(geom.getComm()), pythonModule_(config.getString("python module")) {
   oops::Log::trace() << classname() << "::ModelPython starting" << std::endl;
 
   // Get executable directory
@@ -191,7 +192,7 @@ void ModelPython::step(State & xx,
   fs.scatter(globalData, xx.fieldSet());
 
   // Update valid time
-  xx.validTime() += timeResolution_;
+  xx.updateTime(timeResolution_);
 
   oops::Log::trace() << classname() << "::step done" << std::endl;
 }

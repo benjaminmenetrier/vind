@@ -20,15 +20,9 @@ static ModelMaker<ModelPersistence> makerPersistence_("persistence");
 
 ModelPersistence::ModelPersistence(const Geometry &,
                                    const eckit::Configuration & config)
-  : ModelBase(config), persistenceFactor_(config.getDouble("persistence factor", 1.0)) {
+  : timeResolution_(config.getString("time step")),
+  persistenceFactor_(config.getDouble("persistence factor", 1.0)) {
   oops::Log::trace() << classname() << "::ModelPersistence" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-void ModelPersistence::initialize(State & xx) const {
-  oops::Log::trace() << classname() << "::initialize starting" << std::endl;
-  oops::Log::trace() << classname() << "::initialize done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -54,16 +48,9 @@ void ModelPersistence::step(State & xx,
   xx.fields().axpy(1.0-persistenceFactor_, randomField);
 
   // Update valid time
-  xx.validTime() += timeResolution_;
+  xx.updateTime(timeResolution_);
 
   oops::Log::trace() << classname() << "::step done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-void ModelPersistence::finalize(State & xx) const {
-  oops::Log::trace() << classname() << "::finalize starting" << std::endl;
-  oops::Log::trace() << classname() << "::finalize done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

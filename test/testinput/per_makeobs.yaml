@@ -21,7 +21,7 @@ initial condition:
 forecast length: PT6H
 model:
   name: persistence
-  tstep: PT1H
+  time step: PT1H
 observations:
   obs perturbations: true
   observers:

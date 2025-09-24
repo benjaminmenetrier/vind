@@ -148,6 +148,7 @@ testinput/reg_truth_18.yaml
 
 # PERSISTENCE
 testinput/per_3dvar.yaml
+testinput/per_4dvar.yaml
 testinput/per_background.yaml
 testinput/per_makeobs.yaml
 testinput/per_stddev.yaml
@@ -288,6 +289,7 @@ testref/reg_truth_18.ref
 
 # PERSISTENCE
 testref/per_3dvar.ref
+testref/per_4dvar.ref
 testref/per_background.ref
 testref/per_makeobs.ref
 testref/per_stddev.ref
@@ -441,6 +443,7 @@ if( ENABLE_PER_TESTS )
         create_test( per_background ${mpi} forecast )
         create_test( per_makeobs ${mpi} hofx4d )
         create_test( per_3dvar ${mpi} variational )
+        create_test( per_4dvar ${mpi} variational )
     endforeach()
 endif()
 

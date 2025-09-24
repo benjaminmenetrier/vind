@@ -25,34 +25,40 @@ namespace eckit {
 namespace vind {
   class Geometry;
   class ModelAuxControl;
-  class Increment;
   class State;
 
 // -----------------------------------------------------------------------------
 ///  ModelPython class
 
-class __attribute__((visibility("hidden"))) ModelPython: public ModelBase,
-                                                         private util::ObjectCounter<ModelPython> {
+class __attribute__((visibility("hidden"))) ModelPython:
+  public ModelBase,
+  private util::ObjectCounter<ModelPython> {
  public:
   static const std::string classname() {return "vind::ModelPython";}
 
+  // Constructor/destructor
   ModelPython(const Geometry &,
               const eckit::Configuration &);
   ~ModelPython();
 
-/// Prepare model integration
+  // Prepare model integration
   void initialize(State &) const override;
 
-/// Model integration
+  // Model integration
   void step(State &,
             const ModelAuxControl &) const override;
 
-/// Finish model integration
+  // Finish model integration
   void finalize(State &) const override;
+
+  // Utilities
+  const util::Duration & timeResolution() const
+    {return timeResolution_;}
 
  private:
   void print(std::ostream &) const override;
 
+  const util::Duration timeResolution_;
   const eckit::mpi::Comm & comm_;
   const std::string pythonModule_;
   std::string pythonDir_;

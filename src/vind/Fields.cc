@@ -980,8 +980,8 @@ void Fields::write(const eckit::Configuration & config) const {
   // Prepare updated configuration
   eckit::LocalConfiguration updatedConfig(config);
 
-  if (config.has("states")) {
-    for (const auto & confItem : config.getSubConfigurations("states")) {
+  if (updatedConfig.has("states")) {
+    for (const auto & confItem : updatedConfig.getSubConfigurations("states")) {
       // Get date
       const util::DateTime dateTime(confItem.getString("date"));
 
@@ -992,14 +992,19 @@ void Fields::write(const eckit::Configuration & config) const {
     }
   } else {
     // Check date if present
-    if (config.has("date")) {
-      const util::DateTime dateTime(config.getString("date"));
-      if (config.has("range pattern")) {
+    if (updatedConfig.has("date")) {
+      const util::DateTime dateTime(updatedConfig.getString("date"));
+      if (updatedConfig.has("range pattern")) {
         const util::Duration range(time_-dateTime);
-        const std::string rangePattern = config.getString("range pattern");
+        const std::string rangePattern = updatedConfig.getString("range pattern");
         util::seekAndReplace(updatedConfig, rangePattern, range.toString());
       } else {
         ASSERT(dateTime == time_);
+      }
+    } else {
+      if (updatedConfig.has("date pattern")) {
+        const std::string datePattern = updatedConfig.getString("date pattern");
+        util::seekAndReplace(updatedConfig, datePattern, time_.toStringIO());
       }
     }
   }

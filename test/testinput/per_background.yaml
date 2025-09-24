@@ -14,7 +14,7 @@ initial condition:
   - air_temperature
 model:
   name: persistence
-  tstep: PT1H
+  time step: PT1H
   persistence factor: 0.8
 forecast length: PT6H
 output:

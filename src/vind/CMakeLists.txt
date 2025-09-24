@@ -21,6 +21,7 @@ Increment.cc
 Increment.h
 Interpolation.cc
 Interpolation.h
+LinearModel.cc
 LinearModel.h
 LinearVariableChange.cc
 LinearVariableChange.h
@@ -53,6 +54,11 @@ FieldsIO/FieldsIODefault.cc
 FieldsIO/FieldsIODefault.h
 FieldsIO/FieldsIOGmsh.cc
 FieldsIO/FieldsIOGmsh.h
+
+LinearModel/LinearModelBase.cc
+LinearModel/LinearModelBase.h
+LinearModel/LinearModelPersistence.cc
+LinearModel/LinearModelPersistence.h
 
 Model/ModelBase.cc
 Model/ModelBase.h
@@ -109,6 +115,8 @@ if( pybind11_FOUND )
     message( STATUS "- Python" )
     list( APPEND vind_src_files
 
+    LinearModel/LinearModelPython.cc
+    LinearModel/LinearModelPython.h
     Model/ModelPython.cc
     Model/ModelPython.h
 

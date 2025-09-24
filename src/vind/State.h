@@ -69,8 +69,6 @@ class State : public util::Printable,
     {return fields_->norm();}
   const util::DateTime & validTime() const
     {return fields_->time();}
-  util::DateTime & validTime()
-    {return fields_->time();}
   void updateTime(const util::Duration & dt)
     {fields_->time() += dt;}
 

@@ -15,7 +15,6 @@
 namespace vind {
   class Geometry;
   class ModelAuxControl;
-  class Increment;
   class State;
 
 // -----------------------------------------------------------------------------
@@ -26,24 +25,32 @@ class ModelPersistence: public ModelBase,
  public:
   static const std::string classname() {return "vind::ModelPersistence";}
 
+  // Constructor/destructor
   ModelPersistence(const Geometry &,
                    const eckit::Configuration &);
   ~ModelPersistence()
     {}
 
-/// Prepare model integration
-  void initialize(State &) const override;
+  // Prepare model integration
+  void initialize(State &) const override
+    {}
 
-/// Model integration
+  // Model integration
   void step(State &,
             const ModelAuxControl &) const override;
 
-/// Finish model integration
-  void finalize(State &) const override;
+  // Finish model integration
+  void finalize(State &) const override
+    {}
+
+  // Utilities
+  const util::Duration & timeResolution() const
+    {return timeResolution_;}
 
  private:
   void print(std::ostream &) const override;
 
+  const util::Duration timeResolution_;
   const double persistenceFactor_;
 };
 // -----------------------------------------------------------------------------

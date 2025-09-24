@@ -14,7 +14,7 @@ initial condition:
   - air_temperature
 model:
   name: persistence
-  tstep: PT1H
+  time step: PT1H
 forecast length: PT12H
 output:
   filepath: testdata/per_truth___RANGE__
