@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <ostream>
 #include <string>
 
@@ -13,22 +14,23 @@
 #include "vind/Model/ModelBase.h"
 
 namespace vind {
+  class Fields;
   class Geometry;
   class ModelAuxControl;
   class State;
 
 // -----------------------------------------------------------------------------
-///  ModelPersistence class
+///  ModelDDL95 class
 
-class ModelPersistence: public ModelBase,
-                        private util::ObjectCounter<ModelPersistence> {
+class ModelDDL95: public ModelBase,
+                  private util::ObjectCounter<ModelDDL95> {
  public:
-  static const std::string classname() {return "vind::ModelPersistence";}
+  static const std::string classname() {return "vind::ModelDDL95";}
 
   // Constructor/destructor
-  ModelPersistence(const Geometry &,
-                   const eckit::Configuration &);
-  ~ModelPersistence()
+  ModelDDL95(const Geometry &,
+             const eckit::Configuration &);
+  ~ModelDDL95()
     {}
 
   // Prepare model integration
@@ -49,9 +51,21 @@ class ModelPersistence: public ModelBase,
 
  private:
   void print(std::ostream &) const override;
+  void tendency(const Fields &,
+                Fields &) const;
 
   const util::Duration timeResolution_;
-  const double persistenceFactor_;
+  const double F_ = 8.0;
+  const double omega_ = 2.0*M_PI/(24.0*3600.0);
+  const double nu_ = 1.0;
+  const double dti_sub_ = 0.02;
+  size_t nx_;
+  size_t ny_;
+  std::vector<double> x_;
+  std::vector<double> y_;
+  size_t nsub_;
+  util::Duration dt_sub_;
+  util::Duration dt_sub_half_;
 };
 // -----------------------------------------------------------------------------
 

@@ -7,29 +7,36 @@ cost function:
   geometry: &geom
     function space: StructuredColumns
     grid:
-      type: regular_lonlat
-      N: 10
+      type : regional
+      nx: 64
+      ny: 32
+      dx: 10e3
+      dy: 10e3
+      lonlat(centre): [4.0,50.0]
+      projection:
+        type: lambert_conformal_conic
+        longitude0: 4.0
+        latitude0: 50.0
     groups:
     - variables:
-       - air_temperature
-      levels: 2
-      vert_coord: &vert_coord [1,2]
-    halo: 1
+      - air_temperature
+      levels: 3
+      vertical coordinate:
+        profile: &vert_coord [1,2,3]
+    halo: 2
   model:
-    name: persistence
+    name: DDL95
     time step: PT1H
   background:
     date: 2010-01-01T12:00:00Z
     state variables:
     - air_temperature
-    filepath: testdata/per_background_PT0S
+    filepath: testdata/ddl95_background_PT0S
   background error:
     covariance model: SABER
     saber central block:
       saber block name: BUMP_NICAS
       calibration:
-        general:
-          default seed: 12
         drivers:
           multivariate strategy: univariate
           compute nicas: true
@@ -39,7 +46,7 @@ cost function:
           horizontal length-scale:
           - groups:
             - air_temperature
-            value: 4.0e6
+            value: 1.0e6
           vertical length-scale:
           - groups:
             - air_temperature
@@ -48,7 +55,7 @@ cost function:
     - saber block name: StdDev
       read:
         model file:
-          filepath: testdata/per_stddev
+          filepath: testdata/ddl95_stddev
   observations:
     observers:
     - obs space:
@@ -57,11 +64,11 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: testdata/per_obs.nc
+            obsfile: testdata/ddl95_obs.nc
         obsdataout:
           engine:
             type: H5File
-            obsfile: testdata/per_4dvar.nc
+            obsfile: testdata/ddl95_4dvar.nc
       obs operator:
         name: VertInterp
         constant vertical coordinate values: *vert_coord
@@ -74,7 +81,7 @@ variational:
     algorithm: DRIPCG
   iterations:
   - linear model:
-      name: persistence
+      name: DDL95
       time step: PT1H
       trajectory step: PT1H
     diagnostics:
@@ -89,11 +96,11 @@ final:
     geometry: *geom
     output:
       state component:
-        filepath: testdata/per_4dvar_incr
+        filepath: testdata/ddl95_4dvar_incr
 output:
-  filepath: testdata/per_4dvar_analysis___DATE__
+  filepath: testdata/ddl95_4dvar_analysis___DATE__
   date pattern: __DATE__
   frequency: PT06H
 test:
-  reference filename: testref/per_4dvar.ref
+  reference filename: testref/ddl95_4dvar.ref
   float absolute tolerance: 1.0e-12

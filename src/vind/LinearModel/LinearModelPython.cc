@@ -49,14 +49,19 @@ LinearModelPython::LinearModelPython(const Geometry & geom,
   initData_.reset(new pybind11::dict());
 
   // Add time-step
-  (*initData_)["tstep"] = timeResolution_.toSeconds();
-
-  // Number of threads
-  (*initData_)["threads"] = 1;
+  (*initData_)["time step"] = timeResolution_.toSeconds();
 
   // Add module-specific parameters
-  if (pythonModule_ == "YOUR_PYTHON_MODULE") {
-    // Call your python module
+  if (pythonModule_ == "ModelPythonDDL95") {
+    // Check geometry
+    ASSERT(geom.gridType() == "regional");
+    const atlas::RegularGrid & grid = geom.grid();
+    const size_t nx = grid.nx();
+    const size_t ny = grid.ny();
+
+    // Add grid size
+    (*initData_)["nx"] = nx;
+    (*initData_)["ny"] = ny;
   }
 
   // Insert python module into PYTHONPATH
@@ -113,29 +118,99 @@ void LinearModelPython::stepTL(Increment & dx,
   // Get function space
   const atlas::FunctionSpace fs(geom.functionSpace());
 
-  // Global data
-  atlas::FieldSet globalData;
+  // Global trajectory
+  atlas::FieldSet globalTraj;
   for (const auto & var : dx.variables()) {
     atlas::Field glbField = fs.createField<double>(atlas::option::name(var.name())
       | atlas::option::levels(var.getLevels()) | atlas::option::global());
-    globalData.add(glbField);
+    globalTraj.add(glbField);
   }
 
-  // Gather data to main processor
-  fs.gather(dx.fieldSet(), globalData);
+  // Global increment
+  atlas::FieldSet globalIncr;
+  for (const auto & var : dx.variables()) {
+    atlas::Field glbField = fs.createField<double>(atlas::option::name(var.name())
+      | atlas::option::levels(var.getLevels()) | atlas::option::global());
+    globalIncr.add(glbField);
+  }
+
+  // Gather data on main processor
+  fs.gather(traj_.at(dx.validTime()).fieldSet(), globalTraj);
+  fs.gather(dx.fieldSet(), globalIncr);
 
   if (comm_.rank() == 0) {
     // Create data dictionary
     auto stepData = pybind11::dict();
 
+    // Add date/time in data dictionary
+    int year, month, day, hour, minute, second;
+    dx.validTime().toYYYYMMDDhhmmss(year, month, day, hour, minute, second);
+    stepData["year"] = year;
+    stepData["month"] = month;
+    stepData["day"] = day;
+    stepData["hour"] = hour;
+    stepData["minute"] = minute;
+    stepData["second"] = second;
+
+    // Add trajectory in data dictionary
+    auto trajData = pybind11::dict();
     for (const auto & var : dx.variables()) {
-      atlas::Field field = globalData[var.name()];
-      if (pythonModule_ == "YOUR_PYTHON_MODULE") {
-        // Call your python module
+      atlas::Field field = globalIncr[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
+        // Create numpy array
+        const int nx = (*initData_)["nx"].cast<size_t>();
+        const int ny = (*initData_)["ny"].cast<size_t>();
+        pybind11::array_t<double> dataNp({field.shape(1), ny, nx});
+
+        // Copy data to numpy array
+        auto dataView = dataNp.mutable_unchecked<3>();
+        const auto view = atlas::array::make_view<double, 2>(field);
+        const atlas::StructuredGrid grid(geom.grid());
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            dataView(jlevel, iy, ix) = view(jnode, jlevel);
+          }
+        }
+
+        // Add numpy array to trajectory dictionary
+        trajData[var.name().c_str()] = dataNp;
       } else {
         throw eckit::UserError("wrong python module", Here());
       }
     }
+    stepData["trajectory"] = trajData;
+
+    // Add increment in data dictionary
+    auto incrData = pybind11::dict();
+    for (const auto & var : dx.variables()) {
+      atlas::Field field = globalIncr[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
+        // Create numpy array
+        const int nx = (*initData_)["nx"].cast<size_t>();
+        const int ny = (*initData_)["ny"].cast<size_t>();
+        pybind11::array_t<double> dataNp({field.shape(1), ny, nx});
+
+        // Copy data to numpy array
+        auto dataView = dataNp.mutable_unchecked<3>();
+        const auto view = atlas::array::make_view<double, 2>(field);
+        const atlas::StructuredGrid grid(geom.grid());
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            dataView(jlevel, iy, ix) = view(jnode, jlevel);
+          }
+        }
+
+        // Add numpy array to increment dictionary
+        incrData[var.name().c_str()] = dataNp;
+      } else {
+        throw eckit::UserError("wrong python module", Here());
+      }
+    }
+    stepData["increment"] = incrData;
 
     // Load python module
     pybind11::module_ exec = pybind11::module_::import(pythonModule_.c_str());
@@ -144,9 +219,20 @@ void LinearModelPython::stepTL(Increment & dx,
     pybind11::object result = exec.attr("stepTL")(*linearModel_, stepData);
 
     for (const auto & var : dx.variables()) {
-      atlas::Field field = globalData[var.name()];
-      if (pythonModule_ == "YOUR_PYTHON_MODULE") {
-        // Call your python module
+      atlas::Field field = globalIncr[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
+        // Copy data from numpy array
+        const auto dataView = stepData["increment"][var.name().c_str()].cast<pybind11::array_t<double>>()
+          .unchecked<3>();
+        auto view = atlas::array::make_view<double, 2>(field);
+        const atlas::StructuredGrid grid(geom.grid());
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            view(jnode, jlevel) = dataView(jlevel, iy, ix);
+          }
+        }
       } else {
         throw eckit::UserError("wrong python module", Here());
       }
@@ -154,7 +240,7 @@ void LinearModelPython::stepTL(Increment & dx,
   }
 
   // Scatter data from main processor
-  fs.scatter(globalData, dx.fieldSet());
+  fs.scatter(globalIncr, dx.fieldSet());
 
   // Update valid time
   dx.updateTime(timeResolution_);
@@ -194,29 +280,99 @@ void LinearModelPython::stepAD(Increment & dx,
   // Get function space
   const atlas::FunctionSpace fs(geom.functionSpace());
 
-  // Global data
-  atlas::FieldSet globalData;
+  // Global trajectory
+  atlas::FieldSet globalTraj;
   for (const auto & var : dx.variables()) {
     atlas::Field glbField = fs.createField<double>(atlas::option::name(var.name())
       | atlas::option::levels(var.getLevels()) | atlas::option::global());
-    globalData.add(glbField);
+    globalTraj.add(glbField);
   }
 
-  // Gather data to main processor
-  fs.gather(dx.fieldSet(), globalData);
+  // Global increment
+  atlas::FieldSet globalIncr;
+  for (const auto & var : dx.variables()) {
+    atlas::Field glbField = fs.createField<double>(atlas::option::name(var.name())
+      | atlas::option::levels(var.getLevels()) | atlas::option::global());
+    globalIncr.add(glbField);
+  }
+
+  // Gather data on main processor
+  fs.gather(traj_.at(dx.validTime()).fieldSet(), globalTraj);
+  fs.gather(dx.fieldSet(), globalIncr);
 
   if (comm_.rank() == 0) {
     // Create data dictionary
     auto stepData = pybind11::dict();
 
+    // Add date/time in data dictionary
+    int year, month, day, hour, minute, second;
+    dx.validTime().toYYYYMMDDhhmmss(year, month, day, hour, minute, second);
+    stepData["year"] = year;
+    stepData["month"] = month;
+    stepData["day"] = day;
+    stepData["hour"] = hour;
+    stepData["minute"] = minute;
+    stepData["second"] = second;
+
+    // Add trajectory in data dictionary
+    auto trajData = pybind11::dict();
     for (const auto & var : dx.variables()) {
-      atlas::Field field = globalData[var.name()];
-      if (pythonModule_ == "YOUR_PYTHON_MODULE") {
-        // Call your python module
+      atlas::Field field = globalIncr[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
+        // Create numpy array
+        const int nx = (*initData_)["nx"].cast<size_t>();
+        const int ny = (*initData_)["ny"].cast<size_t>();
+        pybind11::array_t<double> dataNp({field.shape(1), ny, nx});
+
+        // Copy data to numpy array
+        auto dataView = dataNp.mutable_unchecked<3>();
+        const auto view = atlas::array::make_view<double, 2>(field);
+        const atlas::StructuredGrid grid(geom.grid());
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            dataView(jlevel, iy, ix) = view(jnode, jlevel);
+          }
+        }
+
+        // Add numpy array to trajectory dictionary
+        trajData[var.name().c_str()] = dataNp;
       } else {
         throw eckit::UserError("wrong python module", Here());
       }
     }
+    stepData["trajectory"] = trajData;
+
+    // Add increment in data dictionary
+    auto incrData = pybind11::dict();
+    for (const auto & var : dx.variables()) {
+      atlas::Field field = globalIncr[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
+        // Create numpy array
+        const int nx = (*initData_)["nx"].cast<size_t>();
+        const int ny = (*initData_)["ny"].cast<size_t>();
+        pybind11::array_t<double> dataNp({field.shape(1), ny, nx});
+
+        // Copy data to numpy array
+        auto dataView = dataNp.mutable_unchecked<3>();
+        const auto view = atlas::array::make_view<double, 2>(field);
+        const atlas::StructuredGrid grid(geom.grid());
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            dataView(jlevel, iy, ix) = view(jnode, jlevel);
+          }
+        }
+
+        // Add numpy array to increment dictionary
+        incrData[var.name().c_str()] = dataNp;
+      } else {
+        throw eckit::UserError("wrong python module", Here());
+      }
+    }
+    stepData["increment"] = incrData;
 
     // Load python module
     pybind11::module_ exec = pybind11::module_::import(pythonModule_.c_str());
@@ -225,9 +381,20 @@ void LinearModelPython::stepAD(Increment & dx,
     pybind11::object result = exec.attr("stepAD")(*linearModel_, stepData);
 
     for (const auto & var : dx.variables()) {
-      atlas::Field field = globalData[var.name()];
-      if (pythonModule_ == "YOUR_PYTHON_MODULE") {
-        // Call your python module
+      atlas::Field field = globalIncr[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
+        // Copy data from numpy array
+        const auto dataView = stepData["increment"][var.name().c_str()].cast<pybind11::array_t<double>>()
+          .unchecked<3>();
+        auto view = atlas::array::make_view<double, 2>(field);
+        const atlas::StructuredGrid grid(geom.grid());
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            view(jnode, jlevel) = dataView(jlevel, iy, ix);
+          }
+        }
       } else {
         throw eckit::UserError("wrong python module", Here());
       }
@@ -235,7 +402,7 @@ void LinearModelPython::stepAD(Increment & dx,
   }
 
   // Scatter data from main processor
-  fs.scatter(globalData, dx.fieldSet());
+  fs.scatter(globalIncr, dx.fieldSet());
 
   // Update valid time
   dx.updateTime(-timeResolution_);

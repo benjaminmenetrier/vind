@@ -3,7 +3,7 @@
  * 
  */
 
-#include "vind/LinearModel/LinearModelPersistence.h"
+#include "vind/LinearModel/LinearModelDDL95.h"
 
 #include "oops/util/Logger.h"
 
@@ -14,26 +14,26 @@ namespace vind {
 
 // -----------------------------------------------------------------------------
 
-static LinearModelMaker<LinearModelPersistence> makerPersistence_("persistence");
+static LinearModelMaker<LinearModelDDL95> makerDDL95_("DDL95");
 
 // -----------------------------------------------------------------------------
 
-LinearModelPersistence::LinearModelPersistence(const Geometry &,
-                                               const eckit::Configuration & config)
+LinearModelDDL95::LinearModelDDL95(const Geometry &,
+                                   const eckit::Configuration & config)
   : timeResolution_(config.getString("time step")),
   stepTrajectory_(config.getString("trajectory step")),
-  persistenceFactor_(config.getDouble("persistence factor", 1.0)) {
-  oops::Log::trace() << classname() << "::LinearModelPersistence" << std::endl;
+  DDL95Factor_(config.getDouble("DDL95 factor", 1.0)) {
+  oops::Log::trace() << classname() << "::LinearModelDDL95" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
-void LinearModelPersistence::stepTL(Increment & dx,
-                                    const ModelAuxIncrement & dxAux) const {
+void LinearModelDDL95::stepTL(Increment & dx,
+                              const ModelAuxIncrement & dxAux) const {
   oops::Log::trace() << classname() << "::stepTL starting" << std::endl;
 
   // Scale input field
-  dx.fields() *= persistenceFactor_;
+  dx.fields() *= DDL95Factor_;
 
   // Update valid time
   dx.updateTime(timeResolution_);
@@ -43,12 +43,12 @@ void LinearModelPersistence::stepTL(Increment & dx,
 
 // -----------------------------------------------------------------------------
 
-void LinearModelPersistence::stepAD(Increment & dx,
-                                    const ModelAuxIncrement & dxAux) const {
+void LinearModelDDL95::stepAD(Increment & dx,
+                              const ModelAuxIncrement & dxAux) const {
   oops::Log::trace() << classname() << "::stepAD starting" << std::endl;
 
   // Scale input field
-  dx.fields() *= persistenceFactor_;
+  dx.fields() *= DDL95Factor_;
 
   // Update valid time
   dx.updateTime(-timeResolution_);
@@ -58,12 +58,12 @@ void LinearModelPersistence::stepAD(Increment & dx,
 
 // -----------------------------------------------------------------------------
 
-void LinearModelPersistence::print(std::ostream & os) const {
+void LinearModelDDL95::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
-  os << "Persistence linear model:" << std::endl;
+  os << "DDL95 linear model:" << std::endl;
   os << "- dt = " << timeResolution_ << std::endl;
-  os << "- persistence factor = " << persistenceFactor_ << std::endl;
+  os << "- DDL95 factor = " << DDL95Factor_ << std::endl;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;
 }

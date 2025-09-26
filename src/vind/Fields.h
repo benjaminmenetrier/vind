@@ -90,9 +90,9 @@ class Fields : public util::Printable,
     {return geom_;}
   const oops::Variables & variables() const
     {return vars_;}
-  const util::DateTime & time() const
+  const util::DateTime & validTime() const
     {return time_;}
-  util::DateTime & time()
+  util::DateTime & validTime()
     {return time_;}
   void updateTime(const util::Duration & dt)
     {time_ += dt;}

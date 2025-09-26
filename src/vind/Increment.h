@@ -82,9 +82,9 @@ class Increment : public util::Printable,
   double norm() const
     {return fields_->norm();}
   const util::DateTime & validTime() const
-    {return fields_->time();}
+    {return fields_->validTime();}
   void updateTime(const util::Duration & dt)
-    {fields_->time() += dt;}
+    {fields_->updateTime(dt);}
 
   // ATLAS FieldSet accessor
   void toFieldSet(atlas::FieldSet & fset) const

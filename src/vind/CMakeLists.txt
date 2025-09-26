@@ -57,13 +57,13 @@ FieldsIO/FieldsIOGmsh.h
 
 LinearModel/LinearModelBase.cc
 LinearModel/LinearModelBase.h
-LinearModel/LinearModelPersistence.cc
-LinearModel/LinearModelPersistence.h
+LinearModel/LinearModelDDL95.cc
+LinearModel/LinearModelDDL95.h
 
 Model/ModelBase.cc
 Model/ModelBase.h
-Model/ModelPersistence.cc
-Model/ModelPersistence.h
+Model/ModelDDL95.cc
+Model/ModelDDL95.h
 
 )
 
@@ -108,7 +108,7 @@ if( eccodes_FOUND )
 endif()
 
 message( STATUS "Found vind models:" )
-message( STATUS "- Persistence" )
+message( STATUS "- DDL95" )
 
 if( pybind11_FOUND )
     # Python-based model
@@ -125,7 +125,7 @@ if( pybind11_FOUND )
     # Python modules
     list( APPEND python_modules
 
-    ModelPythonPyQG.py
+    ModelPythonDDL95.py
 
     )
 endif()
@@ -152,7 +152,7 @@ if( pybind11_FOUND )
     # Link python modules
     message(STATUS "Available Python modules for model propagation:")
     foreach( pyMod ${python_modules} )
-        execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Model/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
+        execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
         message(STATUS "- ${CMAKE_BINARY_DIR}/${pyMod}")
     endforeach()
 endif()

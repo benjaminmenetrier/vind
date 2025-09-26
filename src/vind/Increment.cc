@@ -116,7 +116,7 @@ void Increment::zero(const util::DateTime & vt) {
   oops::Log::trace() << classname() << "::zero starting" << std::endl;
 
   fields_->zero();
-  fields_->time() = vt;
+  fields_->validTime() = vt;
 
   oops::Log::trace() << classname() << "::zero done" << std::endl;
 }

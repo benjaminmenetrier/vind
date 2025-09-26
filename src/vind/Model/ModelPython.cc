@@ -25,7 +25,8 @@ static ModelMaker<ModelPython> makerPython_("python");
 ModelPython::ModelPython(const Geometry & geom,
                          const eckit::Configuration & config)
   : timeResolution_(config.getString("time step")),
-  comm_(geom.getComm()), pythonModule_(config.getString("python module")) {
+  comm_(geom.getComm()),
+  pythonModule_(config.getString("python module")) {
   oops::Log::trace() << classname() << "::ModelPython starting" << std::endl;
 
   // Get executable directory
@@ -47,23 +48,17 @@ ModelPython::ModelPython(const Geometry & geom,
   initData_.reset(new pybind11::dict());
 
   // Add time-step
-  (*initData_)["tstep"] = timeResolution_.toSeconds();
-
-  // Number of threads
-  (*initData_)["threads"] = 1;
+  (*initData_)["time step"] = timeResolution_.toSeconds();
 
   // Add module-specific parameters
-  if (pythonModule_ == "ModelPythonPyQG") {
+  if (pythonModule_ == "ModelPythonDDL95") {
     // Check geometry
-    ASSERT((geom.gridType() == "structured") || (geom.gridType() == "regular_lonlat")
-      || (geom.gridType() == "zonal_band"));
-    const atlas::RegularGrid & grid = geom.grid();
-    const size_t nx = grid.nx();
-    const size_t ny = grid.ny();
-    ASSERT(nx == ny);
+    ASSERT(geom.gridType() == "regional");
 
-    // Add grid size
-    (*initData_)["nx"] = nx;
+    // Get dimensions
+    const atlas::RegularGrid & grid = geom.grid();
+    (*initData_)["nx"] = grid.nx();
+    (*initData_)["ny"] = grid.ny();
   }
 
   // Insert python module into PYTHONPATH
@@ -120,46 +115,61 @@ void ModelPython::step(State & xx,
   // Get function space
   const atlas::FunctionSpace fs(geom.functionSpace());
 
-  // Global data
-  atlas::FieldSet globalData;
+  // Global state
+  atlas::FieldSet globalState;
   for (const auto & var : xx.variables()) {
-    atlas::Field glbField = fs.createField<double>(atlas::option::name(var.name())
+    auto glbField = fs.createField<double>(atlas::option::name(var.name())
       | atlas::option::levels(var.getLevels()) | atlas::option::global());
-    globalData.add(glbField);
+    globalState.add(glbField);
   }
 
-  // Gather data to main processor
-  fs.gather(xx.fieldSet(), globalData);
+  // Gather data on main processor
+  fs.gather(xx.fieldSet(), globalState);
 
   if (comm_.rank() == 0) {
     // Create data dictionary
     auto stepData = pybind11::dict();
 
+    // Add date/time in data dictionary
+    int year, month, day, hour, minute, second;
+    xx.validTime().toYYYYMMDDhhmmss(year, month, day, hour, minute, second);
+    stepData["year"] = year;
+    stepData["month"] = month;
+    stepData["day"] = day;
+    stepData["hour"] = hour;
+    stepData["minute"] = minute;
+    stepData["second"] = second;
+
+    // Add fields in data dictionary
+    auto stateData = pybind11::dict();
     for (const auto & var : xx.variables()) {
-      atlas::Field field = globalData[var.name()];
-      if (pythonModule_ == "ModelPythonPyQG") {
+      auto field = globalState[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
         // Create numpy array
         const int nx = (*initData_)["nx"].cast<size_t>();
-        pybind11::array_t<double> dataNp({field.shape(1), nx, nx});
+        const int ny = (*initData_)["ny"].cast<size_t>();
+        pybind11::array_t<double> dataNp({field.shape(1), ny, nx});
 
         // Copy data to numpy array
         auto dataView = dataNp.mutable_unchecked<3>();
         const auto view = atlas::array::make_view<double, 2>(field);
         const atlas::StructuredGrid grid(geom.grid());
-        int i, j;
-        for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
-          grid.index2ij(jnode, i, j);
-          for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            dataView(jlevel, j, i) = view(jnode, jlevel);
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          // Get X/Y indices
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            dataView(jlevel, iy, ix) = view(jnode, jlevel);
           }
         }
 
-        // Add numpy array to data directory
-        stepData[var.name().c_str()] = dataNp;
+        // Add numpy array to state dictionary
+        stateData[var.name().c_str()] = dataNp;
       } else {
         throw eckit::UserError("wrong python module", Here());
       }
     }
+    stepData["state"] = stateData;
 
     // Load python module
     pybind11::module_ exec = pybind11::module_::import(pythonModule_.c_str());
@@ -168,18 +178,18 @@ void ModelPython::step(State & xx,
     pybind11::object result = exec.attr("step")(*model_, stepData);
 
     for (const auto & var : xx.variables()) {
-      atlas::Field field = globalData[var.name()];
-      if (pythonModule_ == "ModelPythonPyQG") {
+      auto field = globalState[var.name()];
+      if (pythonModule_ == "ModelPythonDDL95") {
         // Copy data from numpy array
-        const auto dataView = stepData[var.name().c_str()].cast<pybind11::array_t<double>>()
+        const auto dataView = stepData["state"][var.name().c_str()].cast<pybind11::array_t<double>>()
           .unchecked<3>();
         auto view = atlas::array::make_view<double, 2>(field);
         const atlas::StructuredGrid grid(geom.grid());
-        int i, j;
-        for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
-          grid.index2ij(jnode, i, j);
-          for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            view(jnode, jlevel) = dataView(jlevel, j, i);
+        int ix, iy;
+        for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+          grid.index2ij(jnode, ix, iy);
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            view(jnode, jlevel) = dataView(jlevel, iy, ix);
           }
         }
       } else {
@@ -189,7 +199,7 @@ void ModelPython::step(State & xx,
   }
 
   // Scatter data from main processor
-  fs.scatter(globalData, xx.fieldSet());
+  fs.scatter(globalState, xx.fieldSet());
 
   // Update valid time
   xx.updateTime(timeResolution_);

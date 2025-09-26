@@ -1,26 +1,30 @@
 geometry:
   function space: StructuredColumns
   grid:
-    type: regular_lonlat
-    N: 10
+    type : zonal_band
+    nx : 64
+    ny : 32
+    north : 70
+    south : 30
   groups:
   - variables:
     - air_temperature
-    levels: 2
-  halo: 1
+    levels: 3
 initial condition:
   date: 2010-01-01T06:00:00Z
   state variables:
   - air_temperature
+  filepath: testdata/pyddl95_attractor_P2D
 model:
-  name: persistence
+  name: python
+  python module: ModelPythonDDL95
   time step: PT1H
 forecast length: PT12H
 output:
-  filepath: testdata/per_truth___RANGE__
+  filepath: testdata/pyddl95_truth___RANGE__
   range pattern: __RANGE__
   frequency: PT3H
 prints:
   frequency: PT3H
 test:
-  reference filename: testref/per_truth.ref
+  reference filename: testref/pyddl95_truth.ref

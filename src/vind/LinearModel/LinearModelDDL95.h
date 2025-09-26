@@ -20,16 +20,16 @@ namespace vind {
   class ModelAuxIncrement;
 
 // -----------------------------------------------------------------------------
-///  LinearModelPersistence class
+///  LinearModelDDL95 class
 
-class LinearModelPersistence: public LinearModelBase,
-                              private util::ObjectCounter<LinearModelPersistence> {
+class LinearModelDDL95: public LinearModelBase,
+                        private util::ObjectCounter<LinearModelDDL95> {
  public:
-  static const std::string classname() {return "vind::LinearModelPersistence";}
+  static const std::string classname() {return "vind::LinearModelDDL95";}
 
-  LinearModelPersistence(const Geometry &,
-                         const eckit::Configuration &);
-  ~LinearModelPersistence()
+  LinearModelDDL95(const Geometry &,
+                   const eckit::Configuration &);
+  ~LinearModelDDL95()
     {}
 
   // Prepare TL model integration
@@ -67,7 +67,7 @@ class LinearModelPersistence: public LinearModelBase,
 
   const util::Duration timeResolution_;
   const util::Duration stepTrajectory_;
-  const double persistenceFactor_;
+  const double DDL95Factor_;
 };
 // -----------------------------------------------------------------------------
 

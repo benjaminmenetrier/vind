@@ -1,0 +1,30 @@
+input geometry: &geom
+  function space: StructuredColumns
+  grid:
+    type : regional
+    nx: 64
+    ny: 32
+    dx: 10e3
+    dy: 10e3
+    lonlat(centre): [4.0,50.0]
+    projection:
+      type: lambert_conformal_conic
+      longitude0: 4.0
+      latitude0: 50.0
+  groups:
+  - variables:
+    - air_temperature
+    levels: 3
+  halo: 2
+output geometry: *geom
+states:
+- input:
+    date: 2010-01-01T06:00:00Z
+    state variables:
+    - air_temperature
+    constant value: 0.1
+  output:
+    date: 2010-01-01T06:00:00Z
+    filepath: testdata/ddl95_stddev
+test:
+  reference filename: testref/ddl95_stddev.ref

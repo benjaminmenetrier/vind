@@ -146,17 +146,18 @@ testinput/reg_truth_06.yaml
 testinput/reg_truth_12.yaml
 testinput/reg_truth_18.yaml
 
-# PERSISTENCE
-testinput/per_3dvar.yaml
-testinput/per_4dvar.yaml
-testinput/per_background.yaml
-testinput/per_makeobs.yaml
-testinput/per_stddev.yaml
-testinput/per_truth.yaml
+# DDL95
+testinput/ddl95_3dvar.yaml
+testinput/ddl95_4dvar.yaml
+testinput/ddl95_attractor.yaml
+testinput/ddl95_background.yaml
+testinput/ddl95_makeobs.yaml
+testinput/ddl95_stddev.yaml
+testinput/ddl95_truth.yaml
 
-# PYQG
-testinput/pyqg_attractor.yaml
-testinput/pyqg_truth.yaml
+# PYDDL95
+testinput/pyddl95_attractor.yaml
+testinput/pyddl95_truth.yaml
 
 # GENINT
 testinput/genint_convertstate_nonuni_lonlat.yaml
@@ -287,17 +288,18 @@ testref/reg_truth_06.ref
 testref/reg_truth_12.ref
 testref/reg_truth_18.ref
 
-# PERSISTENCE
-testref/per_3dvar.ref
-testref/per_4dvar.ref
-testref/per_background.ref
-testref/per_makeobs.ref
-testref/per_stddev.ref
-testref/per_truth.ref
+# DDL95
+testref/ddl95_3dvar.ref
+testref/ddl95_4dvar.ref
+testref/ddl95_attractor.ref
+testref/ddl95_background.ref
+testref/ddl95_makeobs.ref
+testref/ddl95_stddev.ref
+testref/ddl95_truth.ref
 
-# PYQG
-testref/pyqg_attractor.ref
-testref/pyqg_truth.ref
+# PYDDL95
+testref/pyddl95_attractor.ref
+testref/pyddl95_truth.ref
 
 # GENINT
 testref/genint_geometry_regular_lonlat.ref
@@ -435,23 +437,24 @@ foreach( mpi ${mpi_list} )
     endforeach()
 endforeach()
 
-if( ENABLE_PER_TESTS )
-    # PERSISTENCE tests
+if( ENABLE_DDL95_TESTS )
+    # DDL95 tests
     foreach( mpi ${mpi_list} )
-        create_test( per_stddev ${mpi} convertstate )
-        create_test( per_truth ${mpi} forecast )
-        create_test( per_background ${mpi} forecast )
-        create_test( per_makeobs ${mpi} hofx4d )
-        create_test( per_3dvar ${mpi} variational )
-        create_test( per_4dvar ${mpi} variational )
+        create_test( ddl95_stddev ${mpi} convertstate )
+        create_test( ddl95_attractor ${mpi} forecast )
+        create_test( ddl95_truth ${mpi} forecast )
+        create_test( ddl95_background ${mpi} error_covariance_toolbox )
+        create_test( ddl95_makeobs ${mpi} hofx4d )
+        create_test( ddl95_3dvar ${mpi} variational )
+        create_test( ddl95_4dvar ${mpi} variational )
     endforeach()
 endif()
 
-if( ENABLE_PYQG_TESTS )
-    # PERSISTENCE tests
+if( ENABLE_PYDDL95_TESTS )
+    # PYDDL95 tests
     foreach( mpi ${mpi_list} )
-        create_test( pyqg_attractor ${mpi} forecast )
-        create_test( pyqg_truth ${mpi} forecast )
+        create_test( pyddl95_attractor ${mpi} forecast )
+        create_test( pyddl95_truth ${mpi} forecast )
     endforeach()
 endif()
 

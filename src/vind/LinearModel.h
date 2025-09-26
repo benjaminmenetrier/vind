@@ -37,7 +37,7 @@ class LinearModel: public util::Printable,
   static const std::string classname()
     {return "vind::LinearModel";}
   static std::vector<std::string> names()
-    {return {"persistence"};}
+    {return {"DDL95", "python"};}
 
   // Constructors/destructor
   LinearModel(const Geometry &,

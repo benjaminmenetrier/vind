@@ -1,32 +1,39 @@
 cost function:
   cost type: 3D-Var
   time window:
-    begin: 2010-01-01T12:00:00Z
-    length: PT6H
+    begin: 2010-01-01T06:00:00Z
+    length: PT12H
   analysis variables: [air_temperature]
   geometry: &geom
     function space: StructuredColumns
     grid:
-      type: regular_lonlat
-      N: 10
+      type : regional
+      nx: 64
+      ny: 32
+      dx: 10e3
+      dy: 10e3
+      lonlat(centre): [4.0,50.0]
+      projection:
+        type: lambert_conformal_conic
+        longitude0: 4.0
+        latitude0: 50.0
     groups:
     - variables:
-       - air_temperature
-      levels: 2
-      vert_coord: &vert_coord [1,2]
-    halo: 1
+      - air_temperature
+      levels: 3
+      vertical coordinate:
+        profile: &vert_coord [1,2,3]
+    halo: 2
   background:
-    date: 2010-01-01T15:00:00Z
+    date: 2010-01-01T12:00:00Z
     state variables:
     - air_temperature
-    filepath: testdata/per_background_PT3H
+    filepath: testdata/ddl95_bkg_PT6H_000001
   background error:
     covariance model: SABER
     saber central block:
       saber block name: BUMP_NICAS
       calibration:
-        general:
-          default seed: 12
         drivers:
           multivariate strategy: univariate
           compute nicas: true
@@ -36,7 +43,7 @@ cost function:
           horizontal length-scale:
           - groups:
             - air_temperature
-            value: 4.0e6
+            value: 1.0e6
           vertical length-scale:
           - groups:
             - air_temperature
@@ -45,7 +52,7 @@ cost function:
     - saber block name: StdDev
       read:
         model file:
-          filepath: testdata/per_stddev
+          filepath: testdata/ddl95_stddev
   observations:
     observers:
     - obs space:
@@ -54,11 +61,11 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: testdata/per_obs.nc
+            obsfile: testdata/ddl95_obs.nc
         obsdataout:
           engine:
             type: H5File
-            obsfile: testdata/per_3dvar.nc
+            obsfile: testdata/ddl95_3dvar.nc
       obs operator:
         name: VertInterp
         constant vertical coordinate values: *vert_coord
@@ -82,9 +89,9 @@ final:
     geometry: *geom
     output:
       state component:
-        filepath: testdata/per_3dvar_incr
+        filepath: testdata/ddl95_3dvar_incr
 output:
-  filepath: testdata/per_3dvar_analysis
+  filepath: testdata/ddl95_3dvar_analysis
 test:
-  reference filename: testref/per_3dvar.ref
+  reference filename: testref/ddl95_3dvar.ref
   float absolute tolerance: 1.0e-12
