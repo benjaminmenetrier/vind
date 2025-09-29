@@ -1,0 +1,16 @@
+Testing geometry: VIND geometry grid:
+- name: structured
+- size: 316800
+Regional grid detected
+Partitioner:
+- type: checkerboard
+Function space:
+- type: StructuredColumns
+- halo: 1
+Groups: 
+- Group 0:
+  Vertical levels: 
+  - number: 5
+  - vertCoord: [1.9000000000000000e+01,2.0000000000000000e+01,2.1000000000000000e+01,2.2000000000000000e+01,2.3000000000000000e+01]
+  Mask size: 100%
+

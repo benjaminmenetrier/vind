@@ -1,7 +1,7 @@
 geometry:
   function space: StructuredColumns
   grid:
-    type: regular_lonlat
+    type: glbular_lonlat
     N: 10
   groups:
   - variables:
@@ -9,17 +9,24 @@ geometry:
     levels: 2
   halo: 1
 background:
-  date: 2010-01-01T18:00:00Z
-  state variables:
-  - air_temperature
-  filepath: testdata/glb_bkg_18_000001
+  states:
+  - date: 2010-01-01T00:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/glb_truth_PT0S
+  - date: 2010-01-01T03:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/glb_truth_PT3H
+  - date: 2010-01-01T06:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/glb_truth_PT6H
 background error:
   covariance model: SABER
   saber central block:
     saber block name: BUMP_NICAS
     calibration:
-      general:
-        default seed: 18
       drivers:
         multivariate strategy: univariate
         compute nicas: true
@@ -39,9 +46,14 @@ background error:
     read:
       model file:
         filepath: testdata/glb_stddev
-  randomization size: 10
+  randomization size: 1
 output states:
-  date: 2010-01-01T18:00:00Z
-  filepath: testdata/glb_ens_18
+  states:
+  - date: 2010-01-01T00:00:00Z
+    filepath: testdata/glb_bkg_PT0S
+  - date: 2010-01-01T03:00:00Z
+    filepath: testdata/glb_bkg_PT3H
+  - date: 2010-01-01T16:00:00Z
+    filepath: testdata/glb_bkg_PT6H
 test:
-  reference filename: testref/glb_ensemble_18.ref
+  reference filename: testref/glb_background.ref

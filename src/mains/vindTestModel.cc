@@ -7,12 +7,12 @@
 
 #include "oops/runs/Run.h"
 
-#include "test/interface/Increment.h"
+#include "test/interface/Model.h"
 
 #include "vind/Traits.h"
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
-  test::Increment<vind::Traits> tests;
+  test::Model<vind::Traits> tests;
   return run.execute(tests);
 }

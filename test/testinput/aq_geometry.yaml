@@ -8,7 +8,7 @@ geometry:
     ny: 440
     xmin: -25.95
     ymin: 28.05
-  partitioner: "checkerboard"
+  partitioner: checkerboard
   halo: 1
   levels are top down: true
   levels count from: 0
@@ -25,4 +25,3 @@ geometry:
       profile: [19, 20, 21, 22, 23]
 test:
   reference filename: testref/aq_geometry.ref
-  test output filename: testdata/aq_geometry.log

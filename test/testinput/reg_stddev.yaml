@@ -21,12 +21,12 @@ input geometry: &geom
 output geometry: *geom
 states:
 - input:
-    date: 2010-01-01T12:00:00Z
+    date: 2010-01-01T00:00:00Z
     state variables:
     - air_temperature
     constant value: 0.1
   output:
-    date: 2010-01-01T12:00:00Z
+    date: 2010-01-01T00:00:00Z
     filepath: testdata/reg_stddev
 test:
   reference filename: testref/reg_stddev.ref

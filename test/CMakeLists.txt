@@ -153,6 +153,19 @@ testinput/ddl95_attractor.yaml
 testinput/ddl95_background.yaml
 testinput/ddl95_makeobs.yaml
 testinput/ddl95_stddev.yaml
+testinput/ddl95_test_error_covariance.yaml
+testinput/ddl95_test_geometry.yaml
+testinput/ddl95_test_geometry_iterator.yaml
+testinput/ddl95_test_increment.yaml
+testinput/ddl95_test_linear_model.yaml
+testinput/ddl95_test_linear_variable_change.yaml
+testinput/ddl95_test_model.yaml
+testinput/ddl95_test_model_aux_covariance.yaml
+testinput/ddl95_test_model_aux_increment.yaml
+testinput/ddl95_test_obs_localization.yaml
+testinput/ddl95_test_state.yaml
+testinput/ddl95_test_variable_change.yaml
+testinput/ddl95_test_vertical_loc_ev.yaml
 testinput/ddl95_truth.yaml
 
 # PYDDL95
@@ -295,6 +308,19 @@ testref/ddl95_attractor.ref
 testref/ddl95_background.ref
 testref/ddl95_makeobs.ref
 testref/ddl95_stddev.ref
+testref/ddl95_test_error_covariance.ref
+testref/ddl95_test_geometry.ref
+testref/ddl95_test_geometry_iterator.ref
+testref/ddl95_test_increment.ref
+testref/ddl95_test_linear_model.ref
+testref/ddl95_test_linear_variable_change.ref
+testref/ddl95_test_model.ref
+testref/ddl95_test_model_aux_covariance.ref
+testref/ddl95_test_model_aux_increment.ref
+testref/ddl95_test_obs_localization.ref
+testref/ddl95_test_state.ref
+testref/ddl95_test_variable_change.ref
+testref/ddl95_test_vertical_loc_ev.ref
 testref/ddl95_truth.ref
 
 # PYDDL95
@@ -405,28 +431,48 @@ list( APPEND hh_list "06" "12" "18" )
 foreach( mpi ${mpi_list} )
     # GLOBAL and REGIONAL tests
     foreach( domain ${domain_list} )
+        # Interface tests
+        create_test( ${domain}_test_geometry ${mpi} test_geometry )
+
+        # Attractor
+        create_test( ${domain}_attractor ${mpi} forecast )
+
+        # Truth
+        create_test( ${domain}_truth ${mpi} forecast )
+
+        # Standard-deviation
         create_test( ${domain}_stddev ${mpi} convertstate )
 
-        foreach( hh ${hh_list} )
-            create_test( ${domain}_truth_${hh} ${mpi} convertstate )
+        if( ENABLE_SABER )
+            # Background
+            create_test( ${domain}_background ${mpi} error_covariance_toolbox )
 
-            if( ENABLE_SABER )
-                create_test( ${domain}_background_${hh} ${mpi} error_covariance_toolbox )
-                create_test( ${domain}_ensemble_${hh} ${mpi} error_covariance_toolbox )
-            endif()
+            # Ensemble
+            create_test( ${domain}_ensemble ${mpi} error_covariance_toolbox )
+        endif()
 
-            if( ENABLE_OBS )
-                create_test( ${domain}_makeobs_${hh} ${mpi} hofx3d )
-            endif()
-        endforeach()
+        if( ENABLE_OBS )
+            # Make obs 3d
+            create_test( ${domain}_makeobs3d ${mpi} hofx3d )
+            create_test( ${domain}_makeobs4d ${mpi} hofx4d )
+        endif()
 
         if( ENABLE_SABER AND ENABLE_OBS )
+            # 3DVar
             create_test( ${domain}_3dvar ${mpi} variational )
-            create_test( ${domain}_3densvar ${mpi} variational )
-            create_test( ${domain}_4densvar ${mpi} variational )
 
+            # 4DVar
+
+
+            # 3DEnVar
+            create_test( ${domain}_3densvar ${mpi} variational )
+
+            # 4DEnVar
             math( EXPR mpi_par "${mpi}*3" )
+            create_test( ${domain}_4densvar ${mpi} variational )
             create_test( ${domain}_4densvar_parallel ${mpi_par} variational )
+
+            # LETKF
             create_test( ${domain}_getkf_nonlinear ${mpi} letkf )
             create_test( ${domain}_letkf_linear ${mpi} letkf )
             create_test( ${domain}_letkf_linear_4d ${mpi} letkf )
@@ -436,19 +482,6 @@ foreach( mpi ${mpi_list} )
          endif()
     endforeach()
 endforeach()
-
-if( ENABLE_DDL95_TESTS )
-    # DDL95 tests
-    foreach( mpi ${mpi_list} )
-        create_test( ddl95_stddev ${mpi} convertstate )
-        create_test( ddl95_attractor ${mpi} forecast )
-        create_test( ddl95_truth ${mpi} forecast )
-        create_test( ddl95_background ${mpi} error_covariance_toolbox )
-        create_test( ddl95_makeobs ${mpi} hofx4d )
-        create_test( ddl95_3dvar ${mpi} variational )
-        create_test( ddl95_4dvar ${mpi} variational )
-    endforeach()
-endif()
 
 if( ENABLE_PYDDL95_TESTS )
     # PYDDL95 tests

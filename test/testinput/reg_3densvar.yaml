@@ -1,7 +1,7 @@
 cost function:
   cost type: 3D-Var
   time window:
-    begin: 2010-01-01T11:59:59Z
+    begin: 2010-01-01T02:59:59Z
     length: PT2S
   analysis variables: [air_temperature]
   geometry: &geom
@@ -23,13 +23,14 @@ cost function:
     - variables:
        - air_temperature
       levels: 2
-      vert_coord: &vert_coord [1,2]
+      vertical coordinate:
+        profile: &vert_coord [1,2]
     halo: 1
   background:
-    date: 2010-01-01T12:00:00Z
+    date: 2010-01-01T03:00:00Z
     state variables:
     - air_temperature
-    filepath: testdata/reg_bkg_12_000001
+    filepath: testdata/reg_bkg_03_000001
   background error:
     covariance model: ensemble
     localization:
@@ -55,10 +56,10 @@ cost function:
               value: 3.0
     members from template:
       template:
-        date: 2010-01-01T12:00:00Z
+        date: 2010-01-01T03:00:00Z
         state variables:
         - air_temperature
-        filepath: testdata/reg_ens_12_%mem%
+        filepath: testdata/reg_ens_03_%mem%
       pattern: %mem%
       zero padding: 6
       nmembers: 10
@@ -70,7 +71,7 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: testdata/reg_obs_12.nc
+            obsfile: testdata/reg_obs3d.nc
         obsdataout:
           engine:
             type: H5File

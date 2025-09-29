@@ -1,8 +1,8 @@
 cost function:
   cost type: 3D-Var
   time window:
-    begin: 2010-01-01T02:59:59Z
-    length: PT2S
+    begin: 2010-01-01T00:00:00Z
+    length: PT6H
   analysis variables: [air_temperature]
   geometry: &geom
     function space: StructuredColumns
@@ -15,11 +15,15 @@ cost function:
       levels: 2
       vertical coordinate:
         profile: &vert_coord [1,2]
+    halo: 2
+  model:
+    name: DDL95
+    time step: PT1H
   background:
-    date: 2010-01-01T03:00:00Z
+    date: 2010-01-01T00:00:00Z
     state variables:
     - air_temperature
-    filepath: testdata/glb_bkg_03_000001
+    filepath: testdata/glb_bkg_00_000001
   background error:
     covariance model: SABER
     saber central block:
@@ -54,11 +58,11 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: testdata/glb_obs3d.nc
+            obsfile: testdata/glb_obs4d.nc
         obsdataout:
           engine:
             type: H5File
-            obsfile: testdata/glb_obs_3dvar.nc
+            obsfile: testdata/glb_obs_4dvar.nc
       obs operator:
         name: VertInterp
         constant vertical coordinate values: *vert_coord
@@ -82,8 +86,10 @@ final:
     geometry: *geom
     output:
       state component:
-        filepath: testdata/glb_3dvar_incr
+        filepath: testdata/glb_4dvar_incr
 output:
-  filepath: testdata/glb_3dvar_analysis
+  filepath: testdata/glb_4dvar_analysis___DATE__
+  date pattern: __DATE__
+  frequency: PT06H
 test:
-  reference filename: testref/glb_3dvar.ref
+  reference filename: testref/glb_4dvar.ref

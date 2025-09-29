@@ -1,35 +1,23 @@
 geometry:
   function space: StructuredColumns
   grid:
-    type: regional
-    nx: 71
-    ny: 53
-    dx: 2.5e3
-    dy: 2.5e3
-    lonlat(centre): [9.9, 56.3]
-    projection:
-      type: lambert_conformal_conic
-      latitude0: 56.3
-      longitude0: 0.0
-    y_numbering: 1
-  partitioner: checkerboard
+    type: regular_lonlat
+    N: 10
   groups:
   - variables:
     - air_temperature
     levels: 2
   halo: 1
 background:
-  date: 2010-01-01T18:00:00Z
+  date: 2010-01-01T06:00:00Z
   state variables:
   - air_temperature
-  filepath: testdata/reg_bkg_18_000001
+  filepath: testdata/glb_bkg_06_000001
 background error:
   covariance model: SABER
   saber central block:
     saber block name: BUMP_NICAS
     calibration:
-      general:
-        default seed: 18
       drivers:
         multivariate strategy: univariate
         compute nicas: true
@@ -39,7 +27,7 @@ background error:
         horizontal length-scale:
         - groups:
           - air_temperature
-          value: 3.0e4
+          value: 4.0e6
         vertical length-scale:
         - groups:
           - air_temperature
@@ -48,10 +36,15 @@ background error:
   - saber block name: StdDev
     read:
       model file:
-        filepath: testdata/reg_stddev
+        filepath: testdata/glb_stddev
   randomization size: 10
 output states:
-  date: 2010-01-01T18:00:00Z
-  filepath: testdata/reg_ens_18
+  states:
+  - date: 2010-01-01T00:00:00Z
+    filepath: testdata/glb_ens_PT0S
+  - date: 2010-01-01T03:00:00Z
+    filepath: testdata/glb_ens_PT3H
+  - date: 2010-01-01T16:00:00Z
+    filepath: testdata/glb_ens_PT6H
 test:
-  reference filename: testref/reg_ensemble_18.ref
+  reference filename: testref/glb_ensemble_06.ref

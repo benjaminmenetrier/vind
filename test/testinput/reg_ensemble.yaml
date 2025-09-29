@@ -22,14 +22,12 @@ background:
   date: 2010-01-01T06:00:00Z
   state variables:
   - air_temperature
-  filepath: testdata/reg_bkg_06_000001
+  filepath: testdata/glb_bkg_06_000001
 background error:
   covariance model: SABER
   saber central block:
     saber block name: BUMP_NICAS
     calibration:
-      general:
-        default seed: 6
       drivers:
         multivariate strategy: univariate
         compute nicas: true
@@ -51,7 +49,12 @@ background error:
         filepath: testdata/reg_stddev
   randomization size: 10
 output states:
-  date: 2010-01-01T06:00:00Z
-  filepath: testdata/reg_ens_06
+  states:
+  - date: 2010-01-01T00:00:00Z
+    filepath: testdata/reg_ens_PT0S
+  - date: 2010-01-01T03:00:00Z
+    filepath: testdata/reg_ens_PT3H
+  - date: 2010-01-01T16:00:00Z
+    filepath: testdata/reg_ens_PT6H
 test:
-  reference filename: testref/reg_ensemble_06.ref
+  reference filename: testref/reg_ensemble.ref
