@@ -58,7 +58,7 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: testdata/glb_obs4d.nc
+            obsfile: testdata/glb_obs_4d.nc
         obsdataout:
           engine:
             type: H5File

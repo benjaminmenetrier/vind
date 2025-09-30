@@ -1,0 +1,48 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 71
+    ny: 53
+    dx: 2.5e3
+    dy: 2.5e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+other geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 36
+    ny: 27
+    dx: 5.0e3
+    dy: 5.0e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+inc variables: [air_temperature]
+increment test:
+ date: 2010-01-01T00:00:00Z
+ dirac:
+   lon: [9.9]
+   lat: [56.3]
+   level: [1]
+   variable: [air_temperature]
+test:
+  reference filename: testref/reg_test_increment.ref

@@ -17,7 +17,7 @@ geometry:
   - variables:
     - air_temperature
     levels: 2
-  halo: 1
+  halo: 2
 background:
   states:
   - date: 2010-01-01T00:00:00Z

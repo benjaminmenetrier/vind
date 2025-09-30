@@ -12,6 +12,7 @@ geometry:
     levels: 2
     vertical coordinate:
       profile: &vert_coord [1,2]
+  halo: 2
 state:
   date: 2010-01-01T06:00:00Z
   state variables:
@@ -37,7 +38,7 @@ observations:
       obsdataout:
         engine:
           type: H5File
-          obsfile: testdata/glb_obs3d.nc
+          obsfile: testdata/glb_obs_3d.nc
     obs operator:
       name: VertInterp
       constant vertical coordinate values: *vert_coord
@@ -47,4 +48,4 @@ observations:
       covariance model: diagonal
 make obs: true
 test:
-  reference filename: testref/glb_makeobs3d.ref
+  reference filename: testref/glb_makeobs_3d.ref

@@ -3,6 +3,11 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
+# Macro to link a file
+macro( link_file src_dir dest_dir )
+    execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${src_dir}/${ARGN} ${dest_dir}/${ARGN} )
+endmacro()
+
 # Macro to link files
 macro( link_files src_dir dest_dir )
     foreach( _f IN ITEMS ${ARGN} )
@@ -12,6 +17,13 @@ endmacro()
 
 # Macro to create test
 macro( create_test name mpi exec )
+    # Link input file
+    link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testinput/${name}.yaml )
+
+    # Link reference file
+    link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testref/${name}.ref )
+
+    # Add test
     ecbuild_add_test( TARGET   vind_test_${name}_${mpi}
                       MPI      ${mpi}
                       COMMAND  vind_${exec}.x
@@ -19,8 +31,10 @@ macro( create_test name mpi exec )
                       DEPENDS  vind_${exec}.x )
 endmacro()
 
-# Create the testdata directory
-# -----------------------------
+# Create the test input / reference / data directories
+# ----------------------------------------------------
+file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput )
+file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testdata )
 
 # Link test data
@@ -87,332 +101,6 @@ if( ENABLE_AQ_TESTS )
     link_files( $ENV{MONARCH_DATA_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${aq_data} )
 endif()
 
-# Create the input/output directories
-# -----------------------------------
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput )
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
-
-# Test input scripts
-# ------------------
-list( APPEND vind_testinput
-
-# GLOBAL
-testinput/glb_3dvar.yaml
-testinput/glb_3densvar.yaml
-testinput/glb_4densvar.yaml
-testinput/glb_4densvar_parallel.yaml
-testinput/glb_background_06.yaml
-testinput/glb_background_12.yaml
-testinput/glb_background_18.yaml
-testinput/glb_ensemble_06.yaml
-testinput/glb_ensemble_12.yaml
-testinput/glb_ensemble_18.yaml
-testinput/glb_getkf_nonlinear.yaml
-testinput/glb_letkf_linear.yaml
-testinput/glb_letkf_linear_4d.yaml
-testinput/glb_letkf_nonlinear.yaml
-testinput/glb_letkf_nonlinear_4d.yaml
-testinput/glb_letkf_read_members.yaml
-testinput/glb_makeobs_06.yaml
-testinput/glb_makeobs_12.yaml
-testinput/glb_makeobs_18.yaml
-testinput/glb_stddev.yaml
-testinput/glb_truth_06.yaml
-testinput/glb_truth_12.yaml
-testinput/glb_truth_18.yaml
-
-# REGIONAL
-testinput/reg_3dvar.yaml
-testinput/reg_3densvar.yaml
-testinput/reg_4densvar.yaml
-testinput/reg_4densvar_parallel.yaml
-testinput/reg_background_06.yaml
-testinput/reg_background_12.yaml
-testinput/reg_background_18.yaml
-testinput/reg_ensemble_06.yaml
-testinput/reg_ensemble_12.yaml
-testinput/reg_ensemble_18.yaml
-testinput/reg_getkf_nonlinear.yaml
-testinput/reg_letkf_linear.yaml
-testinput/reg_letkf_linear_4d.yaml
-testinput/reg_letkf_nonlinear.yaml
-testinput/reg_letkf_nonlinear_4d.yaml
-testinput/reg_letkf_read_members.yaml
-testinput/reg_makeobs_06.yaml
-testinput/reg_makeobs_12.yaml
-testinput/reg_makeobs_18.yaml
-testinput/reg_stddev.yaml
-testinput/reg_truth_06.yaml
-testinput/reg_truth_12.yaml
-testinput/reg_truth_18.yaml
-
-# DDL95
-testinput/ddl95_3dvar.yaml
-testinput/ddl95_4dvar.yaml
-testinput/ddl95_attractor.yaml
-testinput/ddl95_background.yaml
-testinput/ddl95_makeobs.yaml
-testinput/ddl95_stddev.yaml
-testinput/ddl95_test_error_covariance.yaml
-testinput/ddl95_test_geometry.yaml
-testinput/ddl95_test_geometry_iterator.yaml
-testinput/ddl95_test_increment.yaml
-testinput/ddl95_test_linear_model.yaml
-testinput/ddl95_test_linear_variable_change.yaml
-testinput/ddl95_test_model.yaml
-testinput/ddl95_test_model_aux_covariance.yaml
-testinput/ddl95_test_model_aux_increment.yaml
-testinput/ddl95_test_obs_localization.yaml
-testinput/ddl95_test_state.yaml
-testinput/ddl95_test_variable_change.yaml
-testinput/ddl95_test_vertical_loc_ev.yaml
-testinput/ddl95_truth.yaml
-
-# PYDDL95
-testinput/pyddl95_attractor.yaml
-testinput/pyddl95_truth.yaml
-
-# GENINT
-testinput/genint_convertstate_nonuni_lonlat.yaml
-testinput/genint_convertstate_regular_lonlat.yaml
-testinput/genint_convertstate_varcha_regular_lonlat.yaml
-testinput/genint_convertstate_varcha_nonuni_lonlat.yaml
-testinput/genint_geometry_lambertCC.yaml
-testinput/genint_geometry_regular_lonlat.yaml
-testinput/genint_hofx3d_lambertCC.yaml
-testinput/genint_hofx3d_nonuni_lonlat.yaml
-testinput/genint_hofx3d_regular_lonlat.yaml
-
-)
-
-list( APPEND monarch_testinput
-
-# MONARCH REGIONAL
-testinput/monarch_geometry_rotated.yaml
-testinput/monarch_state.yaml
-testinput/monarch_convertstate.yaml
-testinput/monarch_convertstate_levsel.yaml
-testinput/monarch_convertstate_levsel_scaling.yaml
-testinput/monarch_convertstate_levsel_logtransf.yaml
-testinput/monarch_increment.yaml
-testinput/monarch_ens_mean_variance.yaml
-testinput/monarch_ufo_variable_name_map.yaml
-testinput/monarch_hofx3d_constant.yaml
-testinput/monarch_hofx3d_air_pressure.yaml
-testinput/monarch_hofx3d_logarithm.yaml
-testinput/monarch_dirac_no_loc_3d.yaml
-testinput/monarch_dirac_no_loc_3d_lt.yaml
-testinput/monarch_dirac_no_loc_4d_id.yaml
-testinput/monarch_dirac_no_loc_4d.yaml
-testinput/monarch_dirac_3d.yaml
-testinput/monarch_dirac_3d_FL.yaml
-testinput/monarch_dirac_4d.yaml
-testinput/monarch_dirac_4d_FL.yaml
-testinput/monarch_3densvar.yaml
-testinput/monarch_3densvar_lt.yaml
-testinput/monarch_4densvar.yaml
-testinput/monarch_4densvar_lt.yaml
-
-# MONARCH GLOBAL
-testinput/monglob_geometry.yaml
-testinput/monglob_convertstate.yaml
-testinput/monglob_convertstate_levsel.yaml
-testinput/monglob_hofx3d_air_pressure.yaml
-testinput/monglob_dirac_3d.yaml
-)
-
-list( APPEND aq_testinput
-
-# MONARCH REGIONAL interpolated on CAMS regular grid
-testinput/aq_geometry.yaml
-testinput/aq_state.yaml
-testinput/aq_convertstate.yaml
-testinput/aq_convertstate_logtransf.yaml
-testinput/aq_increment.yaml
-testinput/aq_ens_mean_variance.yaml
-testinput/monarch_ufo_variable_name_map.yaml
-testinput/aq_hofx3d_constant.yaml
-testinput/aq_hofx3d_logarithm.yaml
-testinput/aq_dirac_no_loc_3d.yaml
-testinput/aq_dirac_no_loc_3d_lt.yaml
-testinput/aq_dirac_no_loc_4d_id.yaml
-testinput/aq_dirac_no_loc_4d.yaml
-testinput/aq_dirac_3d.yaml
-testinput/aq_dirac_4d.yaml
-testinput/aq_dirac_4d_FL.yaml
-testinput/aq_3densvar.yaml
-testinput/aq_3densvar_lt.yaml
-testinput/aq_4densvar.yaml
-testinput/aq_4densvar_lt.yaml
-
-)
-
-# Test output references
-# ----------------------
-list( APPEND vind_testref
-
-# GLOBAL
-testref/glb_3dvar.ref
-testref/glb_3densvar.ref
-testref/glb_4densvar.ref
-testref/glb_4densvar_parallel.ref
-testref/glb_background_06.ref
-testref/glb_background_12.ref
-testref/glb_background_18.ref
-testref/glb_ensemble_06.ref
-testref/glb_ensemble_12.ref
-testref/glb_ensemble_18.ref
-testref/glb_getkf_nonlinear.ref
-testref/glb_letkf_linear.ref
-testref/glb_letkf_linear_4d.ref
-testref/glb_letkf_nonlinear.ref
-testref/glb_letkf_nonlinear_4d.ref
-testref/glb_letkf_read_members.ref
-testref/glb_makeobs_06.ref
-testref/glb_makeobs_12.ref
-testref/glb_makeobs_18.ref
-testref/glb_stddev.ref
-testref/glb_truth_06.ref
-testref/glb_truth_12.ref
-testref/glb_truth_18.ref
-
-# REGIONAL
-testref/reg_3dvar.ref
-testref/reg_3densvar.ref
-testref/reg_4densvar.ref
-testref/reg_4densvar_parallel.ref
-testref/reg_background_06.ref
-testref/reg_background_12.ref
-testref/reg_background_18.ref
-testref/reg_ensemble_06.ref
-testref/reg_ensemble_12.ref
-testref/reg_ensemble_18.ref
-testref/reg_getkf_nonlinear.ref
-testref/reg_letkf_linear.ref
-testref/reg_letkf_linear_4d.ref
-testref/reg_letkf_nonlinear.ref
-testref/reg_letkf_nonlinear_4d.ref
-testref/reg_letkf_read_members.ref
-testref/reg_makeobs_06.ref
-testref/reg_makeobs_12.ref
-testref/reg_makeobs_18.ref
-testref/reg_stddev.ref
-testref/reg_truth_06.ref
-testref/reg_truth_12.ref
-testref/reg_truth_18.ref
-
-# DDL95
-testref/ddl95_3dvar.ref
-testref/ddl95_4dvar.ref
-testref/ddl95_attractor.ref
-testref/ddl95_background.ref
-testref/ddl95_makeobs.ref
-testref/ddl95_stddev.ref
-testref/ddl95_test_error_covariance.ref
-testref/ddl95_test_geometry.ref
-testref/ddl95_test_geometry_iterator.ref
-testref/ddl95_test_increment.ref
-testref/ddl95_test_linear_model.ref
-testref/ddl95_test_linear_variable_change.ref
-testref/ddl95_test_model.ref
-testref/ddl95_test_model_aux_covariance.ref
-testref/ddl95_test_model_aux_increment.ref
-testref/ddl95_test_obs_localization.ref
-testref/ddl95_test_state.ref
-testref/ddl95_test_variable_change.ref
-testref/ddl95_test_vertical_loc_ev.ref
-testref/ddl95_truth.ref
-
-# PYDDL95
-testref/pyddl95_attractor.ref
-testref/pyddl95_truth.ref
-
-# GENINT
-testref/genint_geometry_regular_lonlat.ref
-testref/genint_geometry_lambertCC.ref
-testref/genint_convertstate_regular_lonlat.ref
-testref/genint_convertstate_nonuni_lonlat.ref
-testref/genint_convertstate_varcha_regular_lonlat.ref
-testref/genint_convertstate_varcha_nonuni_lonlat.ref
-testref/genint_hofx3d_regular_lonlat.ref
-testref/genint_hofx3d_nonuni_lonlat.ref
-testref/genint_hofx3d_lambertCC.ref
-
-)
-
-list( APPEND monarch_testref
-
-# MONARCH REGIONAL
-testref/monarch_geometry_rotated.ref
-testref/monarch_state.ref
-testref/monarch_convertstate.ref
-testref/monarch_convertstate_levsel.ref
-testref/monarch_convertstate_levsel_scaling.ref
-testref/monarch_convertstate_levsel_logtransf.ref
-testref/monarch_increment.ref
-testref/monarch_ens_mean_variance.ref
-testref/monarch_hofx3d_constant.ref
-testref/monarch_hofx3d_air_pressure.ref
-testref/monarch_hofx3d_logarithm.ref
-testref/monarch_dirac_no_loc_3d.ref
-testref/monarch_dirac_no_loc_3d_lt.ref
-testref/monarch_dirac_no_loc_4d_id.ref
-testref/monarch_dirac_no_loc_4d.ref
-testref/monarch_dirac_3d.ref
-testref/monarch_dirac_3d_FL.ref
-testref/monarch_dirac_4d.ref
-testref/monarch_dirac_4d_FL.ref
-testref/monarch_3densvar.ref
-testref/monarch_3densvar_lt.ref
-testref/monarch_4densvar.ref
-testref/monarch_4densvar_lt.ref
-
-# MONARCH GLOBAL
-testref/monglob_geometry.ref
-testref/monglob_convertstate.ref
-testref/monglob_convertstate_levsel.ref
-testref/monglob_hofx3d_air_pressure.ref
-testref/monglob_dirac_3d.ref
-)
-
-list( APPEND aq_testref
-
-# MONARCH REGIONAL interpolated on CAMS regular grid
-testref/aq_geometry.ref
-testref/aq_state.ref
-testref/aq_convertstate.ref
-testref/aq_convertstate_logtransf.ref
-testref/aq_increment.ref
-testref/aq_ens_mean_variance.ref
-testref/aq_hofx3d_constant.ref
-testref/aq_hofx3d_logarithm.ref
-testref/aq_dirac_no_loc_3d.ref
-testref/aq_dirac_no_loc_3d_lt.ref
-testref/aq_dirac_no_loc_4d_id.ref
-testref/aq_dirac_no_loc_4d.ref
-testref/aq_dirac_3d.ref
-testref/aq_dirac_4d.ref
-testref/aq_dirac_4d_FL.ref
-testref/aq_3densvar.ref
-testref/aq_3densvar_lt.ref
-testref/aq_4densvar.ref
-testref/aq_4densvar_lt.ref
-
-)
-
-# Link input configurations and output references
-# -----------------------------------------------
-link_files( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${vind_testinput} )
-link_files( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${vind_testref} )
-if( ENABLE_MONARCH_TESTS )
-    link_files( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${monarch_testinput} )
-    link_files( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${monarch_testref} )
-endif()
-if( ENABLE_AQ_TESTS )
-    link_files( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${aq_testinput} )
-    link_files( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${aq_testref} )
-endif()
-
 # Tests parameters
 # ----------------
 
@@ -431,11 +119,13 @@ list( APPEND hh_list "06" "12" "18" )
 foreach( mpi ${mpi_list} )
     # GLOBAL and REGIONAL tests
     foreach( domain ${domain_list} )
-        # Interface tests
-        create_test( ${domain}_test_geometry ${mpi} test_geometry )
-
         # Attractor
         create_test( ${domain}_attractor ${mpi} forecast )
+
+        # Interface tests
+        create_test( ${domain}_test_geometry ${mpi} test_geometry )
+        create_test( ${domain}_test_increment ${mpi} test_increment )
+        create_test( ${domain}_test_model ${mpi} test_model )
 
         # Truth
         create_test( ${domain}_truth ${mpi} forecast )
@@ -452,9 +142,9 @@ foreach( mpi ${mpi_list} )
         endif()
 
         if( ENABLE_OBS )
-            # Make obs 3d
-            create_test( ${domain}_makeobs3d ${mpi} hofx3d )
-            create_test( ${domain}_makeobs4d ${mpi} hofx4d )
+            # Make observations, 3d and 4d
+            create_test( ${domain}_makeobs_3d ${mpi} hofx3d )
+            create_test( ${domain}_makeobs_4d ${mpi} hofx4d )
         endif()
 
         if( ENABLE_SABER AND ENABLE_OBS )
@@ -462,7 +152,7 @@ foreach( mpi ${mpi_list} )
             create_test( ${domain}_3dvar ${mpi} variational )
 
             # 4DVar
-
+            create_test( ${domain}_4dvar ${mpi} variational )
 
             # 3DEnVar
             create_test( ${domain}_3densvar ${mpi} variational )

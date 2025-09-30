@@ -7,12 +7,21 @@ geometry:
   - variables:
     - air_temperature
     levels: 2
-  halo: 1
+  halo: 2
 background:
-  date: 2010-01-01T06:00:00Z
-  state variables:
-  - air_temperature
-  filepath: testdata/glb_bkg_06_000001
+  states:
+  - date: 2010-01-01T00:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/glb_bkg_PT0S_000001
+  - date: 2010-01-01T03:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/glb_bkg_PT3H_000001
+  - date: 2010-01-01T06:00:00Z
+    state variables:
+    - air_temperature
+    filepath: testdata/glb_bkg_PT6H_000001
 background error:
   covariance model: SABER
   saber central block:
@@ -44,7 +53,7 @@ output states:
     filepath: testdata/glb_ens_PT0S
   - date: 2010-01-01T03:00:00Z
     filepath: testdata/glb_ens_PT3H
-  - date: 2010-01-01T16:00:00Z
+  - date: 2010-01-01T06:00:00Z
     filepath: testdata/glb_ens_PT6H
 test:
-  reference filename: testref/glb_ensemble_06.ref
+  reference filename: testref/glb_ensemble.ref

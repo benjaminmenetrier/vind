@@ -25,11 +25,12 @@ cost function:
       levels: 2
       vertical coordinate:
         profile: &vert_coord [1,2]
+    halo: 2
   background:
     date: 2010-01-01T03:00:00Z
     state variables:
     - air_temperature
-    filepath: testdata/reg_bkg_03_000001
+    filepath: testdata/reg_bkg_PT3H_000001
   background error:
     covariance model: SABER
     saber central block:
@@ -64,7 +65,7 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: testdata/reg_obs3d.nc
+            obsfile: testdata/reg_obs_3d.nc
         obsdataout:
           engine:
             type: H5File

@@ -1,0 +1,26 @@
+Norm of input parameter StdDev: 4.0987803063838184e+00
+Write state: 
+- Valid time: 2010-01-01T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.7003879399527106e+00
+    + max    = 1.2298908409849314e+01
+    + mean   = 2.6789126826830625e+00
+    + stddev = 2.3947358370353853e+00
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0206416234540168e+00
+    + max    = 1.2933793424647432e+01
+    + mean   = 2.9163076592486834e+00
+    + stddev = 2.6012493598135999e+00
+- Valid time: 2010-01-01T06:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -2.8716182664248251e+00
+    + max    = 1.1918505692153706e+01
+    + mean   = 2.9115610512788406e+00
+    + stddev = 2.7778632790615467e+00

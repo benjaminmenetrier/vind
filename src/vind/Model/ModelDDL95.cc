@@ -25,7 +25,8 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   oops::Log::trace() << classname() << "::ModelDDL95 starting" << std::endl;
 
   // Check geometry
-  ASSERT(geom.gridType() == "regional");
+  ASSERT((geom.gridType() == "regional") || (geom.gridType() == "structured") ||
+    (geom.gridType() == "regular_lonlat") || (geom.gridType() == "zonal_band"));
 
   // Get dimensions
   const atlas::RegularGrid & grid = geom.grid();
@@ -49,10 +50,12 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   nsub_ = static_cast<size_t>(dti/dti_sub_);
 
   // Sub-time-step
-  dt_sub_ = util::Duration(static_cast<int64_t>(static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
+  dt_sub_ = util::Duration(static_cast<int64_t>(
+    static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
 
   // Half sub-time-step
-  dt_sub_half_ = util::Duration(static_cast<int64_t>(0.5*static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
+  dt_sub_half_ = util::Duration(static_cast<int64_t>(
+    0.5*static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
 
   oops::Log::trace() << classname() << "::ModelDDL95 done" << std::endl;
 }
@@ -101,7 +104,7 @@ void ModelDDL95::print(std::ostream & os) const {
 // -----------------------------------------------------------------------------
 
 void ModelDDL95::tendency(const Fields & fields,
-                          Fields & tFields) const {
+                          Fields & tendFields) const {
   oops::Log::trace() << classname() << "::tendency starting" << std::endl;
 
   // Get valid time components
@@ -115,7 +118,7 @@ void ModelDDL95::tendency(const Fields & fields,
   for (const auto & var : fields.variables()) { 
     // Get fields
     const auto field = fields.fieldSet()[var.name()];
-    auto tField = tFields.fieldSet()[var.name()];
+    auto tendField = tendFields.fieldSet()[var.name()];
 
     // Get function space
     atlas::functionspace::StructuredColumns fs(field.functionspace());
@@ -128,41 +131,44 @@ void ModelDDL95::tendency(const Fields & fields,
 
     // Get views
     const auto view = atlas::array::make_view<double, 2>(field);
-    auto tView = atlas::array::make_view<double, 2>(tField);
+    auto tendView = atlas::array::make_view<double, 2>(tendField);
 
     // Create tendency
-    tView.assign(0.0);
+    tendView.assign(0.0);
 
     for (int jnode = 0; jnode < field.shape(0); ++jnode) {
       if (ghostView(jnode) == 0) {
         // Get X/Y indices
-        const int ix = view_i(jnode)-1;
-        const int iy = view_j(jnode)-1;
+        const size_t ix = view_i(jnode)-1;
+        const size_t iy = view_j(jnode)-1;
 
-        if ((ix > 1) && (ix < static_cast<int>(nx_)-1) && (iy > 0) && (iy < static_cast<int>(ny_)-1)) {
+        if ((ix > 1) && (ix < nx_-1) && (iy > 0) && (iy < ny_-1)) {
           // Inside computation zone
 
           // Time-variable forcing
           const double FF = (1.0+0.4*std::sin(x_[ix]-omega_*t)*(1.0-std::cos(y_[iy])))*F_;
 
           // Retrieve array indices
-          const int ixp1_iy = fs.index(ix+1, iy);
-          const int ixm2_iy = fs.index(ix-2, iy);
-          const int ixm1_iy = fs.index(ix-1, iy);
-          const int ix_iyp1 = fs.index(ix, iy+1);
-          const int ix_iym1 = fs.index(ix, iy-1);
+          const int ixp1 = fs.index(ix+1, iy);
+          const int ixm2 = fs.index(ix-2, iy);
+          const int ixm1 = fs.index(ix-1, iy);
+          const int iyp1 = fs.index(ix, iy+1);
+          const int iym1 = fs.index(ix, iy-1);
 
           for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
             // Usual L95 in x direction
-            tView(jnode, jlevel) = (view(ixp1_iy, jlevel)-view(ixm2_iy, jlevel))*view(ixm1_iy, jlevel)-view(jnode, jlevel)+FF;
+            tendView(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*view(ixm1, jlevel)
+              -view(jnode, jlevel)+FF;
 
             // Add diffusion to get larger scales
-            tView(jnode, jlevel) += nu_*((view(ixp1_iy, jlevel)-2.0*view(jnode, jlevel)+view(ixm1_iy, jlevel))+(view(ix_iyp1, jlevel)-2.0*view(jnode, jlevel)+view(ix_iym1, jlevel)));
+            tendView(jnode, jlevel) += nu_*(
+              (view(ixp1, jlevel)-2.0*view(jnode, jlevel)+view(ixm1, jlevel))
+              +(view(iyp1, jlevel)-2.0*view(jnode, jlevel)+view(iym1, jlevel)));
           }
         } else {
           // Outside computation zone
           for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            tView(jnode, jlevel) = -view(jnode, jlevel);
+            tendView(jnode, jlevel) = -view(jnode, jlevel);
           }
         }
       } 
@@ -172,7 +178,6 @@ void ModelDDL95::tendency(const Fields & fields,
   oops::Log::trace() << classname() << "::tendency done" << std::endl;
 }
 
-
 // -----------------------------------------------------------------------------
 
-}  // namespace vin
+}  // namespace vind

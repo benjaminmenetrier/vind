@@ -1,13 +1,13 @@
 geometry:
   function space: StructuredColumns
   grid:
-    type: glbular_lonlat
+    type: regular_lonlat
     N: 10
   groups:
   - variables:
     - air_temperature
     levels: 2
-  halo: 1
+  halo: 2
 background:
   states:
   - date: 2010-01-01T00:00:00Z
@@ -53,7 +53,7 @@ output states:
     filepath: testdata/glb_bkg_PT0S
   - date: 2010-01-01T03:00:00Z
     filepath: testdata/glb_bkg_PT3H
-  - date: 2010-01-01T16:00:00Z
+  - date: 2010-01-01T06:00:00Z
     filepath: testdata/glb_bkg_PT6H
 test:
   reference filename: testref/glb_background.ref

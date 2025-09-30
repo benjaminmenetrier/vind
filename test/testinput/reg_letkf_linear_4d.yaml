@@ -20,20 +20,21 @@ geometry:
   - variables:
      - air_temperature
     levels: 2
-    vert_coord: &vert_coord [1,2]
-  halo: 1
+    vertical coordinate:
+      profile: &vert_coord [1,2]
+  halo: 2
 background:
   members from template:
     template:
       states:
-      - date: 2010-01-01T12:00:00Z
+      - date: 2010-01-01T03:00:00Z
         state variables:
         - air_temperature
-        filepath: testdata/reg_ens_12_%mem%
-      - date: 2010-01-01T18:00:00Z
+        filepath: testdata/reg_ens_PT3H_%mem%
+      - date: 2010-01-01T06:00:00Z
         state variables:
         - air_temperature
-        filepath: testdata/reg_ens_18_%mem%
+        filepath: testdata/reg_ens_PT6H_%mem%
     pattern: %mem%
     zero padding: 6
     nmembers: 10
@@ -48,35 +49,11 @@ observations:
       obsdatain:
         engine:
           type: H5File
-          obsfile: testdata/reg_obs_12.nc
+          obsfile: testdata/reg_obs_4d.nc
       obsdataout:
         engine:
           type: H5File
-          obsfile: testdata/reg_obs_letkf_linear_4d_12.nc
-    obs operator:
-      name: VertInterp
-      constant vertical coordinate values: *vert_coord
-      observation vertical coordinate: height
-      interpolation method: linear
-    obs error:
-      covariance model: diagonal
-    obs localizations:
-    - localization method: default
-      horizontal length-scale: 1000.0e3
-  - obs space:
-      name: air_temperature
-      distribution:
-        name: Halo
-        halo size: 1000.0e3
-      simulated variables: [air_temperature]
-      obsdatain:
-        engine:
-          type: H5File
-          obsfile: testdata/reg_obs_18.nc
-      obsdataout:
-        engine:
-          type: H5File
-          obsfile: testdata/reg_obs_letkf_linear_4d_18.nc
+          obsfile: testdata/reg_obs_letkf_linear_4d.nc
     obs operator:
       name: VertInterp
       constant vertical coordinate values: *vert_coord
@@ -104,20 +81,20 @@ local ensemble DA:
   use linear observer: true
 output:
   states:
-  - date: 2010-01-01T12:00:00Z
-    filepath: testdata/reg_letkf_linear_4d_12_state
-  - date: 2010-01-01T18:00:00Z
-    filepath: testdata/reg_letkf_linear_4d_18_state
+  - date: 2010-01-01T03:00:00Z
+    filepath: testdata/reg_letkf_linear_4d_state_PT3H
+  - date: 2010-01-01T06:00:00Z
+    filepath: testdata/reg_letkf_linear_4d_state_PT6H
 output increment:
   filepath: testdata/reg_letkf_linear_4d_increment
 output ensemble increments:
   filepath: testdata/reg_letkf_linear_4d_increment
 output mean prior:
   states:
-  - date: 2010-01-01T12:00:00Z
-    filepath: testdata/reg_letkf_linear_4d_12_mean_prior
-  - date: 2010-01-01T18:00:00Z
-    filepath: testdata/reg_letkf_linear_4d_18_mean_prior
+  - date: 2010-01-01T03:00:00Z
+    filepath: testdata/reg_letkf_linear_4d_mean_prior_PT3H
+  - date: 2010-01-01T06:00:00Z
+    filepath: testdata/reg_letkf_linear_4d_mean_prior_PT6H
 output variance prior:
   filepath: testdata/reg_letkf_linear_4d_var_prior
 output variance posterior:

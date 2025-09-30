@@ -20,15 +20,16 @@ geometry:
   - variables:
      - air_temperature
     levels: 2
-    vert_coord: &vert_coord [1,2]
-  halo: 1
+    vertical coordinate:
+      profile: &vert_coord [1,2]
+  halo: 2
 background:
   members from template:
     template:
-      date: 2010-01-01T12:00:00Z
+      date: 2010-01-01T03:00:00Z
       state variables:
       - air_temperature
-      filepath: testdata/reg_ens_12_%mem%
+      filepath: testdata/reg_ens_PT3H_%mem%
     pattern: %mem%
     zero padding: 6
     nmembers: 10
@@ -43,7 +44,7 @@ observations:
       obsdatain:
         engine:
           type: H5File
-          obsfile: testdata/reg_obs_12.nc
+          obsfile: testdata/reg_obs_3d.nc
       obsdataout:
         engine:
           type: H5File

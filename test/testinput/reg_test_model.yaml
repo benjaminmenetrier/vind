@@ -1,4 +1,4 @@
-input geometry: &geom
+geometry:
   function space: StructuredColumns
   grid:
     type: regional
@@ -18,15 +18,16 @@ input geometry: &geom
     - air_temperature
     levels: 2
   halo: 2
-output geometry: *geom
-states:
-- input:
-    date: 2010-01-01T00:00:00Z
-    state variables:
-    - air_temperature
-    constant value: 0.1
-  output:
-    date: 2010-01-01T00:00:00Z
-    filepath: testdata/reg_stddev
-test:
-  reference filename: testref/reg_stddev.ref
+initial condition:
+  date: 2010-01-01T00:00:00Z
+  state variables:
+  - air_temperature
+  filepath: testdata/reg_attractor_P2D
+model:
+  name: DDL95
+  time step: PT1H
+model aux control: {}
+model test:
+  forecast length: P2D
+  final norm: 144.47553079593919
+  tolerance: 1.0e-12

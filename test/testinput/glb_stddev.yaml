@@ -7,7 +7,7 @@ input geometry: &geom
   - variables:
     - air_temperature
     levels: 2
-  halo: 1
+  halo: 2
 output geometry: *geom
 states:
 - input:

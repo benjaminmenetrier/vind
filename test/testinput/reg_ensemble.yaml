@@ -17,7 +17,7 @@ geometry:
   - variables:
     - air_temperature
     levels: 2
-  halo: 1
+  halo: 2
 background:
   date: 2010-01-01T06:00:00Z
   state variables:
@@ -54,7 +54,7 @@ output states:
     filepath: testdata/reg_ens_PT0S
   - date: 2010-01-01T03:00:00Z
     filepath: testdata/reg_ens_PT3H
-  - date: 2010-01-01T16:00:00Z
+  - date: 2010-01-01T06:00:00Z
     filepath: testdata/reg_ens_PT6H
 test:
   reference filename: testref/reg_ensemble.ref

@@ -9,10 +9,12 @@
 
 #include "test/interface/ObsLocalization.h"
 
+#include "ufo/ObsTraits.h"
+
 #include "vind/Traits.h"
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
-  test::ObsLocalization<vind::Traits> tests;
+  test::ObsLocalization<vind::Traits, ufo::ObsTraits> tests;
   return run.execute(tests);
 }

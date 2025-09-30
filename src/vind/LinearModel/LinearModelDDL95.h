@@ -60,14 +60,23 @@ class LinearModelDDL95: public LinearModelBase,
   const util::Duration & timeResolution() const
     {return timeResolution_;}
   const util::Duration & stepTrajectory() const
-    {return stepTrajectory_;}
+    {return dt_sub_half_;}
 
  private:
   void print(std::ostream &) const override;
+  void tendencyTL(const Fields &,
+                  Fields &) const;
+  void tendencyAD(const Fields &,
+                  Fields &) const;
 
   const util::Duration timeResolution_;
-  const util::Duration stepTrajectory_;
-  const double DDL95Factor_;
+  const double nu_ = 1.0;
+  const double dti_sub_ = 0.02;
+  size_t nx_;
+  size_t ny_;
+  size_t nsub_;
+  util::Duration dt_sub_;
+  util::Duration dt_sub_half_;
 };
 // -----------------------------------------------------------------------------
 

@@ -17,7 +17,7 @@ initial condition:
   date: 2010-01-01T00:00:00Z
   state variables:
   - air_temperature
-  filepath: testdata/ddl95_truth_PT0S
+  filepath: testdata/glb_truth_PT0S
 forecast length: PT6H
 model:
   name: DDL95
@@ -50,7 +50,7 @@ observations:
       obsdataout:
         engine:
           type: H5File
-          obsfile: testdata/glb_obs4d.nc
+          obsfile: testdata/glb_obs_4d.nc
     obs operator:
       name: VertInterp
       constant vertical coordinate values: *vert_coord
@@ -60,4 +60,4 @@ observations:
       covariance model: diagonal
 make obs: true
 test:
-  reference filename: testref/glb_makeobs4d.ref
+  reference filename: testref/glb_makeobs_4d.ref

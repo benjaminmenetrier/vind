@@ -16,13 +16,8 @@ initial condition:
 model:
   name: DDL95
   time step: PT1H
-forecast length: PT6H
-output:
-  filepath: testdata/glb_truth___RANGE__
-  range pattern: __RANGE__
-  frequency: PT3H
-prints:
-  frequency: PT3H
-test:
-  reference filename: testref/glb_truth.ref
-
+model aux control: {}
+model test:
+  forecast length: P2D
+  final norm: 144.47553079593919
+  tolerance: 1.0e-12

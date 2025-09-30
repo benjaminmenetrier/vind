@@ -8,8 +8,8 @@ State:
     + mean   = 8.9999999999998637e-01
     + stddev = 1.0002977519792182e-01
 H(x): 
-air_temperature nobs= 30 Min=8.5999999046325670e-01, Max=8.5999999046325692e-01, RMS=8.5999999046325670e-01
+air_temperature: No observations.
 End H(x)
 Perturbed H(x): 
-air_temperature nobs= 30 Min=6.9654476110809105e-01, Max=1.2112836938736888e+00, RMS=9.0370838006552634e-01
+air_temperature: No observations.
 End Perturbed H(x)
