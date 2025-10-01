@@ -9,12 +9,16 @@
 
 #include "test/interface/ObsLocalization.h"
 
+#include "ufo/instantiateObsErrorFactory.h"
+#include "ufo/instantiateObsFilterFactory.h"
 #include "ufo/ObsTraits.h"
 
 #include "vind/Traits.h"
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
+  ufo::instantiateObsErrorFactory();
+  ufo::instantiateObsFilterFactory();
   test::ObsLocalization<vind::Traits, ufo::ObsTraits> tests;
   return run.execute(tests);
 }

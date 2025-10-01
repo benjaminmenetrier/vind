@@ -53,7 +53,7 @@ ecbuild_add_executable( TARGET  vind_test_obs_localization.x
                         SOURCES vindTestObsLocalization.cc
                         LIBS    ${LIBS} )
 
-ecbuild_add_executable( TARGET  vind_test_stat.x
+ecbuild_add_executable( TARGET  vind_test_state.x
                         SOURCES vindTestState.cc
                         LIBS    ${LIBS} )
 

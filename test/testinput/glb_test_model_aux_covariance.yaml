@@ -1,0 +1,14 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables:
+    - air_temperature
+    levels: 2
+  halo: 2
+model aux control: {}
+model aux error: {}
+test:
+  reference filename: testref/glb_test_model_aux_covariance.ref

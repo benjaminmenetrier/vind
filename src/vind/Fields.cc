@@ -484,7 +484,7 @@ double Fields::dot_product_with(const Fields & fld2) const {
   ASSERT(checkFieldsCompatible(fld2));
 
   double zz = 0;
-  const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields().field("owned"));
+  const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
   for (const auto & var : vars_) {
     const atlas::Field field1 = fset_[var.name()];
     const std::string gmaskName = "gmask_" + std::to_string(geom_.groupIndex(var.name()));
@@ -543,10 +543,10 @@ void Fields::random(const int & seed) {
   oops::Log::trace() << classname() << "::random starting" << std::endl;
 
   for (size_t groupIndex = 0; groupIndex < geom_.groups(); ++groupIndex) {
-    // Mask and ghost points fields
+    // Mask and owned points fields
     const std::string gmaskName = "gmask_" + std::to_string(groupIndex);
     const auto gmaskView = atlas::array::make_view<int, 2>(geom_.fields()[gmaskName]);
-    const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
+    const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
 
     // Total size
     size_t n = 0;
@@ -561,7 +561,7 @@ void Fields::random(const int & seed) {
       if (field.rank() == 2) {
         for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
           for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) ++n;
+            if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) ++n;
           }
         }
       }
@@ -571,7 +571,7 @@ void Fields::random(const int & seed) {
     // Local masks
     atlas::FieldSet localMasks;
     localMasks.add(geom_.fields()[gmaskName]);
-    localMasks.add(geom_.functionSpace().ghost());
+    localMasks.add(geom_.fields()["owned"]);
 
     // Global masks
     atlas::FieldSet globalMasks;
@@ -579,9 +579,10 @@ void Fields::random(const int & seed) {
       atlas::option::name(gmaskName) | atlas::option::levels(geom_.levels(groupIndex))
       | atlas::option::global());
     globalMasks.add(gmaskGlobal);
-    atlas::Field ghostGlobal = geom_.functionSpace().createField<int>(atlas::option::name("ghost")
-     | atlas::option::global());
-    globalMasks.add(ghostGlobal);
+    atlas::Field ownedGlobal = geom_.functionSpace().createField<int>(
+      atlas::option::name("owned") | atlas::option::levels(1)
+      | atlas::option::global());
+    globalMasks.add(ownedGlobal);
 
     // Global data
     atlas::FieldSet globalData;
@@ -619,7 +620,7 @@ void Fields::random(const int & seed) {
 
       // Copy random values
       n = 0;
-      const auto ghostView = atlas::array::make_view<int, 1>(globalMasks["ghost"]);
+      const auto ownedView = atlas::array::make_view<int, 2>(globalMasks["owned"]);
       for (const auto & var : groupVars) {
         atlas::Field field = globalData[var.name()];
         const std::string gmaskName = "gmask_" + std::to_string(groupIndex);
@@ -628,7 +629,7 @@ void Fields::random(const int & seed) {
           auto view = atlas::array::make_view<double, 2>(field);
           for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
             for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-              if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) {
+              if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
                 view(jnode, jlevel) = rand_vec[n];
                 ++n;
               }
@@ -697,7 +698,7 @@ void Fields::sqrt() {
 
 void Fields::dirac(const eckit::Configuration & config) {
   oops::Log::trace() << classname() << "::dirac starting" << std::endl;
-
+  
   if (config.has("file")) {
     // Input file
     const eckit::LocalConfiguration file(config, "file");
@@ -742,7 +743,7 @@ void Fields::dirac(const eckit::Configuration & config) {
 
     // Build KDTree for each MPI task
     const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
-    const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields().field("owned"));
+    const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
     const auto lonlatView = atlas::array::make_view<double, 2>(geom_.functionSpace().lonlat());
     atlas::idx_t n = 0;
     for (atlas::idx_t jnode = 0; jnode < geom_.functionSpace().size(); ++jnode) {
@@ -1114,6 +1115,65 @@ void Fields::deserialize(const std::vector<double> & vect,
   time_.deserialize(vect, index);
 
   oops::Log::trace() << classname() << "::deserialize done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+oops::LocalIncrement Fields::getLocal(const GeometryIterator & geometryIterator) const {
+  int index = 0;
+  if (geometry().iteratorDimension() == 2) {
+    std::vector<int> variableSizes;
+    for (const auto & var : vars_) {
+      variableSizes.push_back(static_cast<int>(var.getLevels()));
+    }
+    size_t valuesSize = std::accumulate(variableSizes.begin(), variableSizes.end(), 0);
+    std::vector<double> values(valuesSize);
+    for (const auto & var : vars_) {
+      const auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
+        values[index] = view(geometryIterator.jnode(), jlevel);
+        ++index;
+      }
+    }
+    return oops::LocalIncrement(vars_, values, variableSizes);
+  } else {
+    std::vector<int> variableSizes(vars_.size(), 1);
+    size_t valuesSize = vars_.size();
+    std::vector<double> values(valuesSize);
+    for (const auto & var : vars_) {
+      const auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      values[index] = view(geometryIterator.jnode(), geometryIterator.jlevel());
+      ++index;
+    }
+    return oops::LocalIncrement(vars_, values, variableSizes);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void Fields::setLocal(const oops::LocalIncrement & localIncrement,
+                      const GeometryIterator & geometryIterator) {
+  std::vector<double> values = localIncrement.getVals();
+  size_t index = 0;
+  if (geometry().iteratorDimension() == 2) {
+    for (const auto & var : vars_) {
+      auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
+        view(geometryIterator.jnode(), jlevel) = values[index];
+        ++index;
+      }
+    }
+  } else {
+    for (const auto & var : vars_) {
+      auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      view(geometryIterator.jnode(), geometryIterator.jlevel()) = values[index];
+      ++index;
+    }
+  }
+
+  // Set duplicate points to the same value
+  // TODO(Benjamin): very inefficient, should be run with geometry.jnode() as argument
+  resetDuplicatePoints();
 }
 
 // -----------------------------------------------------------------------------

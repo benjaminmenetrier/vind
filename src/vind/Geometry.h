@@ -25,6 +25,7 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
+#include "vind/GeometryIterator.h"
 #include "vind/GeometryParameters.h"
 #include "vind/Interpolation.h"
 
@@ -37,7 +38,6 @@ namespace oops {
 }
 
 namespace vind {
-  class GeometryIterator;
 
 // -----------------------------------------------------------------------------
 /// Geometry class
@@ -109,9 +109,12 @@ class Geometry : public util::Printable,
   Interpolation & getInterpolation(const Geometry &) const;
 
   // Geometry iterator
+  const std::string commonVerticalCoordinate() const
+    {return commonVerticalCoordinate_;}
   GeometryIterator begin() const;
   GeometryIterator end() const;
-  std::vector<double> verticalCoord(std::string &) const;
+  std::vector<double> verticalCoord(std::string &) const
+    {return vertCoordAvg_;}
   const size_t & iteratorDimension() const
     {return iteratorDimension_;}
   const size_t & nnodes() const
@@ -183,7 +186,9 @@ class Geometry : public util::Printable,
   bool duplicatePoints_;
 
   // Geometry iterator
+  std::string commonVerticalCoordinate_;
   size_t iteratorDimension_;
+  size_t beginNode_;
   size_t nnodes_;
   size_t nlevs_;
   std::vector<double> vertCoordAvg_;

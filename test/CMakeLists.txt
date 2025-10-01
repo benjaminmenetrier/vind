@@ -122,16 +122,22 @@ foreach( mpi ${mpi_list} )
         # Attractor
         create_test( ${domain}_attractor ${mpi} forecast )
 
+        # Uniform standard-deviation
+        create_test( ${domain}_stddev ${mpi} convertstate )
+
         # Interface tests
+        create_test( ${domain}_test_error_covariance ${mpi} test_error_covariance )
         create_test( ${domain}_test_geometry ${mpi} test_geometry )
+        create_test( ${domain}_test_geometry_iterator ${mpi} test_geometry_iterator )
         create_test( ${domain}_test_increment ${mpi} test_increment )
         create_test( ${domain}_test_model ${mpi} test_model )
+        create_test( ${domain}_test_model_aux_control ${mpi} test_model_aux_control )
+        create_test( ${domain}_test_model_aux_covariance ${mpi} test_model_aux_covariance )
+#        create_test( ${domain}_test_model_aux_increment ${mpi} test_model_aux_increment )
+        create_test( ${domain}_test_state ${mpi} test_state )
 
         # Truth
         create_test( ${domain}_truth ${mpi} forecast )
-
-        # Standard-deviation
-        create_test( ${domain}_stddev ${mpi} convertstate )
 
         if( ENABLE_SABER )
             # Background

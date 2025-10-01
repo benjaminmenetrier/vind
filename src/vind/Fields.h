@@ -15,6 +15,7 @@
 
 #include "atlas/field.h"
 
+#include "oops/base/LocalIncrement.h"
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
@@ -24,6 +25,7 @@
 
 namespace vind {
   class Geometry;
+  class GeometryIterator;
 
 // -----------------------------------------------------------------------------
 /// Fields class
@@ -102,6 +104,11 @@ class Fields : public util::Printable,
   void serialize(std::vector<double> &) const;
   void deserialize(const std::vector<double> &,
                    size_t &);
+
+  // Local increment
+  oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const;
+  void setLocal(const oops::LocalIncrement & localIncrement,
+                const GeometryIterator & geometryIterator);
 
  private:
   // Print

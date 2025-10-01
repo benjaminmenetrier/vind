@@ -16,9 +16,8 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-#include "vind/Geometry.h"
-
 namespace vind {
+  class Geometry;
 
 // -----------------------------------------------------------------------------
 /// GeometryIterator class
@@ -34,13 +33,10 @@ class GeometryIterator: public util::Printable,
 
   static const std::string classname() {return "vind::GeometryIterator";}
 
-  GeometryIterator(const GeometryIterator & other)
-    : geom_(other.geom_), iteratorDimension_(other.iteratorDimension_), jnode_(other.jnode_),
-    jlevel_(other.jlevel_) {}
-  GeometryIterator(const Geometry & geom,
-                   const size_t & jnode,
-                   const size_t & jlevel)
-    : geom_(geom), iteratorDimension_(geom.iteratorDimension()), jnode_(jnode), jlevel_(jlevel) {}
+  GeometryIterator(const GeometryIterator &);
+  GeometryIterator(const Geometry &,
+                   const int &,
+                   const int &);
   ~GeometryIterator() {}
 
   bool operator==(const GeometryIterator &) const;
@@ -50,18 +46,19 @@ class GeometryIterator: public util::Printable,
 
   const size_t & iteratorDimension() const
     {return iteratorDimension_;}
-  const size_t & jnode() const
+  const int & jnode() const
     {return jnode_;}
-  const size_t & jlevel() const
+  const int & jlevel() const
     {return jlevel_;}
 
  private:
   void print(std::ostream & os) const override;
 
-  const  Geometry & geom_;
+  const Geometry & geom_;
+  const std::string commonVCName_;
   size_t iteratorDimension_;
-  size_t jnode_;
-  size_t jlevel_;
+  int jnode_;
+  int jlevel_;
 };
 
 // -----------------------------------------------------------------------------

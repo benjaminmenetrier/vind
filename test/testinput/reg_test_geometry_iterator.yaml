@@ -18,18 +18,8 @@ geometry:
     - air_temperature
     levels: 2
   halo: 2
-initial condition:
-  date: 2010-01-01T00:00:00Z
-  state variables:
-  - air_temperature
-  filepath: testdata/reg_attractor_P2D
-model:
-  name: DDL95
-  time step: PT1H
-model aux control: {}
-model test:
-  forecast length: P2D
-  final norm: 144.47553079593919
-  tolerance: 1.0e-12
+inc variables: [air_temperature]
+increment test:
+ date: 2010-01-01T00:00:00Z
 test:
-  reference filename: testref/reg_test_model.ref
+  reference filename: testref/reg_test_geometry_iterator.ref

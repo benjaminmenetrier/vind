@@ -3,22 +3,22 @@ Initial state:
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.7230901901385183e+00
-    + max    = 1.2161954721375839e+01
-    + mean   = 2.6904357923238487e+00
-    + stddev = 2.3898379728825390e+00
+    + min    = -1.6730312471777333e+00
+    + max    = 1.2088046366435895e+01
+    + mean   = 2.7018994982780189e+00
+    + stddev = 2.3969001985680296e+00
 Final state: 
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -2.6767144259348448e+00
-    + max    = 1.1734270628476676e+01
-    + mean   = 2.9230841609196205e+00
-    + stddev = 2.7794843678956145e+00
+    + min    = -3.9506364711806468e+00
+    + max    = 1.2050615457269446e+01
+    + mean   = 2.9702895385925219e+00
+    + stddev = 2.7458069292358518e+00
 H(x): 
-air_temperature nobs= 60 Min=-6.5475927133153197e-03, Max=6.3984849283564751e+00, RMS=3.4707831124408637e+00
+air_temperature nobs= 60 Min=-3.7186852153932859e-02, Max=6.0177674719542349e+00, RMS=2.9242675227177921e+00
 End H(x)
 Perturbed H(x): 
-air_temperature nobs= 60 Min=-2.8291750347219397e-01, Max=6.4030710326984837e+00, RMS=3.4693411659816933e+00
+air_temperature nobs= 60 Min=-3.5437670275822930e-01, Max=6.0223535762962435e+00, RMS=2.9145545814883871e+00
 End Perturbed H(x)

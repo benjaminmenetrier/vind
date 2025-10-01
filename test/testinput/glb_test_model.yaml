@@ -19,5 +19,7 @@ model:
 model aux control: {}
 model test:
   forecast length: P2D
-  final norm: 144.47553079593919
+  final norm: 146.1758171435925
   tolerance: 1.0e-12
+test:
+  reference filename: testref/glb_test_model.ref

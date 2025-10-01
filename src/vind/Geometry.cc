@@ -30,7 +30,6 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
-#include "vind/GeometryIterator.h"
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); throw eckit::Exception(s + ": " + msg, Here());}
 
@@ -86,7 +85,7 @@ Geometry::Geometry(const eckit::Configuration & config,
     // Only keep the first of duplicated points in the owned mask
     const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
     const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
-    auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask.field("owned"));
+    auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask["owned"]);
     for (int jnode = 0; jnode < fs.size(); ++jnode) {
       if (((view_j(jnode) == 1) || (view_j(jnode) == grid.ny())) && (view_i(jnode) > 1)) {
         ownedView(jnode, 0) = 0;
@@ -98,7 +97,7 @@ Geometry::Geometry(const eckit::Configuration & config,
   fields_ = atlas::FieldSet();
 
   // Add owned points mask -- this mask does not depend on the group so was precomputed
-  fields_->add(fieldsetOwnedMask.field("owned"));
+  fields_->add(fieldsetOwnedMask["owned"]);
 
   // Levels direction
   levelsAreTopDown_ = params.levelsAreTopDown.value();
@@ -126,9 +125,9 @@ Geometry::Geometry(const eckit::Configuration & config,
 
   // Check for duplicate points
   const auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
-  const auto ownedView = atlas::array::make_view<int, 2>(fields_.field("owned"));
+  const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
   size_t duplicatedPointsCount = 0;
-  for (atlas::idx_t jnode = 0; jnode < fields_.field("owned").shape(0); ++jnode) {
+  for (atlas::idx_t jnode = 0; jnode < fields_["owned"].shape(0); ++jnode) {
     // Duplicate point = owned==0 and ghost==0 (see util::setupFunctionSpace in oops)
     if (ghostView(jnode) == 0 && ownedView(jnode, 0) == 0) {
       ++duplicatedPointsCount;
@@ -278,6 +277,19 @@ Interpolation & Geometry::getInterpolation(const Geometry & tgtGeom) const {
     oops::Log::trace() << classname() << "::getInterpolation done" << std::endl;
     return *interpolation;
   }
+}
+
+// -----------------------------------------------------------------------------
+
+GeometryIterator Geometry::begin() const {
+  return GeometryIterator(*this, beginNode_, 0);
+}
+
+
+// -----------------------------------------------------------------------------
+
+GeometryIterator Geometry::end() const {
+  return GeometryIterator(*this, -1, -1);
 }
 
 // -----------------------------------------------------------------------------
@@ -435,7 +447,7 @@ void Geometry::setupVertCoord(groupData & group) {
 
   // Get ghost and owned views
   const auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
-  const auto ownedView = atlas::array::make_view<int, 2>(fields_.field("owned"));
+  const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
 
   // Average vertical coordinate
   for (size_t jlevel = 0; jlevel < group.levels_; ++jlevel) {
@@ -721,39 +733,43 @@ void Geometry::checkLonLat(const eckit::Configuration & checkLonLatConf) {
 void Geometry::setupIterator(const eckit::Configuration & config) {
   oops::Log::trace() << classname() << "::setupIterator starting" << std::endl;
 
+  // Common vertical coordinate
+  commonVerticalCoordinate_ = config.getString("common vertical coordinate", "vert_coord_0");
+
   // Iterator dimension
   iteratorDimension_ = config.getInt("iterator dimension", 2);
   ASSERT((iteratorDimension_ == 2) || (iteratorDimension_ == 3));
 
   // First group vertical coordinate field
-  const auto vertCoord = groups_[0].vertCoord_;
+  const auto vertCoord = fields_[commonVerticalCoordinate_];
 
   // Domain size
   nnodes_ = vertCoord.shape(0);
   nlevs_ = vertCoord.shape(1);
 
-  // Averaged vertical coordinate
-  vertCoordAvg_ = groups_[0].vertCoordAvg_;
+  // First valid index
+  const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
+  beginNode_ = -1;
+  bool ownedPoint = false;
+  do {
+    // Increment first valid index
+    ++beginNode_;
+
+    // Upper bound
+    ASSERT(beginNode_ < nnodes_);
+
+    // Check if the point is owned by this task
+    ownedPoint = (ownedView(beginNode_, 0) == 1);
+  } while (!ownedPoint);
+
+  // Averaged vertical coordinate corresponding to the common vertical coordinate
+  for (const auto & group : groups_) {
+    if (group.vertCoord_.name() == commonVerticalCoordinate_) {
+      vertCoordAvg_ = group.vertCoordAvg_;
+    }
+  }
 
   oops::Log::trace() << classname() << "::setupIterator done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-GeometryIterator Geometry::begin() const {
-  return GeometryIterator(*this, 0, 0);
-}
-
-// -----------------------------------------------------------------------------
-
-GeometryIterator Geometry::end() const {
-  return GeometryIterator(*this, nnodes_, nlevs_);
-}
-
-// -----------------------------------------------------------------------------
-
-std::vector<double> Geometry::verticalCoord(std::string & vcUnits) const {
-  return vertCoordAvg_;
 }
 
 // -----------------------------------------------------------------------------

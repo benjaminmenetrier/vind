@@ -7,10 +7,10 @@ CostFunction::addIncrement: Analysis:
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.0206416234540168e+00
-    + max    = 1.2933793424647432e+01
-    + mean   = 2.9163076592486834e+00
-    + stddev = 2.6012493598135999e+00
+    + min    = -1.2826727786874295e+00
+    + max    = 1.2916279883491258e+01
+    + mean   = 2.9520452981553613e+00
+    + stddev = 2.5677186669600611e+00
 CostJo   : Nonlinear Jo(air_temperature) = 0.0000000000000000e+00 --- No Observations
 CostJb   : Nonlinear Jb = 0.0000000000000000e+00
 CostFunction: Nonlinear J = 0.0000000000000000e+00

@@ -7,12 +7,15 @@
 
 #include "oops/runs/Run.h"
 
+#include "saber/oops/instantiateCovarFactory.h"
+
 #include "test/interface/ErrorCovariance.h"
 
 #include "vind/Traits.h"
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
+  saber::instantiateCovarFactory<vind::Traits>();
   test::ErrorCovariance<vind::Traits> tests;
   return run.execute(tests);
 }

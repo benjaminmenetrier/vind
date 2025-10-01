@@ -123,9 +123,11 @@ class Increment : public util::Printable,
     {fields_->deserialize(vect, index);}
 
   // Local increment
-  oops::LocalIncrement getLocal(const GeometryIterator &) const;
-  void setLocal(const oops::LocalIncrement &,
-                const GeometryIterator &);
+  oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const
+    {return fields_->getLocal(geometryIterator);}
+  void setLocal(const oops::LocalIncrement & localIncrement,
+                const GeometryIterator & geometryIterator)
+    {return fields_->setLocal(localIncrement, geometryIterator);}
 
  private:
   // Print
