@@ -7,12 +7,15 @@
 
 #include "oops/runs/Run.h"
 
+#include "saber/oops/instantiateCovarFactory.h"
+
 #include "test/interface/LinearModel.h"
 
 #include "vind/Traits.h"
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
+  saber::instantiateCovarFactory<vind::Traits>();
   test::LinearModel<vind::Traits> tests;
   return run.execute(tests);
 }

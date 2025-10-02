@@ -1,26 +1,17 @@
 geometry:
   function space: StructuredColumns
   grid:
-    type: regional
-    nx: 71
-    ny: 53
-    dx: 2.5e3
-    dy: 2.5e3
-    lonlat(centre): [9.9, 56.3]
-    projection:
-      type: lambert_conformal_conic
-      latitude0: 56.3
-      longitude0: 0.0
-    y_numbering: 1
-  partitioner: checkerboard
+    type: regular_lonlat
+    N: 10
   groups:
   - variables:
     - air_temperature
     levels: 2
   halo: 2
-background:
+initial condition:
   date: 2010-01-01T00:00:00Z
-  state variables: [air_temperature]
+  state variables:
+  - air_temperature
   filepath: testdata/glb_attractor_P2D
 background error:
   covariance model: SABER
@@ -36,7 +27,7 @@ background error:
         horizontal length-scale:
         - groups:
           - air_temperature
-          value: 3.0e4
+          value: 4.0e6
         vertical length-scale:
         - groups:
           - air_temperature
@@ -47,7 +38,22 @@ background error:
       model file:
         filepath: testdata/glb_stddev
 analysis variables: [air_temperature]
-covariance test:
-  tolerance: 0.13
+model:
+  name: DDL95
+  time step: PT1H
+model aux control: {}
+linear model:
+  trajectory:
+    time step: PT1H
+  time step: PT1H
+  name: DDL95
+linear model test:
+  forecast length: P2D
+  iterations TL: 12
+  tolerance AD: 1.0e-12
+  tolerance TL: 1.0e-6
+time window:
+  begin: 2010-01-01T00:00:00Z
+  end: 2010-01-03T00:00:00Z
 test:
-  reference filename: testref/glb_test_error_covariance.ref
+  reference filename: testref/glb_test_linear_model.ref

@@ -52,8 +52,9 @@ observations:
     obs error:
       covariance model: diagonal
     obs localizations:
-    - localization method: default
-      horizontal length-scale: 1000.0e3
+    - localization method: Horizontal Gaspari-Cohn
+      lengthscale: 1000e3
+      max nobs: 100
 driver:
   save prior mean: true
   save posterior mean: false

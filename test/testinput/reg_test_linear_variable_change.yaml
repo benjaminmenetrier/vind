@@ -1,0 +1,32 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 71
+    ny: 53
+    dx: 2.5e3
+    dy: 2.5e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables:
+    - air_temperature
+    levels: 2
+  halo: 2
+background:
+  date: 2010-01-01T00:00:00Z
+  state variables: [air_temperature]
+  filepath: testdata/glb_attractor_P2D
+linear variable change tests:
+- linear variable change:
+    input variables: [air_temperature]
+    output variables: [air_temperature]
+    atlas file: testdata/glb_stddev
+#  tolerance inverse: 1.0e-12
+test:
+  reference filename: testref/reg_test_linear_variable_change.ref

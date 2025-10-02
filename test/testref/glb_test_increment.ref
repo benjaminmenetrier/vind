@@ -12,5 +12,5 @@ Printing random increment:
   - air_temperature (2 levels):
     + min    = -3.2996020528821064e+00
     + max    = 3.3540076943422004e+00
-    + mean   = 3.8359071708261853e-02
-    + stddev = 1.0219246293280952e+00
+    + mean   = -2.6550928495188961e-02
+    + stddev = 9.2857381171584930e-01

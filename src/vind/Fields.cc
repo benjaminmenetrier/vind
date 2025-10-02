@@ -742,19 +742,18 @@ void Fields::dirac(const eckit::Configuration & config) {
     }
 
     // Build KDTree for each MPI task
-    const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
     const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
     const auto lonlatView = atlas::array::make_view<double, 2>(geom_.functionSpace().lonlat());
     atlas::idx_t n = 0;
     for (atlas::idx_t jnode = 0; jnode < geom_.functionSpace().size(); ++jnode) {
-      if ((ghostView(jnode) == 0) && (ownedView(jnode, 0) == 1)) {
+      if (ownedView(jnode, 0) == 1) {
         ++n;
       }
     }
     atlas::util::IndexKDTree search;
     search.reserve(n);
     for (atlas::idx_t jnode = 0; jnode < geom_.functionSpace().size(); ++jnode) {
-      if ((ghostView(jnode) == 0) && (ownedView(jnode, 0) == 1)) {
+      if (ownedView(jnode, 0) == 1) {
         atlas::PointLonLat pointLonLat(lonlatView(jnode, 0), lonlatView(jnode, 1));
         pointLonLat.normalise();
         atlas::PointXY point(pointLonLat);
@@ -1052,7 +1051,7 @@ void Fields::write(const eckit::Configuration & config) const {
 
 double Fields::norm() const {
   oops::Log::trace() << classname() << "::norm" << std::endl;
-  return util::normFieldSet(fset_, vars_.variables(), geom_.getComm());
+  return std::sqrt(dot_product_with(*this));
 }
 
 // -----------------------------------------------------------------------------
@@ -1156,6 +1155,7 @@ void Fields::setLocal(const oops::LocalIncrement & localIncrement,
   std::vector<double> values = localIncrement.getVals();
   size_t index = 0;
   if (geometry().iteratorDimension() == 2) {
+    // Copy data
     for (const auto & var : vars_) {
       auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
       for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
@@ -1164,16 +1164,13 @@ void Fields::setLocal(const oops::LocalIncrement & localIncrement,
       }
     }
   } else {
+    // Copy data
     for (const auto & var : vars_) {
       auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
       view(geometryIterator.jnode(), geometryIterator.jlevel()) = values[index];
       ++index;
     }
   }
-
-  // Set duplicate points to the same value
-  // TODO(Benjamin): very inefficient, should be run with geometry.jnode() as argument
-  resetDuplicatePoints();
 }
 
 // -----------------------------------------------------------------------------
@@ -1189,7 +1186,7 @@ void Fields::print(std::ostream & os) const {
   os << prefix << "  Geometry: " << geom_.grid().name() << " [" << geom_.grid().size() << "]"
     << std::endl;
   os << prefix << "  Fields:";
-  const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
+  const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
   for (const auto & var : vars_) {
     os << std::endl;
     double zzmin = std::numeric_limits<double>::max();
@@ -1203,7 +1200,7 @@ void Fields::print(std::ostream & os) const {
       auto view = atlas::array::make_view<double, 2>(field);
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
         for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-          if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) {
+          if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
             zzmin = (view(jnode, jlevel) < zzmin) ? view(jnode, jlevel) : zzmin;
             zzmax = (view(jnode, jlevel) > zzmax) ? view(jnode, jlevel) : zzmax;
             zzave += view(jnode, jlevel);
@@ -1216,7 +1213,7 @@ void Fields::print(std::ostream & os) const {
       zzave /= (geom_.grid().size()*field.shape(1));
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
         for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-          if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) {
+          if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
             zzstd += (view(jnode, jlevel)-zzave)*(view(jnode, jlevel)-zzave);
           }
         }

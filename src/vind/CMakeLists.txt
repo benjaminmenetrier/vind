@@ -74,16 +74,6 @@ message( STATUS "- AQ" )
 message( STATUS "- Default (NetCDF)" )
 message( STATUS "- GMSH" )
 
-if( ENABLE_OBS )
-    # Common sources, obs-related
-    list( APPEND vind_src_files
-
-    ObsLocalization.cc
-    ObsLocalization.h
-
-    )
-endif()
-
 if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS AND ectrans_HAVE_TRANSI ) AND falfilfa_FOUND )
     # AROME FA IO-specific sources
     message( STATUS "- AROME-FA" )

@@ -36,7 +36,6 @@ background error:
     read:
       model file:
         filepath: testdata/glb_stddev
-  randomization size: 1
 analysis variables: [air_temperature]
 covariance test:
   tolerance: 0.15

@@ -445,8 +445,7 @@ void Geometry::setupVertCoord(groupData & group) {
     }
   }
 
-  // Get ghost and owned views
-  const auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
+  // Get owned view
   const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
 
   // Average vertical coordinate
@@ -457,7 +456,7 @@ void Geometry::setupVertCoord(groupData & group) {
 
     // Loop over owned points
     for (atlas::idx_t jnode = 0; jnode < group.vertCoord_.shape(0); ++jnode) {
-      if (ghostView(jnode) == 0 && ownedView(jnode, 0) == 1) {
+      if (ownedView(jnode, 0) == 1) {
         avg += vertCoordView(jnode, jlevel);
         counter += 1.0;
       }
@@ -529,8 +528,8 @@ void Geometry::setupMask(groupData & group) {
   auto maskView = atlas::array::make_view<int, 2>(gmask);
   maskView.assign(1);
 
-  // Ghost view
-  auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
+  // Owned view
+  auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
 
   // Specific mask
   if (group.params_.maskType.value() == "none") {
@@ -603,7 +602,7 @@ void Geometry::setupMask(groupData & group) {
     comm_.broadcast(lsm.begin(), lsm.end(), 0);
 
     // Build KD-tree
-    atlas::Geometry geometry(atlas::util::Earth::radius());
+    const atlas::Geometry geometry(atlas::util::Earth::radius());
     atlas::util::IndexKDTree2D search(geometry);
     search.reserve(nlat*nlon);
     std::vector<double> lon2d;
@@ -622,11 +621,11 @@ void Geometry::setupMask(groupData & group) {
 
     if (functionSpace_.type() == "StructuredColumns") {
       // StructuredColumns
-      atlas::functionspace::StructuredColumns fs(functionSpace_);
-      auto lonlatView = atlas::array::make_view<double, 2>(fs.xy());
+      const atlas::functionspace::StructuredColumns fs(functionSpace_);
+      const auto lonlatView = atlas::array::make_view<double, 2>(fs.xy());
       auto maskView = atlas::array::make_view<int, 2>(gmask);
       for (atlas::idx_t jnode = 0; jnode < fs.xy().shape(0); ++jnode) {
-        if (ghostView(jnode) == 0) {
+        if (ownedView(jnode, 0) == 1) {
           // Find nearest neighbor
           size_t nn = search.closestPoint(atlas::PointLonLat{lonlatView(jnode, 0),
             lonlatView(jnode, 1)}).payload();
@@ -655,7 +654,7 @@ void Geometry::setupMask(groupData & group) {
   size_t domainSize = 0.0;
   for (atlas::idx_t jnode = 0; jnode < gmask.shape(0); ++jnode) {
     for (atlas::idx_t jlevel = 0; jlevel < gmask.shape(1); ++jlevel) {
-      if (ghostView(jnode) == 0) {
+      if (ownedView(jnode, 0) == 1) {
         if (maskView(jnode, jlevel) == 1) {
           group.gmaskSize_ += 1.0;
         }

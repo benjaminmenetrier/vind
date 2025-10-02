@@ -33,14 +33,22 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   nx_ = grid.nx();
   ny_ = grid.ny();
 
+  // Is the grid periodic?
+  periodic_ = grid.periodic();
+
   // Define x/y coordinates
-  x_.resize(nx_);
+  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
+  const auto lonlatView = atlas::array::make_view<double, 2>(fs.xy());
+  const double deg2rad = M_PI/180.0;
+  lon_.resize(nx_);
   for (size_t jx = 0; jx < nx_; ++jx) {
-    x_[jx] = 2.0*M_PI*static_cast<double>(jx)/static_cast<double>(nx_);
+    const int jnode = fs.index(jx, 0);
+    lon_[jx] = lonlatView(jnode, 0)*deg2rad;
   }
-  y_.resize(ny_);
+  lat_.resize(ny_);
   for (size_t jy = 0; jy < ny_; ++jy) {
-    y_[jy] = 2.0*M_PI*static_cast<double>(jy)/static_cast<double>(ny_);
+    const int jnode = fs.index(0, jy);
+    lat_[jy] = lonlatView(jnode, 1)*deg2rad;
   }
 
   // Internal time-step
@@ -142,11 +150,11 @@ void ModelDDL95::tendency(const Fields & fields,
         const size_t ix = view_i(jnode)-1;
         const size_t iy = view_j(jnode)-1;
 
-        if ((ix > 1) && (ix < nx_-1) && (iy > 0) && (iy < ny_-1)) {
+        if ((periodic_ || ((ix > 1) && (ix < nx_-1))) && (iy > 0) && (iy < ny_-1)) {
           // Inside computation zone
 
           // Time-variable forcing
-          const double FF = (1.0+0.4*std::sin(x_[ix]-omega_*t)*(1.0-std::cos(y_[iy])))*F_;
+          const double FF = (1.0+0.4*std::sin(lon_[ix]-omega_*t)*std::cos(lat_[iy]))*F_;
 
           // Retrieve array indices
           const int ixp1 = fs.index(ix+1, iy);

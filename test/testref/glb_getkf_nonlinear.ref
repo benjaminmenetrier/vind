@@ -3,113 +3,113 @@ Initial state for member 1:
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.4643765489034177e+00
-    + max    = 1.2988556574199389e+01
-    + mean   = 2.9405221885145765e+00
-    + stddev = 2.5766400325882635e+00
+    + min    = -3.9019665856624020e+00
+    + max    = 1.2028565013013436e+01
+    + mean   = 2.6103474899517312e+00
+    + stddev = 2.2958380716471365e+00
 Initial state for member 2:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.3897088714645398e+00
-    + max    = 1.2898125170490708e+01
-    + mean   = 2.9555599936657186e+00
-    + stddev = 2.5613953749603904e+00
+    + min    = -3.5721034057865397e+00
+    + max    = 1.1835091068685870e+01
+    + mean   = 2.6249037945224636e+00
+    + stddev = 2.2843728925164273e+00
 Initial state for member 3:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.3330227109331616e+00
-    + max    = 1.3148841942531988e+01
-    + mean   = 2.9647776817544704e+00
-    + stddev = 2.5749120837331367e+00
+    + min    = -3.9704839739579256e+00
+    + max    = 1.2038779000262457e+01
+    + mean   = 2.6333888426775376e+00
+    + stddev = 2.2933746711027276e+00
 Initial state for member 4:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.3028596611947529e+00
-    + max    = 1.3004087586267516e+01
-    + mean   = 2.9708038939423780e+00
-    + stddev = 2.5732449264006516e+00
+    + min    = -3.8102121710530961e+00
+    + max    = 1.2118297669727969e+01
+    + mean   = 2.6409212800011823e+00
+    + stddev = 2.2932256995011850e+00
 Initial state for member 5:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.2526839385495283e+00
-    + max    = 1.3121127712319467e+01
-    + mean   = 2.9564625393219326e+00
-    + stddev = 2.5854026106215544e+00
+    + min    = -3.6991141815708128e+00
+    + max    = 1.2094321722664551e+01
+    + mean   = 2.6317654506914216e+00
+    + stddev = 2.2978405535272426e+00
 Initial state for member 6:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.3311312843786449e+00
-    + max    = 1.2834979644795796e+01
-    + mean   = 2.9509470479730888e+00
-    + stddev = 2.5659910230588392e+00
+    + min    = -3.9013723292365872e+00
+    + max    = 1.1912167806600406e+01
+    + mean   = 2.6203473365411698e+00
+    + stddev = 2.2957277116862964e+00
 Initial state for member 7:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.0976377632234204e+00
-    + max    = 1.3132289264023267e+01
-    + mean   = 2.9282570452687779e+00
-    + stddev = 2.5843668735889600e+00
+    + min    = -3.9010628466113642e+00
+    + max    = 1.2174842870977258e+01
+    + mean   = 2.6020354294826067e+00
+    + stddev = 2.2947380591746231e+00
 Initial state for member 8:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.2635740613457505e+00
-    + max    = 1.2995890583161419e+01
-    + mean   = 2.9707332031268581e+00
-    + stddev = 2.5709535069183729e+00
+    + min    = -3.8777952890195628e+00
+    + max    = 1.2066170885145457e+01
+    + mean   = 2.6371990057102392e+00
+    + stddev = 2.2955976543716701e+00
 Initial state for member 9:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.4103328955782055e+00
-    + max    = 1.2937453554172109e+01
-    + mean   = 2.9751880119366243e+00
-    + stddev = 2.5513325562263085e+00
+    + min    = -3.6999677567574336e+00
+    + max    = 1.2025604886010193e+01
+    + mean   = 2.6330909480022604e+00
+    + stddev = 2.2893946240156762e+00
 Initial state for member 10:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.2560759986883336e+00
-    + max    = 1.2936243237027746e+01
-    + mean   = 2.9634339032866226e+00
-    + stddev = 2.5693596939534400e+00
+    + min    = -3.9915904619398521e+00
+    + max    = 1.1985960109914519e+01
+    + mean   = 2.6305082191252902e+00
+    + stddev = 2.2896264588388604e+00
 H(x) for member 1:
-air_temperature nobs= 30 Min=-1.5179348226879275e-01, Max=9.0644343311583491e+00, RMS=3.9187803790474640e+00
+air_temperature nobs= 30 Min=-2.1822572240730112e-01, Max=6.8916952626877075e+00, RMS=3.2685161243396292e+00
 H(x) for member 2:
-air_temperature nobs= 30 Min=-5.4572029961749313e-02, Max=9.0630153537791109e+00, RMS=3.9411701417026435e+00
+air_temperature nobs= 30 Min=-3.8188291211805026e-01, Max=7.0184875874636612e+00, RMS=3.3169007975370772e+00
 H(x) for member 3:
-air_temperature nobs= 30 Min=-1.1463848980226787e-01, Max=9.0797150267736075e+00, RMS=3.9366251350432591e+00
+air_temperature nobs= 30 Min=-1.6024389319968871e-01, Max=7.0831731037047048e+00, RMS=3.3019352877062569e+00
 H(x) for member 4:
-air_temperature nobs= 30 Min=-1.2677714177387561e-01, Max=8.9418894077274480e+00, RMS=3.9544562734808606e+00
+air_temperature nobs= 30 Min=-2.4446855651806579e-01, Max=7.0386713997830768e+00, RMS=3.3296586166765803e+00
 H(x) for member 5:
-air_temperature nobs= 30 Min=-4.2816803656567030e-02, Max=9.1148567539447942e+00, RMS=3.9803899488413470e+00
+air_temperature nobs= 30 Min=2.7533696803760249e-03, Max=7.1249563972654961e+00, RMS=3.3462828210014397e+00
 H(x) for member 6:
-air_temperature nobs= 30 Min=-1.2528606345843432e-01, Max=8.9844634933619112e+00, RMS=3.9538817943240780e+00
+air_temperature nobs= 30 Min=-1.9707663341744039e-01, Max=7.0971231537306139e+00, RMS=3.3133854534920708e+00
 H(x) for member 7:
-air_temperature nobs= 30 Min=-2.0958389298971086e-01, Max=9.0586811920011883e+00, RMS=3.9392871078878380e+00
+air_temperature nobs= 30 Min=-1.6927345907830599e-01, Max=6.8982600889885752e+00, RMS=3.2662805765283291e+00
 H(x) for member 8:
-air_temperature nobs= 30 Min=-1.1463360139361105e-01, Max=9.0500374482748018e+00, RMS=3.9684390570293053e+00
+air_temperature nobs= 30 Min=-2.0122429097704253e-01, Max=7.1629764907135023e+00, RMS=3.3235902908928288e+00
 H(x) for member 9:
-air_temperature nobs= 30 Min=-8.7448048526233890e-02, Max=9.1337840083433690e+00, RMS=3.9419224346972470e+00
+air_temperature nobs= 30 Min=-1.1569283123943783e-01, Max=6.8460453323435893e+00, RMS=3.2908475332936922e+00
 H(x) for member 10:
-air_temperature nobs= 30 Min=-2.2528902472179843e-01, Max=9.0731359535759211e+00, RMS=3.9345134710855900e+00
+air_temperature nobs= 30 Min=-2.2471664081858589e-01, Max=7.0252691087800709e+00, RMS=3.2876170024518903e+00
 H(x) ensemble background mean: 
-air_temperature nobs= 30 Min=-1.1080063770136334e-01, Max=9.0564012968940517e+00, RMS=3.9461301780871945e+00
+air_temperature nobs= 30 Min=-1.9100515700935425e-01, Max=7.0186657925460993e+00, RMS=3.3035770381298439e+00
 background y - H(x): 
 air_temperature: No observations.
 Background mean :
@@ -117,19 +117,19 @@ Background mean :
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.3074171771519996e+00
-    + max    = 1.2981359069254584e+01
-    + mean   = 2.9576685508790965e+00
-    + stddev = 2.5697973466605109e+00
+    + min    = -3.8087941807363994e+00
+    + max    = 1.2027980103300212e+01
+    + mean   = 2.6264507796705905e+00
+    + stddev = 2.2913189338567661e+00
 Analysis mean :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.3074171771519996e+00
-    + max    = 1.2981359069254584e+01
-    + mean   = 2.9576685508790965e+00
-    + stddev = 2.5697973466605109e+00
+    + min    = -3.8087941807363994e+00
+    + max    = 1.2027980103300212e+01
+    + mean   = 2.6264507796705905e+00
+    + stddev = 2.2913189338567661e+00
 Analysis mean increment :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -137,48 +137,48 @@ Analysis mean increment :
   - air_temperature (2 levels):
     + min    = -1.3877787807814457e-17
     + max    = 2.7755575615628914e-17
-    + mean   = 1.1874595222460288e-19
-    + stddev = 2.6564073525248602e-18
+    + mean   = 2.4781763942525815e-20
+    + stddev = 9.8708542744271161e-19
 Forecast variance :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = 1.2171120495856581e-03
-    + max    = 2.8858115544075472e-02
-    + mean   = 9.2412405050943183e-03
-    + stddev = 4.5986258638018758e-03
+    + min    = 1.2171120495856624e-03
+    + max    = 2.8858115544075549e-02
+    + mean   = 8.6046585394894855e-03
+    + stddev = 4.5453827198554033e-03
 Analysis variance :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = 1.2171120495856581e-03
-    + max    = 2.8858115544075472e-02
-    + mean   = 9.2412405050943183e-03
-    + stddev = 4.5986258638018758e-03
+    + min    = 1.2171120495856624e-03
+    + max    = 2.8858115544075549e-02
+    + mean   = 8.6046585394894855e-03
+    + stddev = 4.5453827198554033e-03
 H(x) for member 1:
-air_temperature nobs= 30 Min=-1.5179348226879275e-01, Max=9.0644343311583491e+00, RMS=3.9187803790474640e+00
+air_temperature nobs= 30 Min=-2.1822572240730112e-01, Max=6.8916952626877075e+00, RMS=3.2685161243396292e+00
 H(x) for member 2:
-air_temperature nobs= 30 Min=-5.4572029961749313e-02, Max=9.0630153537791109e+00, RMS=3.9411701417026435e+00
+air_temperature nobs= 30 Min=-3.8188291211805020e-01, Max=7.0184875874636612e+00, RMS=3.3169007975370772e+00
 H(x) for member 3:
-air_temperature nobs= 30 Min=-1.1463848980226787e-01, Max=9.0797150267736075e+00, RMS=3.9366251350432591e+00
+air_temperature nobs= 30 Min=-1.6024389319968871e-01, Max=7.0831731037047048e+00, RMS=3.3019352877062569e+00
 H(x) for member 4:
-air_temperature nobs= 30 Min=-1.2677714177387561e-01, Max=8.9418894077274480e+00, RMS=3.9544562734808606e+00
+air_temperature nobs= 30 Min=-2.4446855651806579e-01, Max=7.0386713997830768e+00, RMS=3.3296586166765803e+00
 H(x) for member 5:
-air_temperature nobs= 30 Min=-4.2816803656567030e-02, Max=9.1148567539447942e+00, RMS=3.9803899488413470e+00
+air_temperature nobs= 30 Min=2.7533696803760249e-03, Max=7.1249563972654961e+00, RMS=3.3462828210014397e+00
 H(x) for member 6:
-air_temperature nobs= 30 Min=-1.2528606345843432e-01, Max=8.9844634933619112e+00, RMS=3.9538817943240780e+00
+air_temperature nobs= 30 Min=-1.9707663341744039e-01, Max=7.0971231537306139e+00, RMS=3.3133854534920708e+00
 H(x) for member 7:
-air_temperature nobs= 30 Min=-2.0958389298971083e-01, Max=9.0586811920011883e+00, RMS=3.9392871078878380e+00
+air_temperature nobs= 30 Min=-1.6927345907830599e-01, Max=6.8982600889885752e+00, RMS=3.2662805765283291e+00
 H(x) for member 8:
-air_temperature nobs= 30 Min=-1.1463360139361105e-01, Max=9.0500374482748018e+00, RMS=3.9684390570293053e+00
+air_temperature nobs= 30 Min=-2.0122429097704253e-01, Max=7.1629764907135023e+00, RMS=3.3235902908928288e+00
 H(x) for member 9:
-air_temperature nobs= 30 Min=-8.7448048526233890e-02, Max=9.1337840083433690e+00, RMS=3.9419224346972470e+00
+air_temperature nobs= 30 Min=-1.1569283123943783e-01, Max=6.8460453323435893e+00, RMS=3.2908475332936922e+00
 H(x) for member 10:
-air_temperature nobs= 30 Min=-2.2528902472179843e-01, Max=9.0731359535759211e+00, RMS=3.9345134710855900e+00
+air_temperature nobs= 30 Min=-2.2471664081858589e-01, Max=7.0252691087800709e+00, RMS=3.2876170024518903e+00
 H(x) ensemble analysis mean: 
-air_temperature nobs= 30 Min=-1.1080063770136331e-01, Max=9.0564012968940517e+00, RMS=3.9461301780871945e+00
+air_temperature nobs= 30 Min=-1.9100515700935425e-01, Max=7.0186657925460993e+00, RMS=3.3035770381298439e+00
 analysis y - H(x): 
 air_temperature: No observations.
 ombg RMS: 0.0000000000000000e+00

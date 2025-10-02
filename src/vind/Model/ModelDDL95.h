@@ -61,8 +61,9 @@ class ModelDDL95: public ModelBase,
   const double dti_sub_ = 0.02;
   size_t nx_;
   size_t ny_;
-  std::vector<double> x_;
-  std::vector<double> y_;
+  bool periodic_;
+  std::vector<double> lon_;
+  std::vector<double> lat_;
   size_t nsub_;
   util::Duration dt_sub_;
   util::Duration dt_sub_half_;

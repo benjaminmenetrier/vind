@@ -5,8 +5,8 @@ State:
   - air_temperature (2 levels):
     + min    = 8.0000000000000004e-01
     + max    = 1.0000000000000000e+00
-    + mean   = 8.9999999999998637e-01
-    + stddev = 1.0002977519792182e-01
+    + mean   = 8.1642857142855985e-01
+    + stddev = 1.2416222149829301e-01
 H(x): 
 air_temperature: No observations.
 End H(x)
