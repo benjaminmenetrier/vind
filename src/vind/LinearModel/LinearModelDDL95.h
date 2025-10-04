@@ -8,16 +8,19 @@
 #include <ostream>
 #include <string>
 
+#include "oops/util/DateTime.h"
 #include "oops/util/Duration.h"
 #include "oops/util/ObjectCounter.h"
 
 #include "vind/LinearModel/LinearModelBase.h"
+#include "vind/Model/ModelDDL95.h"
 
 namespace vind {
   class Geometry;
   class Increment;
   class ModelAuxControl;
   class ModelAuxIncrement;
+  class State;
 
 // -----------------------------------------------------------------------------
 ///  LinearModelDDL95 class
@@ -31,6 +34,11 @@ class LinearModelDDL95: public LinearModelBase,
                    const eckit::Configuration &);
   ~LinearModelDDL95()
     {}
+
+  // Set the linearization trajectory
+  void setTrajectory(const State &,
+                     State &,
+                     const ModelAuxControl &) override;
 
   // Prepare TL model integration
   void initializeTL(Increment &) const override
@@ -60,23 +68,29 @@ class LinearModelDDL95: public LinearModelBase,
   const util::Duration & timeResolution() const
     {return timeResolution_;}
   const util::Duration & stepTrajectory() const
-    {return dt_sub_half_;}
+    {return timeResolution_;}
 
  private:
   void print(std::ostream &) const override;
-  void tendencyTL(const Fields &,
-                  Fields &) const;
-  void tendencyAD(const Fields &,
-                  Fields &) const;
+  void tendencyTL(const Increment &,
+                  const State &,
+                  Increment &) const;
+  void tendencyAD(const Increment &,
+                  const State &,
+                  Increment &) const;
 
   const util::Duration timeResolution_;
   const double nu_ = 1.0;
-  const double dti_sub_ = 0.02;
   size_t nx_;
   size_t ny_;
-  size_t nsub_;
-  util::Duration dt_sub_;
-  util::Duration dt_sub_half_;
+  size_t ixMin_;
+  size_t ixMax_;
+  size_t iyMin_;
+  size_t iyMax_;
+  double dti_;
+  util::Duration dt_half_;
+  std::map<util::DateTime, State> traj_;
+  std::unique_ptr<ModelDDL95> model_;
 };
 // -----------------------------------------------------------------------------
 

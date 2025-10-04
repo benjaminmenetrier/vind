@@ -15,8 +15,6 @@
 #include "oops/util/Logger.h"
 #include "oops/util/Printable.h"
 
-#include "vind/Fields.h"
-
 namespace vind {
   class Geometry;
   class Increment;
@@ -36,9 +34,9 @@ class LinearModelBase : public util::Printable {
   virtual ~LinearModelBase() = default;
 
   // Set the linearization trajectory
-  void setTrajectory(const State &,
-                     State &,
-                     const ModelAuxControl &);
+  virtual void setTrajectory(const State &,
+                             State &,
+                             const ModelAuxControl &) = 0;
 
   // Prepare TL model integration
   virtual void initializeTL(Increment &) const = 0;
@@ -63,9 +61,6 @@ class LinearModelBase : public util::Printable {
   // Utilities
   virtual const util::Duration & timeResolution() const = 0;
   virtual const util::Duration & stepTrajectory() const = 0;
-
- protected:
-  std::map<util::DateTime, Fields> traj_;
 
  private:
   void print(std::ostream &) const override = 0;

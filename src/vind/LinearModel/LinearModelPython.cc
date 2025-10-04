@@ -412,6 +412,24 @@ void LinearModelPython::stepAD(Increment & dx,
 
 // -----------------------------------------------------------------------------
 
+void LinearModelPython::setTrajectory(const State & xx,
+                                      State & xlr,
+                                      const ModelAuxControl & xxAux) {
+  oops::Log::trace() << classname() << "::setTrajectory starting" << std::endl;
+
+  // Save initial state if needed
+  if (traj_.empty()) {
+    traj_.insert({xlr.validTime(), xlr});
+  }
+
+  // Run step
+  model_->step(xlr, xxAux, traj_);
+
+  oops::Log::trace() << classname() << "::setTrajectory done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
 void LinearModelPython::finalizeAD(Increment & dx) const {
   oops::Log::trace() << classname() << "::finalizeAD starting" << std::endl;
 

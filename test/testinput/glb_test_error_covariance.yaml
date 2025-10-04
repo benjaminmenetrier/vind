@@ -40,4 +40,5 @@ analysis variables: [air_temperature]
 covariance test:
   tolerance: 0.15
 test:
+  float absolute tolerance: 1.0e-15
   reference filename: testref/glb_test_error_covariance.ref

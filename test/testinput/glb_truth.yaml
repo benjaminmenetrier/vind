@@ -15,7 +15,7 @@ initial condition:
   filepath: testdata/glb_attractor_P2D
 model:
   name: DDL95
-  time step: PT1H
+  time step: PT12M
 forecast length: PT6H
 output:
   filepath: testdata/glb_truth___RANGE__

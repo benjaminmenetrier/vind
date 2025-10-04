@@ -3,6 +3,9 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
+# Create test executables
+add_subdirectory( mains )
+
 # Macro to link a file
 macro( link_file src_dir dest_dir )
     execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${src_dir}/${ARGN} ${dest_dir}/${ARGN} )

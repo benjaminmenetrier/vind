@@ -25,7 +25,7 @@ state test:
     state variables: [air_temperature]
     constant value: 1.0
   date: 2010-01-01T00:00:00Z
-  norm file: 145.01720963855013
+  norm file: 148.09916018254211
   norm generated state: 39.038442591886273
   tolerance: 1.0e-12
   construct to variables: [air_temperature]

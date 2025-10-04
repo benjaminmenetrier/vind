@@ -7,7 +7,6 @@
 
 #include "oops/util/Logger.h"
 
-#include "vind/Fields.h"
 #include "vind/Geometry.h"
 #include "vind/Increment.h"
 
@@ -33,21 +32,46 @@ LinearModelDDL95::LinearModelDDL95(const Geometry & geom,
   nx_ = grid.nx();
   ny_ = grid.ny();
 
+  // Get computation zone boundaries
+  if (grid.periodic()) {
+    ixMin_ = 0;
+    ixMax_ = nx_-1;
+  } else {
+    ixMin_ = 2;
+    ixMax_ = nx_-2;
+  }
+  if (geom.gridType() == "regional") {
+    iyMin_ = 1;
+    iyMax_ = ny_-2;
+  } else {
+    iyMin_ = 2;
+    iyMax_ = ny_-3;
+  }
+
   // Internal time-step
-  const double dti = static_cast<double>(timeResolution_.toSeconds())/36000.0;
+  dti_ = static_cast<double>(timeResolution_.toSeconds())/36000.0;
 
-  // Number of internal sub-time-steps
-  nsub_ = static_cast<size_t>(dti/dti_sub_);
+  // Half time-step
+  dt_half_ = util::Duration(static_cast<int64_t>(
+    0.5*static_cast<double>(timeResolution_.toSeconds())));
 
-  // Sub-time-step
-  dt_sub_ = util::Duration(static_cast<int64_t>(
-    static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
-
-  // Half sub-time-step
-  dt_sub_half_ = util::Duration(static_cast<int64_t>(
-    0.5*static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
+  // Define model to compute the whole trajectory
+  model_.reset(new ModelDDL95(geom, config));
 
   oops::Log::trace() << classname() << "::LinearModelDDL95 done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void LinearModelDDL95::setTrajectory(const State & xx,
+                                     State & xlr,
+                                     const ModelAuxControl & xxAux) {
+  oops::Log::trace() << classname() << "::setTrajectory starting" << std::endl;
+
+  // Save trajectory
+  traj_.insert({xlr.validTime(), xlr});
+
+  oops::Log::trace() << classname() << "::setTrajectory done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -56,26 +80,40 @@ void LinearModelDDL95::stepTL(Increment & dx,
                               const ModelAuxIncrement & dxAux) const {
   oops::Log::trace() << classname() << "::stepTL starting" << std::endl;
 
-  // Get geometry
-  const Geometry & geom(dx.fields().geometry());
+  // Get initial trajectory state
+  State xxTraj1(traj_.at(dx.validTime()));
+  xxTraj1.fields().zeroHalo();
+  xxTraj1.fieldSet().haloExchange();
 
-  // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
- 
-  // Integrate over sub-time-steps with a RK2 scheme
-  for (size_t jsub = 0; jsub < nsub_; ++jsub) {
-    fs.haloExchange(dx.fields().fieldSet());
-    Fields vt(dx.fields(), false);
-    tendencyTL(dx.fields(), vt);
-    auto vi(dx.fields());
-    vi.axpy(0.5*dti_sub_, vt);
-    vi.updateTime(dt_sub_half_);
-    fs.haloExchange(vi.fieldSet());
-    Fields vtt(vi, false);
-    tendencyTL(vi, vtt);
-    dx.fields().axpy(dti_sub_, vtt);
-    dx.fields().updateTime(dt_sub_);
-  }
+  // Compute intermediate trajectory state
+  Increment dxTrajTen(xxTraj1.geometry(), xxTraj1.variables(), xxTraj1.validTime());
+  model_->tendency(xxTraj1, dxTrajTen);
+  dxTrajTen *= 0.5*dti_;
+  dxTrajTen.updateTime(dt_half_);
+  State xxTraj2(xxTraj1);
+  xxTraj2.updateTime(dt_half_);
+  xxTraj2 += dxTrajTen;
+  xxTraj2.fields().zeroHalo();
+  xxTraj2.fieldSet().haloExchange();
+
+  // First step
+  Increment dxTen1(dx, false);
+  dx.fields().zeroHalo();
+  dx.fieldSet().haloExchange();
+  tendencyTL(dx, xxTraj1, dxTen1);
+  dxTen1 *= 0.5*dti_;
+  Increment dxTmp(dx);
+  dxTmp += dxTen1;
+  dxTmp.updateTime(dt_half_);
+
+  // Second step
+  Increment dxTen2(dx, false);
+  dxTmp.fields().zeroHalo();
+  dxTmp.fieldSet().haloExchange();
+  tendencyTL(dxTmp, xxTraj2, dxTen2);
+  dxTen2 *= dti_;
+  dx += dxTen2;
+  dx.updateTime(timeResolution_);
 
   oops::Log::trace() << classname() << "::stepTL done" << std::endl;
 }
@@ -86,26 +124,43 @@ void LinearModelDDL95::stepAD(Increment & dx,
                               const ModelAuxIncrement & dxAux) const {
   oops::Log::trace() << classname() << "::stepAD starting" << std::endl;
 
-  // Get geometry
-  const Geometry & geom(dx.fields().geometry());
+  // Get initial trajectory state
+  State xxTraj1(traj_.at(dx.validTime()-timeResolution_));
+  xxTraj1.fields().zeroHalo();
+  xxTraj1.fieldSet().haloExchange();
 
-  // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
- 
-  // Integrate over sub-time-steps with a RK2 scheme
-  for (size_t jsub = 0; jsub < nsub_; ++jsub) {
-    fs.haloExchange(dx.fields().fieldSet());
-    Fields vt(dx.fields(), false);
-    tendencyAD(dx.fields(), vt);
-    auto vi(dx.fields());
-    vi.axpy(0.5*dti_sub_, vt);
-    vi.updateTime(-dt_sub_half_);
-    fs.haloExchange(vi.fieldSet());
-    Fields vtt(vi, false);
-    tendencyAD(vi, vtt);
-    dx.fields().axpy(dti_sub_, vtt);
-    dx.fields().updateTime(-dt_sub_);
-  }
+  // Compute intermediate trajectory state
+  Increment dxTrajTen(xxTraj1.geometry(), xxTraj1.variables(), xxTraj1.validTime());
+  model_->tendency(xxTraj1, dxTrajTen);
+  dxTrajTen *= 0.5*dti_;
+  dxTrajTen.updateTime(dt_half_);
+  State xxTraj2(xxTraj1);
+  xxTraj2.updateTime(dt_half_);
+  xxTraj2 += dxTrajTen;
+  xxTraj2.fields().zeroHalo();
+  xxTraj2.fieldSet().haloExchange();
+
+  dx.fields().zeroHalo();
+
+  // Second step
+  Increment dxTen2(dx);
+  dxTen2 *= dti_;
+  Increment dxTmp(dx, false);
+  tendencyAD(dxTen2, xxTraj2, dxTmp);
+  dxTmp.fieldSet().adjointHaloExchange();
+  dxTmp.fieldSet().set_dirty();
+  dx += dxTmp;
+  dx.updateTime(-dt_half_);
+
+  // First step
+  dxTmp.updateTime(-dt_half_);
+  Increment dxTen1(dxTmp);
+  dxTen1 *= 0.5*dti_;
+  tendencyAD(dxTen1, xxTraj1, dxTmp);
+  dxTmp.fieldSet().adjointHaloExchange();
+  dxTmp.fieldSet().set_dirty();
+  dx += dxTmp;
+  dx.updateTime(-dt_half_);
 
   oops::Log::trace() << classname() << "::stepAD done" << std::endl;
 }
@@ -123,16 +178,17 @@ void LinearModelDDL95::print(std::ostream & os) const {
 
 // -----------------------------------------------------------------------------
 
-void LinearModelDDL95::tendencyTL(const Fields & fields,
-                                  Fields & tendFields) const {
+void LinearModelDDL95::tendencyTL(const Increment & dx,
+                                  const State & xxTraj,
+                                  Increment & dxTen) const {
   oops::Log::trace() << classname() << "::tendencyTL starting" << std::endl;
 
   // Update all variables
-  for (const auto & var : fields.variables()) { 
+  for (const auto & var : dx.variables()) { 
     // Get fields
-    const auto field = fields.fieldSet()[var.name()];
-    const auto trajField = traj_.at(fields.validTime()).fieldSet()[var.name()];
-    auto tendField = tendFields.fieldSet()[var.name()];
+    const auto field = dx.fieldSet()[var.name()];
+    const auto fieldTraj = xxTraj.fieldSet()[var.name()];
+    auto fieldTen = dxTen.fieldSet()[var.name()];
 
     // Get function space
     atlas::functionspace::StructuredColumns fs(field.functionspace());
@@ -145,11 +201,11 @@ void LinearModelDDL95::tendencyTL(const Fields & fields,
 
     // Get views
     const auto view = atlas::array::make_view<double, 2>(field);
-    const auto trajView = atlas::array::make_view<double, 2>(trajField);
-    auto tendView = atlas::array::make_view<double, 2>(tendField);
+    const auto viewTraj = atlas::array::make_view<double, 2>(fieldTraj);
+    auto viewTen = atlas::array::make_view<double, 2>(fieldTen);
 
-    // Create tendency
-    tendView.assign(0.0);
+    // Initialization
+    viewTen.assign(0.0);
 
     for (int jnode = 0; jnode < field.shape(0); ++jnode) {
       if (ghostView(jnode) == 0) {
@@ -157,7 +213,7 @@ void LinearModelDDL95::tendencyTL(const Fields & fields,
         const size_t ix = view_i(jnode)-1;
         const size_t iy = view_j(jnode)-1;
 
-        if ((ix > 1) && (ix < nx_-1) && (iy > 0) && (iy < ny_-1)) {
+        if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
           // Inside computation zone
 
           // Retrieve array indices
@@ -169,23 +225,23 @@ void LinearModelDDL95::tendencyTL(const Fields & fields,
 
           for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
             // Usual L95 in x direction
-            tendView(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*trajView(ixm1, jlevel)
-              +(trajView(ixp1, jlevel)-trajView(ixm2, jlevel))*view(ixm1, jlevel)
+            viewTen(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*viewTraj(ixm1, jlevel)
+              +(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel))*view(ixm1, jlevel)
               -view(jnode, jlevel);
 
-            // Add diffusion to get larger scales
-            tendView(jnode, jlevel) += nu_*(
-              (view(ixp1, jlevel)-2.0*view(jnode, jlevel)+view(ixm1, jlevel))
-              +(view(iyp1, jlevel)-2.0*view(jnode, jlevel)+view(iym1, jlevel)));
-          }
-        } else {
-          // Outside computation zone
-          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            tendView(jnode, jlevel) = -view(jnode, jlevel);
+            // X-direction diffusion
+            viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)+view(ixm1, jlevel));
+
+            // Y-direction diffusion
+            if ((iy > iyMin_) && (iy < iyMax_)) {
+              viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)+view(iym1, jlevel));
+            }
           }
         }
-      } 
+      }
     }
+
+    fieldTen.set_dirty();
   }
 
   oops::Log::trace() << classname() << "::tendencyTL done" << std::endl;
@@ -193,10 +249,76 @@ void LinearModelDDL95::tendencyTL(const Fields & fields,
 
 // -----------------------------------------------------------------------------
 
-void LinearModelDDL95::tendencyAD(const Fields & fields,
-                                  Fields & tendFields) const {
+void LinearModelDDL95::tendencyAD(const Increment & dxTen,
+                                  const State & xxTraj,
+                                  Increment & dx) const {
   oops::Log::trace() << classname() << "::tendencyAD starting" << std::endl;
 
+  // Update all variables
+  for (const auto & var : dx.variables()) {
+    // Get fields
+    auto field = dx.fieldSet()[var.name()];
+    const auto fieldTraj = xxTraj.fieldSet()[var.name()];
+    const auto fieldTen = dxTen.fieldSet()[var.name()];
+
+    // Get function space
+    atlas::functionspace::StructuredColumns fs(field.functionspace());
+    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
+    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+    ASSERT(fs.halo() >= 2);
+
+    // Get ghost view
+    const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
+
+    // Get views
+    auto view = atlas::array::make_view<double, 2>(field);
+    const auto viewTraj = atlas::array::make_view<double, 2>(fieldTraj);
+    const auto viewTen = atlas::array::make_view<double, 2>(fieldTen);
+
+    // Initialization
+    view.assign(0.0);
+
+    for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+      if (ghostView(jnode) == 0) {
+        // Get X/Y indices
+        const size_t ix = view_i(jnode)-1;
+        const size_t iy = view_j(jnode)-1;
+
+        if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
+          // Inside computation zone
+
+          // Retrieve array indices
+          const int ixp1 = fs.index(ix+1, iy);
+          const int ixm2 = fs.index(ix-2, iy);
+          const int ixm1 = fs.index(ix-1, iy);
+          const int iyp1 = fs.index(ix, iy+1);
+          const int iym1 = fs.index(ix, iy-1);
+
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            // Usual L95 in x direction
+            view(ixp1, jlevel) += viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
+            view(ixm2, jlevel) -= viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
+            view(ixm1, jlevel) += viewTen(jnode, jlevel)*(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel));
+            view(jnode, jlevel) -= viewTen(jnode, jlevel);
+
+            // X-direction diffusion
+            view(ixp1, jlevel) += nu_*viewTen(jnode, jlevel);
+            view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
+            view(ixm1, jlevel) += nu_*viewTen(jnode, jlevel);
+
+            // Y-direction diffusion
+            if ((iy > iyMin_) && (iy < iyMax_)) {
+              view(iyp1, jlevel) += nu_*viewTen(jnode, jlevel);
+              view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
+              view(iym1, jlevel) += nu_*viewTen(jnode, jlevel);
+            }
+          }
+        }
+      }
+    }
+
+    field.set_dirty();
+  }
 
   oops::Log::trace() << classname() << "::tendencyAD done" << std::endl;
 }

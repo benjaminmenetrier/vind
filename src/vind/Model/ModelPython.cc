@@ -31,7 +31,7 @@ ModelPython::ModelPython(const Geometry & geom,
 
   // Get executable directory
 #if defined(_MSC_VER)
-  wchar_t path[FILENAME_MAX] = { 0 };
+  wchar_t path[FILENAME_MAX] = {0};
   GetModuleFileNameW(nullptr, path, FILENAME_MAX);
   pythonDir_ = std::filesystem::path(path).parent_path().string();
 #else
@@ -105,12 +105,13 @@ void ModelPython::initialize(State & xx) const {
 
 // -----------------------------------------------------------------------------
 
-void ModelPython::step(State & xx,
-                       const ModelAuxControl & xxAux) const {
+void ModelPython::step(const State & xx,
+                       const ModelAuxControl & xxAux,
+                       std::map<util::DateTime, State> & traj) const {
   oops::Log::trace() << classname() << "::step starting" << std::endl;
 
   // Get geometry
-  const Geometry & geom(xx.fields().geometry());
+  const Geometry & geom(xx.geometry());
 
   // Get function space
   const atlas::FunctionSpace fs(geom.functionSpace());
@@ -198,11 +199,17 @@ void ModelPython::step(State & xx,
     }
   }
 
+  // TODO(Benjamin)
+  State xxTmp(xx);
+
   // Scatter data from main processor
-  fs.scatter(globalState, xx.fieldSet());
+  fs.scatter(globalState, xxTmp.fieldSet());
 
   // Update valid time
-  xx.updateTime(timeResolution_);
+  xxTmp.updateTime(timeResolution_);
+
+  // Insert in trajectory
+  traj.insert({xxTmp.validTime(), xxTmp});
 
   oops::Log::trace() << classname() << "::step done" << std::endl;
 }

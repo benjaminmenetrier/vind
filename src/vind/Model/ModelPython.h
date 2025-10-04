@@ -17,7 +17,6 @@
 
 #include "vind/Model/ModelBase.h"
 
-// Forward declarations
 namespace eckit {
   class Configuration;
 }
@@ -45,8 +44,9 @@ class __attribute__((visibility("hidden"))) ModelPython:
   void initialize(State &) const override;
 
   // Model integration
-  void step(State &,
-            const ModelAuxControl &) const override;
+  void step(const State &,
+            const ModelAuxControl &,
+            std::map<util::DateTime, State> &) const override;
 
   // Finish model integration
   void finalize(State &) const override;

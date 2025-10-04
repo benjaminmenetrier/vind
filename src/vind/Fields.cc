@@ -227,6 +227,35 @@ void Fields::zero() {
 
 // -----------------------------------------------------------------------------
 
+void Fields::zeroHalo() {
+  oops::Log::trace() << classname() << "::zeroHalo starting" << std::endl;
+
+  for (const auto & var : vars_) {
+    atlas::Field field = fset_[var.name()];
+    if (field.rank() == 2) {
+      // Get ghost view
+      const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
+
+      // Get view
+      auto view = atlas::array::make_view<double, 2>(field);
+
+      // Set halo to zero
+      for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
+        if (ghostView(jnode) != 0) {
+           for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+             view(jnode, jlevel) = 0.0;
+           }
+        }
+      }
+    }
+  }
+  fset_.set_dirty();
+
+  oops::Log::trace() << "Fields::zeroHalo end" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
 void Fields::constantValue(const double & value) {
   oops::Log::trace() << classname() << "::constantValue starting" << std::endl;
 
@@ -1043,6 +1072,9 @@ void Fields::write(const eckit::Configuration & config) const {
       }
     }
   }
+
+  // Wait
+  geom_.getComm().barrier();
 
   oops::Log::trace() << classname() << "::write done" << std::endl;
 }

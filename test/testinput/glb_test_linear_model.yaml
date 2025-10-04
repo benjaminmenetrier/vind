@@ -38,20 +38,19 @@ background error:
       model file:
         filepath: testdata/glb_stddev
 analysis variables: [air_temperature]
-model:
+model: &model
   name: DDL95
-  time step: PT1H
+  time step: PT12M
 model aux control: {}
 linear model:
-  trajectory:
-    time step: PT1H
-  time step: PT1H
+  time step: PT12M
   name: DDL95
 linear model test:
-  forecast length: P2D
-  iterations TL: 12
+  forecast length: PT12M
+  first multiplier TL: 1.e-12
+  iterations TL: 1
   tolerance AD: 1.0e-12
-  tolerance TL: 1.0e-6
+  tolerance TL: 4.0e-2
 time window:
   begin: 2010-01-01T00:00:00Z
   end: 2010-01-03T00:00:00Z

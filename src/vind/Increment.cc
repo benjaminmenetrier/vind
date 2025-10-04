@@ -47,7 +47,7 @@ Increment::Increment(const Geometry & geom,
 // -----------------------------------------------------------------------------
 
 Increment::Increment(const Increment & other,
-                     const bool copy)
+                     const bool & copy)
   : fields_(new Fields(*other.fields_, copy)) {
   oops::Log::trace() << classname() << "::Increment" << std::endl;
 }

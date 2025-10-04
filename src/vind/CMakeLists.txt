@@ -105,17 +105,17 @@ if( pybind11_FOUND )
     message( STATUS "- Python" )
     list( APPEND vind_src_files
 
-    LinearModel/LinearModelPython.cc
-    LinearModel/LinearModelPython.h
-    Model/ModelPython.cc
-    Model/ModelPython.h
+#    LinearModel/LinearModelPython.cc
+#    LinearModel/LinearModelPython.h
+#    Model/ModelPython.cc
+#    Model/ModelPython.h
 
     )
 
     # Python modules
     list( APPEND python_modules
 
-    ModelPythonDDL95.py
+#    ModelPythonDDL95.py
 
     )
 endif()

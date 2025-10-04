@@ -55,6 +55,7 @@ class Fields : public util::Printable,
 
   // Basic operators
   void zero();
+  void zeroHalo();
   void constantValue(const double &);
   void constantValue(const std::vector<double> &);
   void constantValue(const eckit::Configuration &);

@@ -9,6 +9,8 @@
 #include <ostream>
 #include <string>
 
+#include "atlas/field.h"
+
 #include "oops/util/ObjectCounter.h"
 
 #include "vind/Model/ModelBase.h"
@@ -16,6 +18,7 @@
 namespace vind {
   class Fields;
   class Geometry;
+  class Increment;
   class ModelAuxControl;
   class State;
 
@@ -49,24 +52,26 @@ class ModelDDL95: public ModelBase,
   const util::Duration & timeResolution() const
     {return timeResolution_;}
 
+  // Tendency
+  void tendency(const State &,
+                Increment &) const;
+
  private:
   void print(std::ostream &) const override;
-  void tendency(const Fields &,
-                Fields &) const;
 
   const util::Duration timeResolution_;
   const double F_ = 8.0;
   const double omega_ = 2.0*M_PI/(24.0*3600.0);
   const double nu_ = 1.0;
-  const double dti_sub_ = 0.02;
   size_t nx_;
   size_t ny_;
-  bool periodic_;
-  std::vector<double> lon_;
-  std::vector<double> lat_;
-  size_t nsub_;
-  util::Duration dt_sub_;
-  util::Duration dt_sub_half_;
+  size_t ixMin_;
+  size_t ixMax_;
+  size_t iyMin_;
+  size_t iyMax_;
+  atlas::Field lonLatField_;
+  double dti_;
+  util::Duration dt_half_;
 };
 // -----------------------------------------------------------------------------
 

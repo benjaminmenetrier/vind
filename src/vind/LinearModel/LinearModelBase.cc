@@ -20,22 +20,6 @@ namespace vind {
 
 // -----------------------------------------------------------------------------
 
-void LinearModelBase::setTrajectory(const State & xx,
-                                    State & xlr,
-                                    const ModelAuxControl & xxAux) {
-  oops::Log::trace() << classname() << "::setTrajectory starting" << std::endl;
-
-  // Check valid time is not filled yet
-  ASSERT(traj_.find(xx.validTime()) == traj_.end());
-
-  // Save low-resolution fields
-  traj_.insert({xx.validTime(), xlr.fields()});
-
-  oops::Log::trace() << classname() << "::setTrajectory done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
 LinearModelFactory::LinearModelFactory(const std::string & name) {
   if (getMakers().find(name) != getMakers().end()) {
     throw std::runtime_error(name + " already registered in the model factory.");

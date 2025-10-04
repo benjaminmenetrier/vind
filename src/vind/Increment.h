@@ -46,7 +46,7 @@ class Increment : public util::Printable,
   Increment(const Geometry &,
             const Increment &);
   Increment(const Increment &,
-            const bool);
+            const bool & copy = true);
 
   // Basic operators
   void diff(const State &,
@@ -99,17 +99,19 @@ class Increment : public util::Printable,
     {fields_->synchronizeFields();}
 
   // Access to fields
-  Fields & fields()
+  Fields & fields()  // TODO(Benjamin): should be removed
     {return *fields_;}
-  const Fields & fields() const
+  const Fields & fields() const // TODO(Benjamin): should be removed
     {return *fields_;}
-  const Geometry & geometry() const
-    {return fields_->geometry();}
 
-  // Other
+  // Accumulation
   void accumul(const double & zz,
                const State & xx)
     {fields_->axpy(zz, xx.fields());}
+
+  // Geometry and variables accessors
+  const Geometry & geometry() const
+    {return fields_->geometry();}
   const oops::Variables & variables() const
     {return fields_->variables();}
 

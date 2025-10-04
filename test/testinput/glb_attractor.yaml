@@ -17,7 +17,7 @@ initial condition:
   random sigma: 4.0
 model:
   name: DDL95
-  time step: PT1H
+  time step: PT12M
 forecast length: P2D
 output:
   filepath: testdata/glb_attractor___RANGE__

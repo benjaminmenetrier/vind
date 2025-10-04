@@ -9,6 +9,7 @@
 
 #include "vind/Fields.h"
 #include "vind/Geometry.h"
+#include "vind/Increment.h"
 #include "vind/State.h"
 
 namespace vind {
@@ -33,37 +34,38 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   nx_ = grid.nx();
   ny_ = grid.ny();
 
-  // Is the grid periodic?
-  periodic_ = grid.periodic();
+  // Get computation zone boundaries
+  if (grid.periodic()) {
+    ixMin_ = 0;
+    ixMax_ = nx_-1;
+  } else {
+    ixMin_ = 2;
+    ixMax_ = nx_-2;
+  }
+  if (geom.gridType() == "regional") {
+    iyMin_ = 0;
+    iyMax_ = ny_-1;
+  } else {
+    iyMin_ = 1;
+    iyMax_ = ny_-2;
+  }
 
   // Define x/y coordinates
   const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
-  const auto lonlatView = atlas::array::make_view<double, 2>(fs.xy());
+  lonLatField_ = fs.xy().clone();
+  auto lonlatView = atlas::array::make_view<double, 2>(lonLatField_);
   const double deg2rad = M_PI/180.0;
-  lon_.resize(nx_);
-  for (size_t jx = 0; jx < nx_; ++jx) {
-    const int jnode = fs.index(jx, 0);
-    lon_[jx] = lonlatView(jnode, 0)*deg2rad;
-  }
-  lat_.resize(ny_);
-  for (size_t jy = 0; jy < ny_; ++jy) {
-    const int jnode = fs.index(0, jy);
-    lat_[jy] = lonlatView(jnode, 1)*deg2rad;
+  for (int jnode = 0; jnode < lonLatField_.shape(0); ++jnode) {
+    lonlatView(jnode, 0) *= deg2rad;
+    lonlatView(jnode, 1) *= deg2rad;
   }
 
   // Internal time-step
-  const double dti = static_cast<double>(timeResolution_.toSeconds())/36000.0;
+  dti_ = static_cast<double>(timeResolution_.toSeconds())/36000.0;
 
-  // Number of internal sub-time-steps
-  nsub_ = static_cast<size_t>(dti/dti_sub_);
-
-  // Sub-time-step
-  dt_sub_ = util::Duration(static_cast<int64_t>(
-    static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
-
-  // Half sub-time-step
-  dt_sub_half_ = util::Duration(static_cast<int64_t>(
-    0.5*static_cast<double>(timeResolution_.toSeconds())/static_cast<double>(nsub_)));
+  // Half time-step
+  dt_half_ = util::Duration(static_cast<int64_t>(
+    0.5*static_cast<double>(timeResolution_.toSeconds())));
 
   oops::Log::trace() << classname() << "::ModelDDL95 done" << std::endl;
 }
@@ -74,28 +76,105 @@ void ModelDDL95::step(State & xx,
                       const ModelAuxControl & xxAux) const {
   oops::Log::trace() << classname() << "::step starting" << std::endl;
 
-  // Get geometry
-  const Geometry & geom(xx.fields().geometry());
+  // First step
+  Increment dxTen1(xx.geometry(), xx.variables(), xx.validTime());
+  xx.fields().zeroHalo();
+  xx.fieldSet().haloExchange();
+  tendency(xx, dxTen1);
+  dxTen1 *= 0.5*dti_;
+  State xxTmp(xx);
+  xxTmp += dxTen1;
+  xxTmp.updateTime(dt_half_);
 
-  // Get function space
-  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
- 
-  // Integrate over sub-time-steps with a RK2 scheme
-  for (size_t jsub = 0; jsub < nsub_; ++jsub) {
-    fs.haloExchange(xx.fields().fieldSet());
-    Fields vt(xx.fields(), false);
-    tendency(xx.fields(), vt);
-    auto vi(xx.fields());
-    vi.axpy(0.5*dti_sub_, vt);
-    vi.updateTime(dt_sub_half_);
-    fs.haloExchange(vi.fieldSet());
-    Fields vtt(vi, false);
-    tendency(vi, vtt);
-    xx.fields().axpy(dti_sub_, vtt);
-    xx.fields().updateTime(dt_sub_);
-  }
+  // Second step
+  Increment dxTen2(xx.geometry(), xx.variables(), xx.validTime());
+  xxTmp.fields().zeroHalo();
+  xxTmp.fieldSet().haloExchange();
+  tendency(xxTmp, dxTen2);
+  dxTen2 *= dti_;
+  xx += dxTen2;
+  xx.updateTime(timeResolution_);
 
   oops::Log::trace() << classname() << "::step done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void ModelDDL95::tendency(const State & xx,
+                          Increment & dxTen) const {
+  oops::Log::trace() << classname() << "::tendency starting" << std::endl;
+
+  // Get valid time components
+  int year, month, day, hour, minute, second;
+  xx.validTime().toYYYYMMDDhhmmss(year, month, day, hour, minute, second);
+
+  // Get number of seconds since 00:00:00
+  const double t = static_cast<double>(hour*3600+minute*60+second);
+
+  // Update all variables
+  for (const auto & var : xx.variables()) { 
+    // Get fields
+    const auto field = xx.fieldSet()[var.name()];
+    auto tendField = dxTen.fieldSet()[var.name()];
+
+    // Get function space
+    atlas::functionspace::StructuredColumns fs(field.functionspace());
+    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
+    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+    ASSERT(fs.halo() >= 2);
+
+    // Get ghost view
+    const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
+
+    // Get lon/lat view
+    const auto lonlatView = atlas::array::make_view<double, 2>(lonLatField_);
+
+    // Get views
+    const auto view = atlas::array::make_view<double, 2>(field);
+    auto viewTen = atlas::array::make_view<double, 2>(tendField);
+
+    // Initialize tendency
+    viewTen.assign(0.0);
+
+    for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+      if (ghostView(jnode) == 0) {
+        // Get X/Y indices
+        const size_t ix = view_i(jnode)-1;
+        const size_t iy = view_j(jnode)-1;
+
+        if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
+          // Inside computation zone
+
+          // Time-variable forcing
+          const double FF = (1.0+0.4*std::sin(lonlatView(jnode, 0)-omega_*t)
+            *std::cos(lonlatView(jnode, 1)))*F_;
+
+          // Retrieve array indices
+          const int ixp1 = fs.index(ix+1, iy);
+          const int ixm2 = fs.index(ix-2, iy);
+          const int ixm1 = fs.index(ix-1, iy);
+          const int iyp1 = fs.index(ix, iy+1);
+          const int iym1 = fs.index(ix, iy-1);
+
+          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+            // Usual L95 in x direction
+            viewTen(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*view(ixm1, jlevel)
+              -view(jnode, jlevel)+FF;
+
+            // X-direction diffusion
+            viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)+view(ixm1, jlevel));
+
+            // Y-direction diffusion
+            if ((iy > iyMin_) && (iy < iyMax_)) {
+             viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)+view(iym1, jlevel));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  oops::Log::trace() << classname() << "::tendency done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -107,83 +186,6 @@ void ModelDDL95::print(std::ostream & os) const {
   os << "- dt = " << timeResolution_ << std::endl;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-void ModelDDL95::tendency(const Fields & fields,
-                          Fields & tendFields) const {
-  oops::Log::trace() << classname() << "::tendency starting" << std::endl;
-
-  // Get valid time components
-  int year, month, day, hour, minute, second;
-  fields.validTime().toYYYYMMDDhhmmss(year, month, day, hour, minute, second);
-
-  // Get number of seconds since 00:00:00
-  const double t = static_cast<double>(hour*3600+minute*60+second);
-
-  // Update all variables
-  for (const auto & var : fields.variables()) { 
-    // Get fields
-    const auto field = fields.fieldSet()[var.name()];
-    auto tendField = tendFields.fieldSet()[var.name()];
-
-    // Get function space
-    atlas::functionspace::StructuredColumns fs(field.functionspace());
-    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
-    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
-    ASSERT(fs.halo() >= 2);
-
-    // Get ghost view
-    const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
-
-    // Get views
-    const auto view = atlas::array::make_view<double, 2>(field);
-    auto tendView = atlas::array::make_view<double, 2>(tendField);
-
-    // Create tendency
-    tendView.assign(0.0);
-
-    for (int jnode = 0; jnode < field.shape(0); ++jnode) {
-      if (ghostView(jnode) == 0) {
-        // Get X/Y indices
-        const size_t ix = view_i(jnode)-1;
-        const size_t iy = view_j(jnode)-1;
-
-        if ((periodic_ || ((ix > 1) && (ix < nx_-1))) && (iy > 0) && (iy < ny_-1)) {
-          // Inside computation zone
-
-          // Time-variable forcing
-          const double FF = (1.0+0.4*std::sin(lon_[ix]-omega_*t)*std::cos(lat_[iy]))*F_;
-
-          // Retrieve array indices
-          const int ixp1 = fs.index(ix+1, iy);
-          const int ixm2 = fs.index(ix-2, iy);
-          const int ixm1 = fs.index(ix-1, iy);
-          const int iyp1 = fs.index(ix, iy+1);
-          const int iym1 = fs.index(ix, iy-1);
-
-          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            // Usual L95 in x direction
-            tendView(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*view(ixm1, jlevel)
-              -view(jnode, jlevel)+FF;
-
-            // Add diffusion to get larger scales
-            tendView(jnode, jlevel) += nu_*(
-              (view(ixp1, jlevel)-2.0*view(jnode, jlevel)+view(ixm1, jlevel))
-              +(view(iyp1, jlevel)-2.0*view(jnode, jlevel)+view(iym1, jlevel)));
-          }
-        } else {
-          // Outside computation zone
-          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            tendView(jnode, jlevel) = -view(jnode, jlevel);
-          }
-        }
-      } 
-    }
-  }
-
-  oops::Log::trace() << classname() << "::tendency done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

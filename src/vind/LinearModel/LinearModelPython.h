@@ -13,12 +13,13 @@
 
 #include "eckit/mpi/Comm.h"
 
+#include "oops/util/DateTime.h"
 #include "oops/util/Duration.h"
 #include "oops/util/ObjectCounter.h"
 
 #include "vind/LinearModel/LinearModelBase.h"
+#include "vind/Model/ModelBase.h"
 
-// Forward declarations
 namespace eckit {
   class Configuration;
 }
@@ -42,6 +43,11 @@ class __attribute__((visibility("hidden"))) LinearModelPython:
   LinearModelPython(const Geometry &,
                     const eckit::Configuration &);
   ~LinearModelPython();
+
+  // Set the linearization trajectory
+  void setTrajectory(const State &,
+                     State &,
+                     const ModelAuxControl &) override;
 
   // Prepare TL model integration
   void initializeTL(Increment &) const override;
@@ -79,6 +85,8 @@ class __attribute__((visibility("hidden"))) LinearModelPython:
   std::string pythonDir_;
   std::unique_ptr<pybind11::dict> initData_;
   std::unique_ptr<pybind11::object> linearModel_;
+  std::map<util::DateTime, State> traj_;
+  std::unique_ptr<ModelBase> model_;
 };
 // -----------------------------------------------------------------------------
 

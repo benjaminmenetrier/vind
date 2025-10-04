@@ -21,7 +21,7 @@ initial condition:
 forecast length: PT6H
 model:
   name: DDL95
-  time step: PT1H
+  time step: PT12M
 observations:
   obs perturbations: true
   observers:

@@ -1,5 +1,5 @@
 cost function:
-  cost type: 3D-Var
+  cost type: 4D-Var
   time window:
     begin: 2010-01-01T00:00:00Z
     length: PT6H
@@ -18,12 +18,12 @@ cost function:
     halo: 2
   model:
     name: DDL95
-    time step: PT1H
+    time step: PT12M
   background:
     date: 2010-01-01T00:00:00Z
     state variables:
     - air_temperature
-    filepath: testdata/glb_bkg_00_000001
+    filepath: testdata/glb_bkg_PT0S_000001
   background error:
     covariance model: SABER
     saber central block:
@@ -79,6 +79,9 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 10
     geometry: *geom
+    linear model:
+      time step: PT12M
+      name: DDL95
 final:
   diagnostics:
     departures: oman
