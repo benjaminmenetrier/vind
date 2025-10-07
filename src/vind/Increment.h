@@ -101,7 +101,7 @@ class Increment : public util::Printable,
   // Access to fields
   Fields & fields()  // TODO(Benjamin): should be removed
     {return *fields_;}
-  const Fields & fields() const // TODO(Benjamin): should be removed
+  const Fields & fields() const  // TODO(Benjamin): should be removed
     {return *fields_;}
 
   // Accumulation

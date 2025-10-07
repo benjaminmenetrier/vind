@@ -1,0 +1,60 @@
+time window:
+  begin: 2020-09-03T18:00:00Z
+  length: PT6H
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables:
+    - volume_mixing_ratio_of_no2
+    - volume_mixing_ratio_of_co
+    - air_pressure_thickness
+    levels: 72
+  - variables:
+    - air_pressure_levels
+    levels: 73
+  halo: 1
+  model data:
+    air_pressure_at_top_of_atmosphere_model: 0.01
+  alias:
+  - in code: volume_mixing_ratio_of_no2
+    in file: SpeciesConc_NO2
+  - in code: volume_mixing_ratio_of_co
+    in file: SpeciesConc_CO
+  - in code: air_pressure_thickness
+    in file: delp
+state:
+  state variables:
+  - volume_mixing_ratio_of_no2
+  - volume_mixing_ratio_of_co
+  - air_pressure_thickness
+  filepath: testdata/geos_cf_N10_subset.20210801_0000z
+  netcdf extension: nc
+  date: 2020-09-03T21:00:00Z
+observations:
+  observers:
+  - obs space:
+      name: NO2
+      obsdatain:
+        engine:
+          type: H5File
+          obsfile: testdata/tropomi_no2_tropo_2020090318_m.nc4
+      obsdataout:
+        engine:
+          type: H5File
+          obsfile: testdata/tropomi_no2_hofx_geos_cf_2020090318_m.nc
+      simulated variables: [nitrogendioxideColumn]
+    obs operator:
+      name: ColumnRetrieval
+      nlayers_retrieval: 34
+      tracer variables: [volume_mixing_ratio_of_no2]
+      isApriori: false
+      isAveragingKernel: true
+      stretchVertices: topbottom
+    obs error:
+      covariance model: diagonal
+make obs: true
+test:
+  reference filename: testref/hofx3d_regular_lonlat.ref

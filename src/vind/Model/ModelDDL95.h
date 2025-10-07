@@ -15,6 +15,10 @@
 
 #include "vind/Model/ModelBase.h"
 
+namespace eckit {
+  class Configuration;
+}
+
 namespace vind {
   class Fields;
   class Geometry;

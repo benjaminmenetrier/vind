@@ -1,0 +1,32 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: structured
+    xspace:
+      type: linear
+      N : 512
+      start : -180.0
+      end :  180.0
+      endpoint: false
+    yspace:
+      type: linear
+      N: 361
+      start: -90.0
+      end : 90.0
+  partitioner: "checkerboard"
+  halo: 1
+  levels are top down: true
+  levels count from: 0
+  groups:
+  - variables:
+    - lev_height
+    - ozone
+    - carbon_monoxyde
+    - pm10
+    levels: 5
+    vertical coordinate:
+      profile: [43, 44, 45, 46, 47]
+  model data:
+    top pressure: 5000
+test:
+  reference filename: testref/geometry.ref

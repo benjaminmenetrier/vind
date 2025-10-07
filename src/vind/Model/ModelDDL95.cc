@@ -1,6 +1,6 @@
 /*
  * (C) Copyright 2025 Meteorologisk Institutt
- * 
+ *
  */
 
 #include "vind/Model/ModelDDL95.h"
@@ -145,16 +145,16 @@ void ModelDDL95::tendency(const State & xx,
         if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
           // Inside computation zone
 
-          // Time-variable forcing
-          const double FF = (1.0+0.4*std::sin(lonlatView(jnode, 0)-omega_*t)
-            *std::cos(lonlatView(jnode, 1)))*F_;
-
           // Retrieve array indices
           const int ixp1 = fs.index(ix+1, iy);
           const int ixm2 = fs.index(ix-2, iy);
           const int ixm1 = fs.index(ix-1, iy);
           const int iyp1 = fs.index(ix, iy+1);
           const int iym1 = fs.index(ix, iy-1);
+
+          // Time-dependent forcing
+          const double FF = (1.0+0.4*std::sin(lonlatView(jnode, 0)-omega_*t)
+            *std::cos(lonlatView(jnode, 1)))*F_;
 
           for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
             // Usual L95 in x direction

@@ -1,0 +1,16 @@
+Printing zero increment: 
+- Valid time: 2010-01-01T00:00:00Z
+  Geometry: structured [3763]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = 0.0000000000000000e+00
+    + max    = 0.0000000000000000e+00
+Printing random increment: 
+- Valid time: 2010-01-01T00:00:00Z
+  Geometry: structured [3763]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -3.8842408551666536e+00
+    + max    = 3.8012274247381455e+00
+    + mean   = 2.7752925425689082e-03
+    + stddev = 1.0045624428809656e+00

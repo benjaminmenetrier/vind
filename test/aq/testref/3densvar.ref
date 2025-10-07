@@ -1,0 +1,40 @@
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.3655674859049365e+00, nobs = 1, Jo/n = 1.3655674859049365e+00, err = 1.8144000080155820e-08
+CostFunction: Nonlinear J = 1.3655674859049365e+00
+DRIPCGMinimizer: reduction in residual norm = 2.0457115485691451e-16
+CostFunction::addIncrement: Analysis: 
+- Valid time: 2022-07-01T12:00:00Z
+  Geometry: structured [316800]
+  Fields:
+  - ozone (5 levels):
+    + min    = 6.3978293773914174e-09
+    + max    = 9.3951392443614168e-08
+    + mean   = 4.0532483027520141e-08
+    + stddev = 1.0629425846754416e-08
+  - carbon_monoxyde (5 levels):
+    + min    = 5.5720754232879699e-08
+    + max    = 3.5127209230267908e-07
+    + mean   = 9.9463738747774979e-08
+    + stddev = 2.0897818413050972e-08
+  - nitrogen_dioxide (5 levels):
+    + min    = 2.8673615673664721e-13
+    + max    = 4.7105061184993247e-08
+    + mean   = 2.1102387418401603e-10
+    + stddev = 5.6555531603803978e-10
+  - sulfur_dioxide (5 levels):
+    + min    = 8.9668355362412202e-18
+    + max    = 4.3376214620138853e-08
+    + mean   = 2.5843503274499253e-10
+    + stddev = 5.2869362664703507e-10
+  - pm10 (5 levels):
+    + min    = 2.8614662722636908e-11
+    + max    = 8.0701721572040697e-07
+    + mean   = 2.0295360372800816e-08
+    + stddev = 4.5061978332599209e-08
+  - pm2p5 (5 levels):
+    + min    = 2.4063686807074269e-11
+    + max    = 2.5035328121703060e-07
+    + mean   = 5.5972209748977499e-09
+    + stddev = 5.9064191937308591e-09
+
+CostJo   : Nonlinear Jo(AIRBASE_O3) = 1.2525271313730615e+00, nobs = 1, Jo/n = 1.2525271313730615e+00, err = 1.8144000080155820e-08
+CostFunction: Nonlinear J = 1.2525271313730615e+00

@@ -727,7 +727,7 @@ void Fields::sqrt() {
 
 void Fields::dirac(const eckit::Configuration & config) {
   oops::Log::trace() << classname() << "::dirac starting" << std::endl;
-  
+
   if (config.has("file")) {
     // Input file
     const eckit::LocalConfiguration file(config, "file");
@@ -1242,7 +1242,7 @@ void Fields::print(std::ostream & os) const {
       geom_.getComm().allReduceInPlace(zzmin, eckit::mpi::min());
       geom_.getComm().allReduceInPlace(zzmax, eckit::mpi::max());
       geom_.getComm().allReduceInPlace(zzave, eckit::mpi::sum());
-      zzave /= (geom_.grid().size()*field.shape(1));
+      zzave /= static_cast<double>(geom_.grid().size()*field.shape(1));
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
         for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
           if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
@@ -1251,7 +1251,7 @@ void Fields::print(std::ostream & os) const {
         }
       }
       geom_.getComm().allReduceInPlace(zzstd, eckit::mpi::sum());
-      zzstd /= (geom_.grid().size()*field.shape(1)-1);
+      zzstd /= static_cast<double>(geom_.grid().size()*field.shape(1)-1);
       zzstd = std::sqrt(zzstd);
       const double tiny = 1.0e-12*std::max({std::abs(zzmin), std::abs(zzmax), std::abs(zzave),
         std::abs(zzstd)});

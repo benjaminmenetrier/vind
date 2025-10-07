@@ -1,0 +1,37 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 71
+    ny: 53
+    dx: 2.5e3
+    dy: 2.5e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+    vertical coordinate:
+      profile: &vert_coord [1,2]
+  halo: 2
+initial condition:
+  date: 2009-12-30T00:00:00Z
+  state variables: [air_temperature]
+  random sigma: 4.0
+model:
+  name: DDL95
+  time step: PT12M
+forecast length: P2D
+output:
+  filepath: testdata/attractor___RANGE__
+  range pattern: __RANGE__
+  frequency: P2D
+prints:
+  frequency: P2D
+test:
+  reference filename: testref/attractor.ref

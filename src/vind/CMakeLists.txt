@@ -105,17 +105,17 @@ if( pybind11_FOUND )
     message( STATUS "- Python" )
     list( APPEND vind_src_files
 
-#    LinearModel/LinearModelPython.cc
-#    LinearModel/LinearModelPython.h
-#    Model/ModelPython.cc
-#    Model/ModelPython.h
+    LinearModel/LinearModelNumPy.cc
+    LinearModel/LinearModelNumPy.h
+    Model/ModelNumPy.cc
+    Model/ModelNumPy.h
 
     )
 
     # Python modules
     list( APPEND python_modules
 
-#    ModelPythonDDL95.py
+    NumPyDDL95.py
 
     )
 endif()
@@ -136,11 +136,14 @@ if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS ) AND falfilfa_FOUND )
 endif()
 if( pybind11_FOUND )
     target_link_libraries( vind PUBLIC pybind11::embed )
+    if( Torch_FOUND )
+         target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} )
+     endif()
 endif()
 
 if( pybind11_FOUND )
     # Link python modules
-    message(STATUS "Available Python modules for model propagation:")
+    message(STATUS "Available Python modules for model/linear model:")
     foreach( pyMod ${python_modules} )
         execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
         message(STATUS "- ${CMAKE_BINARY_DIR}/${pyMod}")

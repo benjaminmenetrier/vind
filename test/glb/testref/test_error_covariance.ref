@@ -1,0 +1,5 @@
+Norm of input parameter StdDev: 3.9038442591885909e+00
+dx2.norm()=3.8771078842756119e+00
+Doing zero test for inverse
+<dx,Bdy>-<Bdx,dy>/<dx,Bdy>=-1.9710289121941501e-15
+<dx,Bdy>-<Bdx,dy>/<Bdx,dy>=-1.9710289121941462e-15

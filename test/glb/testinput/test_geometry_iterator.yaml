@@ -1,0 +1,14 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+inc variables: [air_temperature]
+increment test:
+ date: 2010-01-01T00:00:00Z
+test:
+  reference filename: testref/test_geometry_iterator.ref

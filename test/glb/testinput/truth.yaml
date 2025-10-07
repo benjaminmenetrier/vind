@@ -1,0 +1,26 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+initial condition:
+  date: 2010-01-01T00:00:00Z
+  state variables: [air_temperature]
+  filepath: testdata/attractor_P2D
+model:
+  name: DDL95
+  time step: PT12M
+forecast length: PT6H
+output:
+  filepath: testdata/truth___RANGE__
+  range pattern: __RANGE__
+  frequency: PT3H
+prints:
+  frequency: PT3H
+test:
+  reference filename: testref/truth.ref
+

@@ -1,6 +1,6 @@
 /*
  * (C) Copyright 2025 Meteorologisk Institutt
- * 
+ *
  */
 
 #include "vind/LinearModel/LinearModelDDL95.h"
@@ -42,10 +42,10 @@ LinearModelDDL95::LinearModelDDL95(const Geometry & geom,
   }
   if (geom.gridType() == "regional") {
     iyMin_ = 1;
-    iyMax_ = ny_-2;
+    iyMax_ = ny_-1;
   } else {
-    iyMin_ = 2;
-    iyMax_ = ny_-3;
+    iyMin_ = 1;
+    iyMax_ = ny_-2;
   }
 
   // Internal time-step
@@ -184,7 +184,7 @@ void LinearModelDDL95::tendencyTL(const Increment & dx,
   oops::Log::trace() << classname() << "::tendencyTL starting" << std::endl;
 
   // Update all variables
-  for (const auto & var : dx.variables()) { 
+  for (const auto & var : dx.variables()) {
     // Get fields
     const auto field = dx.fieldSet()[var.name()];
     const auto fieldTraj = xxTraj.fieldSet()[var.name()];
@@ -230,11 +230,13 @@ void LinearModelDDL95::tendencyTL(const Increment & dx,
               -view(jnode, jlevel);
 
             // X-direction diffusion
-            viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)+view(ixm1, jlevel));
+            viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)
+              +view(ixm1, jlevel));
 
             // Y-direction diffusion
             if ((iy > iyMin_) && (iy < iyMax_)) {
-              viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)+view(iym1, jlevel));
+              viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)
+                +view(iym1, jlevel));
             }
           }
         }
@@ -298,7 +300,8 @@ void LinearModelDDL95::tendencyAD(const Increment & dxTen,
             // Usual L95 in x direction
             view(ixp1, jlevel) += viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
             view(ixm2, jlevel) -= viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
-            view(ixm1, jlevel) += viewTen(jnode, jlevel)*(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel));
+            view(ixm1, jlevel) += viewTen(jnode, jlevel)
+              *(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel));
             view(jnode, jlevel) -= viewTen(jnode, jlevel);
 
             // X-direction diffusion
