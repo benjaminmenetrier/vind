@@ -25,7 +25,7 @@ geometry:
 state:
   date: 2010-01-01T03:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/truth_PT3H
+  filepath: testdata/truth__MPI__PT3H
 observations:
   obs perturbations: true
   observers:

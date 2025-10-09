@@ -29,13 +29,11 @@ option( ENABLE_OBS "Compile IODA/UFO" ON )
 option( ENABLE_CRTM "Compile CRTM" OFF )
 
 # What tests to run?
-option( ENABLE_GLB_TESTS "Run global tests" ON )
-option( ENABLE_REG_TESTS "Run regional tests" ON )
-option( ENABLE_DDL95_TESTS "Run DDL95 tests" ON )
-option( ENABLE_PYDDL95_TESTS "Run Python-based DDL95 tests" ON )
-option( ENABLE_GENINT_TESTS "Run genint tests" ON )
-option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
 option( ENABLE_AQ_TESTS "Run aq tests" OFF )
+option( ENABLE_GENINT_TESTS "Run genint tests" ON )
+option( ENABLE_GLB_TESTS "Run global tests" ON )
+option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
+option( ENABLE_REG_TESTS "Run regional tests" ON )
 
 # Setup
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/lib )
@@ -71,7 +69,8 @@ ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" B
 ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.43.1 )
 
 # oops
-ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
+#ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
+ecbuild_bundle( PROJECT oops GIT "https://github.com/benjaminmenetrier/oops.git" BRANCH feature/enable_pybind11_interpreter UPDATE )
 #ecbuild_bundle( PROJECT oops )
 
 # jedi-data

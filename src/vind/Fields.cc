@@ -981,6 +981,10 @@ void Fields::read(const eckit::Configuration & config) {
     updatedConfig.set("is state", this->isState());
   }
 
+  // Update MPI pattern
+  const std::string mpiPattern = updatedConfig.getString("mpi pattern", "_MPI_");
+  util::seekAndReplace(updatedConfig, mpiPattern, std::to_string(geom_.getComm().size()));
+
   // Read fieldset
   fieldsIO->read(vars_in_file, updatedConfig,  *this);
 
@@ -1055,6 +1059,10 @@ void Fields::write(const eckit::Configuration & config) const {
   if (!updatedConfig.has("is state")) {
     updatedConfig.set("is state", this->isState());
   }
+
+  // Update MPI pattern
+  const std::string mpiPattern = updatedConfig.getString("mpi pattern", "_MPI_");
+  util::seekAndReplace(updatedConfig, mpiPattern, std::to_string(geom_.getComm().size()));
 
   for (const auto & ioFormat : ioFormats) {
     // Set FieldsIO
@@ -1210,6 +1218,7 @@ void Fields::setLocal(const oops::LocalIncrement & localIncrement,
 void Fields::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
+  // Print header
   os << std::endl;
   std::string prefix;
   if (os.rdbuf() == oops::Log::info().rdbuf()) {
@@ -1218,16 +1227,28 @@ void Fields::print(std::ostream & os) const {
   os << prefix << "  Geometry: " << geom_.grid().name() << " [" << geom_.grid().size() << "]"
     << std::endl;
   os << prefix << "  Fields:";
+
+  // Get owned view
   const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
+
   for (const auto & var : vars_) {
     os << std::endl;
+
+    // Initialization
     double zzmin = std::numeric_limits<double>::max();
     double zzmax = -std::numeric_limits<double>::max();
     double zzave = 0.0;
     double zzstd = 0.0;
+    int counter = 0;
+
+    // Get field
     atlas::Field field = fset_[var.name()];
+
+    // Get mask view
     const std::string gmaskName = "gmask_" + std::to_string(geom_.groupIndex(var.name()));
     const auto gmaskView = atlas::array::make_view<int, 2>(geom_.fields()[gmaskName]);
+
+    // Compute min/max/average
     if (field.rank() == 2) {
       auto view = atlas::array::make_view<double, 2>(field);
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
@@ -1236,13 +1257,22 @@ void Fields::print(std::ostream & os) const {
             zzmin = (view(jnode, jlevel) < zzmin) ? view(jnode, jlevel) : zzmin;
             zzmax = (view(jnode, jlevel) > zzmax) ? view(jnode, jlevel) : zzmax;
             zzave += view(jnode, jlevel);
+            ++counter;
           }
         }
       }
-      geom_.getComm().allReduceInPlace(zzmin, eckit::mpi::min());
-      geom_.getComm().allReduceInPlace(zzmax, eckit::mpi::max());
-      geom_.getComm().allReduceInPlace(zzave, eckit::mpi::sum());
-      zzave /= static_cast<double>(geom_.grid().size()*field.shape(1));
+    }
+
+    // Communication
+    geom_.getComm().allReduceInPlace(zzmin, eckit::mpi::min());
+    geom_.getComm().allReduceInPlace(zzmax, eckit::mpi::max());
+    geom_.getComm().allReduceInPlace(zzave, eckit::mpi::sum());
+    geom_.getComm().allReduceInPlace(counter, eckit::mpi::sum());
+    zzave /= static_cast<double>(counter);
+
+    // Accumulate standard-deviation
+    if (field.rank() == 2) {
+      auto view = atlas::array::make_view<double, 2>(field);
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
         for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
           if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
@@ -1250,33 +1280,39 @@ void Fields::print(std::ostream & os) const {
           }
         }
       }
-      geom_.getComm().allReduceInPlace(zzstd, eckit::mpi::sum());
-      zzstd /= static_cast<double>(geom_.grid().size()*field.shape(1)-1);
-      zzstd = std::sqrt(zzstd);
-      const double tiny = 1.0e-12*std::max({std::abs(zzmin), std::abs(zzmax), std::abs(zzave),
-        std::abs(zzstd)});
-      os << prefix << "  - " << var.name() << " (" << field.shape(1) << " levels):" << std::endl;
-      if ((std::abs(zzmin) > 0.0) && (std::abs(zzmin) < tiny)) {
-        os << prefix << "    + min    ~ 0" << std::endl;
+    }
+
+    // Communication
+    geom_.getComm().allReduceInPlace(zzstd, eckit::mpi::sum());
+
+    // Normalize standard-deviation
+    zzstd /= static_cast<double>(counter-1);
+    zzstd = std::sqrt(zzstd);
+
+    // Print results
+    const double tiny = 1.0e-12*std::max({std::abs(zzmin), std::abs(zzmax), std::abs(zzave),
+      std::abs(zzstd)});
+    os << prefix << "  - " << var.name() << " (" << field.shape(1) << " levels):" << std::endl;
+    if ((std::abs(zzmin) > 0.0) && (std::abs(zzmin) < tiny)) {
+      os << prefix << "    + min    ~ 0" << std::endl;
+    } else {
+      os << prefix << "    + min    = " << zzmin << std::endl;
+    }
+    if ((std::abs(zzmax) > 0.0) && (std::abs(zzmax) < tiny)) {
+      os << prefix << "    + max    ~ 0" << std::endl;
+    } else {
+      os << prefix << "    + max    = " << zzmax << std::endl;
+    }
+    if (zzmin != zzmax) {
+      if ((std::abs(zzave) > 0.0) && (std::abs(zzave) < tiny)) {
+        os << prefix << "    + mean   ~ 0" << std::endl;
       } else {
-        os << prefix << "    + min    = " << zzmin << std::endl;
+        os << prefix << "    + mean   = " << zzave << std::endl;
       }
-      if ((std::abs(zzmax) > 0.0) && (std::abs(zzmax) < tiny)) {
-        os << prefix << "    + max    ~ 0" << std::endl;
+      if ((std::abs(zzstd) > 0.0) && (std::abs(zzstd) < tiny)) {
+        os << prefix << "    + stddev ~ 0" << std::endl;
       } else {
-        os << prefix << "    + max    = " << zzmax << std::endl;
-      }
-      if (zzmin != zzmax) {
-        if ((std::abs(zzave) > 0.0) && (std::abs(zzave) < tiny)) {
-          os << prefix << "    + mean   ~ 0" << std::endl;
-        } else {
-          os << prefix << "    + mean   = " << zzave << std::endl;
-        }
-        if ((std::abs(zzstd) > 0.0) && (std::abs(zzstd) < tiny)) {
-          os << prefix << "    + stddev ~ 0" << std::endl;
-        } else {
-          os << prefix << "    + stddev = " << zzstd << std::endl;
-        }
+        os << prefix << "    + stddev = " << zzstd << std::endl;
       }
     }
   }
@@ -1290,8 +1326,7 @@ void Fields::resetDuplicatePoints() {
   oops::Log::trace() << classname() << "::resetDuplicatePoints starting" << std::endl;
 
   if (geom_.duplicatePoints()) {
-    if ((geom_.gridType() == "structured") || (geom_.gridType() == "regular_lonlat")
-      || (geom_.gridType() == "zonal_band")) {
+    if ((geom_.gridType() == "structured") || (geom_.gridType() == "regular_lonlat")) {
       // Deal with poles
       for (auto field_internal : fset_) {
         // Get first longitude value

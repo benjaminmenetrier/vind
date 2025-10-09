@@ -53,8 +53,7 @@ Geometry::Geometry(const eckit::Configuration & config,
   gridType_ = params.grid.value().getString("type", "no_type");
 
   // Deal with poles for structured grids
-  if ((gridType_ == "structured") || (gridType_ == "regular_lonlat")
-    || (gridType_ == "zonal_band")) {
+  if (((gridType_ == "structured") || (gridType_ == "regular_lonlat")) && grid_.domain().global()) {
     // Get structured function space and grid
     const atlas::functionspace::StructuredColumns fs(functionSpace_);
     const atlas::StructuredGrid & grid = fs.grid();
@@ -306,6 +305,9 @@ void Geometry::print(std::ostream & os) const {
   os << prefix << "- size: " << grid_.size() << std::endl;
   if (!grid_.domain().global()) {
     os << prefix << "Regional grid detected" << std::endl;
+  }
+  if (duplicatePoints_) {
+    os << prefix << "Duplicated points detected" << std::endl;
   }
   if (partitioner_) {
     os << prefix << "Partitioner:" << std::endl;

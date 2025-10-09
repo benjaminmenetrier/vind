@@ -31,7 +31,7 @@ cost function:
   background:
     date: 2010-01-01T00:00:00Z
     state variables: [air_temperature]
-    filepath: testdata/bkg_PT0S_000001
+    filepath: testdata/bkg__MPI__PT0S_000001
   background error:
     covariance model: SABER
     saber central block:
@@ -55,7 +55,7 @@ cost function:
     - saber block name: StdDev
       read:
         model file:
-          filepath: testdata/stddev
+          filepath: testdata/stddev__MPI_
   observations:
     observers:
     - obs space:
@@ -95,10 +95,10 @@ final:
     geometry: *geom
     output:
       state component:
-        filepath: testdata/4dvar_incr
+        filepath: testdata/4dvar_incr__MPI_
 output:
-  filepath: testdata/4dvar_analysis___DATE__
-  date pattern: __DATE__
+  filepath: testdata/4dvar_analysis__MPI___DATE_
+  date pattern: _DATE_
   frequency: PT06H
 test:
   reference filename: testref/4dvar.ref

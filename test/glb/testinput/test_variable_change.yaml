@@ -5,9 +5,9 @@ geometry:
     N: 10
   groups:
   - variables: [air_pressure_levels]
-    level: 8
+    levels: 8
   - variables: [air_pressure_at_surface]
-    level: 1
+    levels: 1
   halo: 2
   model data:
     sigma_pressure_hybrid_coordinate_a_coefficient: [1.65078999e+02, 9.29294154e+02, 4.01754119e+03, 1.50392994e+04, 2.03259006e+04, 1.09181702e+04, 4.53390107e+03, 0]

@@ -10,7 +10,7 @@ geometry:
 background:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/attractor_P2D
+  filepath: testdata/attractor__MPI__P2D
 background error:
   covariance model: SABER
   saber central block:
@@ -32,7 +32,7 @@ background error:
   - saber block name: StdDev
     read:
       model file:
-        filepath: testdata/stddev
+        filepath: testdata/stddev__MPI_
 analysis variables: [air_temperature]
 covariance test:
   tolerance: 0.15

@@ -10,7 +10,7 @@ geometry:
 background:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/attractor_P2D
+  filepath: testdata/attractor__MPI__P2D
 linear variable change tests:
 - linear variable change:
     input variables: [air_temperature]
@@ -18,7 +18,7 @@ linear variable change tests:
     atlas file:
       date: 2010-01-01T00:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/stddev
+      filepath: testdata/stddev__MPI_
   tolerance inverse: 1.0e-12
 test:
   float absolute tolerance: 1.0e-12

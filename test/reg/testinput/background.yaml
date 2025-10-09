@@ -21,13 +21,13 @@ background:
   states:
   - date: 2010-01-01T00:00:00Z
     state variables: [air_temperature]
-    filepath: testdata/truth_PT0S
+    filepath: testdata/truth__MPI__PT0S
   - date: 2010-01-01T03:00:00Z
     state variables: [air_temperature]
-    filepath: testdata/truth_PT3H
+    filepath: testdata/truth__MPI__PT3H
   - date: 2010-01-01T06:00:00Z
     state variables: [air_temperature]
-    filepath: testdata/truth_PT6H
+    filepath: testdata/truth__MPI__PT6H
 background error:
   covariance model: SABER
   saber central block:
@@ -49,15 +49,15 @@ background error:
   - saber block name: StdDev
     read:
       model file:
-        filepath: testdata/stddev
+        filepath: testdata/stddev__MPI_
   randomization size: 1
 output states:
   states:
   - date: 2010-01-01T00:00:00Z
-    filepath: testdata/bkg_PT0S
+    filepath: testdata/bkg__MPI__PT0S
   - date: 2010-01-01T03:00:00Z
-    filepath: testdata/bkg_PT3H
+    filepath: testdata/bkg__MPI__PT3H
   - date: 2010-01-01T06:00:00Z
-    filepath: testdata/bkg_PT6H
+    filepath: testdata/bkg__MPI__PT6H
 test:
   reference filename: testref/background.ref

@@ -17,7 +17,7 @@ geometry:
   - variables: [air_temperature]
     levels: 2
   halo: 2
-background:
+initial condition:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
   filepath: testdata/attractor__MPI__P2D
@@ -44,8 +44,23 @@ background error:
       model file:
         filepath: testdata/stddev__MPI_
 analysis variables: [air_temperature]
-covariance test:
-  tolerance: 0.15
+model: &model
+  name: NumPy
+  python module: DDL95
+  time step: PT12M
+model aux control: {}
+linear model:
+  name: NumPy
+  python module: DDL95
+  time step: PT12M
+linear model test:
+  forecast length: PT24M
+  first multiplier TL: 1.e-12
+  iterations TL: 1
+  tolerance AD: 1.0e-12
+  tolerance TL: 4.0e-2
+time window:
+  begin: 2010-01-01T00:00:00Z
+  end: 2010-01-03T00:00:00Z
 test:
-  float absolute tolerance: 1.0e-12
-  reference filename: testref/test_error_covariance.ref
+  reference filename: testref/test_linear_model_numpy.ref

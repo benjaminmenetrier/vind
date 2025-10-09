@@ -20,14 +20,14 @@ geometry:
 initial condition:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/attractor_P2D
+  filepath: testdata/attractor__MPI__P2D
 model:
   name: DDL95
   time step: PT12M
 model aux control: {}
 model test:
-  forecast length: P2D
-  final norm: 339.24106160041543
+  forecast length: PT24M
+  final norm: 334.25489056702963
   tolerance: 1.0e-12
 test:
   reference filename: testref/test_model.ref

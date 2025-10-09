@@ -57,8 +57,8 @@ def tendency(model, t, xx):
   # Create tendency
   xxTen = np.zeros((nz,ny,nx))
 
-  for jx in range(nx):
-    for jy in range(ny):
+  for jy in range(ny):
+    for jx in range(nx):
       if jx >= ixMin and jx <= ixMax and jy >= iyMin and jy <= iyMax:
         # Inside computation zone
 
@@ -104,7 +104,7 @@ def step(model, stepData):
     # Second step
     xx += tendency(model, t+0.5*dt, xxTmp)*dti
 
-def tendencyTL(model, t, xxTraj, dx):
+def tendencyTL(model, xxTraj, dx):
   # Parameters
   nx = model["nx"]
   ny = model["ny"]
@@ -173,12 +173,12 @@ def stepTL(model, stepData):
     dx = stepData["increment"][var]
 
     # First step
-    dxTmp = dx+tendencyTL(model, t, xxTraj1, dx)*0.5*dti
+    dxTmp = dx+tendencyTL(model, xxTraj1, dx)*0.5*dti
 
     # Second step
-    dx += tendencyTL(model, t+0.5*dt, xxTraj2, dxTmp)*dti
+    dx += tendencyTL(model, xxTraj2, dxTmp)*dti
 
-def tendencyAD(model, t, xxTraj, dxTen):
+def tendencyAD(model, xxTraj, dxTen):
   # Parameters
   nx = model["nx"]
   ny = model["ny"]
@@ -254,8 +254,8 @@ def stepAD(model, stepData):
     dx = stepData["increment"][var]
 
     # Second step
-    dxTmp = tendencyAD(model, t+0.5*dt, xxTraj2, dx*dti)
+    dxTmp = tendencyAD(model, xxTraj2, dx*dti)
     dx += dxTmp
 
     # First step
-    dx += tendencyAD(model, t, xxTraj1, dxTmp*0.5*dti)
+    dx += tendencyAD(model, xxTraj1, dxTmp*0.5*dti)

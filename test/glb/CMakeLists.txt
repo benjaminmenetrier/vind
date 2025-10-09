@@ -41,7 +41,6 @@ foreach( mpi ${mpi_list} )
 
     # Truth
     create_test( glb truth ${mpi} forecast )
-
     if( pybind11_FOUND )
         create_test( glb truth_numpy ${mpi} forecast )
         if( Torch_FOUND )
@@ -70,12 +69,6 @@ foreach( mpi ${mpi_list} )
 
         # 4DVar
         create_test( glb 4dvar ${mpi} variational )
-        if( pybind11_FOUND )
-            create_test( glb 4dvar_numpy ${mpi} variational )
-            if( Torch_FOUND )
-#                create_test( glb 4dvar_torch ${mpi} variational )
-            endif()
-        endif()
 
         # 3DEnVar
         create_test( glb 3densvar ${mpi} variational )

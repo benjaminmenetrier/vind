@@ -41,7 +41,7 @@ LinearModelDDL95::LinearModelDDL95(const Geometry & geom,
     ixMax_ = nx_-2;
   }
   if (geom.gridType() == "regional") {
-    iyMin_ = 1;
+    iyMin_ = 0;
     iyMax_ = ny_-1;
   } else {
     iyMin_ = 1;

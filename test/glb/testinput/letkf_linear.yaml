@@ -17,7 +17,7 @@ background:
     template:
       date: 2010-01-01T03:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/ens_PT3H_%mem%
+      filepath: testdata/ens__MPI__PT3H_%mem%
     pattern: %mem%
     zero padding: 6
     nmembers: 10
@@ -64,16 +64,16 @@ local ensemble DA:
     mult: 1.1
   use linear observer: true
 output:
-  filepath: testdata/letkf_linear_state
+  filepath: testdata/letkf_linear_state__MPI_
 output increment:
-  filepath: testdata/letkf_linear_increment
+  filepath: testdata/letkf_linear_increment__MPI_
 output ensemble increments:
-  filepath: testdata/letkf_linear_increment
+  filepath: testdata/letkf_linear_increment__MPI_
 output mean prior:
-  filepath: testdata/letkf_linear_mean_prior
+  filepath: testdata/letkf_linear_mean_prior__MPI_
 output variance prior:
-  filepath: testdata/letkf_linear_var_prior
+  filepath: testdata/letkf_linear_var_prior__MPI_
 output variance posterior:
-  filepath: testdata/letkf_linear_var_posterior
+  filepath: testdata/letkf_linear_var_posterior__MPI_
 test:
   reference filename: testref/letkf_linear.ref

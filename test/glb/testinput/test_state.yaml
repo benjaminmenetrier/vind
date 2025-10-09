@@ -11,15 +11,15 @@ state test:
   statefile:
     date: 2010-01-01T00:00:00Z
     state variables: [air_temperature]
-    filepath: testdata/attractor_P2D
+    filepath: testdata/attractor__MPI__P2D
   write then read test:
     state write:
       date: 2010-01-01T00:00:00Z
-      filepath: testdata/test_state
+      filepath: testdata/test_state__MPI_
     state read:
       date: 2010-01-01T00:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/test_state
+      filepath: testdata/test_state__MPI_
   state generate:
     date: 2010-01-01T00:00:00Z
     state variables: [air_temperature]

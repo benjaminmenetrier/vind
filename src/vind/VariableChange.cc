@@ -79,8 +79,7 @@ void VariableChange::changeVar(State & x,
     for (auto & var : vars_out) {
       if (!fset.has(var.name())) {
         fset.add(geom_.functionSpace().createField<double>(
-          atlas::option::name(var.name()) |
-          atlas::option::levels(geom_.levels(var.name()))));
+          atlas::option::name(var.name()) | atlas::option::levels(geom_.levels(var.name()))));
       }
     }
 

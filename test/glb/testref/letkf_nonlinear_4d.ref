@@ -5,16 +5,16 @@ Initial state for member 1:
   - air_temperature (2 levels):
     + min    = -3.7984786781412843e+00
     + max    = 1.2105572354693958e+01
-    + mean   = 2.6338901171204823e+00
-    + stddev = 2.3761470291167086e+00
+    + mean   = 2.9035009165107679e+00
+    + stddev = 2.4802542460785419e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.2324168099554287e+00
     + max    = 1.1684028286658434e+01
-    + mean   = 2.6118695855778395e+00
-    + stddev = 2.4125924636954545e+00
+    + mean   = 2.8792263148102166e+00
+    + stddev = 2.5189832758053812e+00
 Initial state for member 2:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -22,16 +22,16 @@ Initial state for member 2:
   - air_temperature (2 levels):
     + min    = -3.4686154982654220e+00
     + max    = 1.1912098410366392e+01
-    + mean   = 2.6484464216912196e+00
-    + stddev = 2.3653654313975481e+00
+    + mean   = 2.9195472365100055e+00
+    + stddev = 2.4687036163275997e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.2664917313325974e+00
     + max    = 1.1761288355765901e+01
-    + mean   = 2.6264258901485795e+00
-    + stddev = 2.4089479765987920e+00
+    + mean   = 2.8952726348094577e+00
+    + stddev = 2.5149762090011363e+00
 Initial state for member 3:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -39,16 +39,16 @@ Initial state for member 3:
   - air_temperature (2 levels):
     + min    = -3.8669960664368079e+00
     + max    = 1.2115786341942979e+01
-    + mean   = 2.6569314698462900e+00
-    + stddev = 2.3739187145185472e+00
+    + mean   = 2.9289008329014217e+00
+    + stddev = 2.4776428547666072e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.2850289535587947e+00
     + max    = 1.1990238825003495e+01
-    + mean   = 2.6349109383036562e+00
-    + stddev = 2.4131396150729807e+00
+    + mean   = 2.9046262312008806e+00
+    + stddev = 2.5193094400446165e+00
 Initial state for member 4:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -56,16 +56,16 @@ Initial state for member 4:
   - air_temperature (2 levels):
     + min    = -3.7182596232436875e+00
     + max    = 1.2195305011408491e+01
-    + mean   = 2.6644639071699294e+00
-    + stddev = 2.3736838237543756e+00
+    + mean   = 2.9372043071164575e+00
+    + stddev = 2.4773099230201883e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.1121660976460981e+00
     + max    = 1.1702623812413986e+01
-    + mean   = 2.6424433756272978e+00
-    + stddev = 2.4109771380344434e+00
+    + mean   = 2.9129297054159191e+00
+    + stddev = 2.5169431213654003e+00
 Initial state for member 5:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -73,16 +73,16 @@ Initial state for member 5:
   - air_temperature (2 levels):
     + min    = -3.5956262740496951e+00
     + max    = 1.2171329064345073e+01
-    + mean   = 2.6553080778601732e+00
-    + stddev = 2.3765844345985263e+00
+    + mean   = 2.9271112669324744e+00
+    + stddev = 2.4804768016832432e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -2.9774585234633828e+00
     + max    = 1.1723207432353661e+01
-    + mean   = 2.6332875463175425e+00
-    + stddev = 2.4072815148444313e+00
+    + mean   = 2.9028366652319368e+00
+    + stddev = 2.5131412139072196e+00
 Initial state for member 6:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -90,16 +90,16 @@ Initial state for member 6:
   - air_temperature (2 levels):
     + min    = -3.7978844217154695e+00
     + max    = 1.1989175148280928e+01
-    + mean   = 2.6438899637099178e+00
-    + stddev = 2.3764890240143681e+00
+    + mean   = 2.9145243694440039e+00
+    + stddev = 2.4805039059431024e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.3171213032494618e+00
     + max    = 1.1573971625704308e+01
-    + mean   = 2.6218694321672897e+00
-    + stddev = 2.4124838692942245e+00
+    + mean   = 2.8902497677434691e+00
+    + stddev = 2.5187596854408216e+00
 Initial state for member 7:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -107,16 +107,16 @@ Initial state for member 7:
   - air_temperature (2 levels):
     + min    = -3.7975749390902465e+00
     + max    = 1.2251850212657780e+01
-    + mean   = 2.6255780566513556e+00
-    + stddev = 2.3770376216288147e+00
+    + mean   = 2.8943380152062188e+00
+    + stddev = 2.4812872150538610e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.0378682439934033e+00
     + max    = 1.1826292199819925e+01
-    + mean   = 2.6035575251087240e+00
-    + stddev = 2.4115832730258648e+00
+    + mean   = 2.8700634135056800e+00
+    + stddev = 2.5180079590924711e+00
 Initial state for member 8:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -124,16 +124,16 @@ Initial state for member 8:
   - air_temperature (2 levels):
     + min    = -3.7743073814984451e+00
     + max    = 1.2143178226825979e+01
-    + mean   = 2.6607416328789930e+00
-    + stddev = 2.3777622838774546e+00
+    + mean   = 2.9331010126225117e+00
+    + stddev = 2.4816598891775685e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.2018401754241959e+00
     + max    = 1.1716628065200444e+01
-    + mean   = 2.6387211013363592e+00
-    + stddev = 2.4093372992375848e+00
+    + mean   = 2.9088264109219706e+00
+    + stddev = 2.5152523912857929e+00
 Initial state for member 9:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -141,16 +141,16 @@ Initial state for member 9:
   - air_temperature (2 levels):
     + min    = -3.5964798492363159e+00
     + max    = 1.2102612227690715e+01
-    + mean   = 2.6566335751710111e+00
-    + stddev = 2.3706016916021930e+00
+    + mean   = 2.9285724450704063e+00
+    + stddev = 2.4741424832790200e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.0891739805595986e+00
     + max    = 1.1882456957369239e+01
-    + mean   = 2.6346130436283741e+00
-    + stddev = 2.4127041927676136e+00
+    + mean   = 2.9042978433698612e+00
+    + stddev = 2.5188529136466817e+00
 Initial state for member 10:
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -158,16 +158,16 @@ Initial state for member 10:
   - air_temperature (2 levels):
     + min    = -3.8996379141304436e+00
     + max    = 1.2062967451595041e+01
-    + mean   = 2.6540508462940351e+00
-    + stddev = 2.3715613148420771e+00
+    + mean   = 2.9257253423713774e+00
+    + stddev = 2.4751851755781749e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.1391896996005784e+00
     + max    = 1.1657705040131665e+01
-    + mean   = 2.6320303147514106e+00
-    + stddev = 2.4146108069055638e+00
+    + mean   = 2.9014507406708465e+00
+    + stddev = 2.5208945216188483e+00
 H(x) for member 1:
 air_temperature nobs= 60 Min=-7.2610476795019063e-01, Max=6.9439433722032051e+00, RMS=2.9491597730964592e+00
 H(x) for member 2:
@@ -199,16 +199,16 @@ Background mean :
   - air_temperature (2 levels):
     + min    = -3.7053062732152808e+00
     + max    = 1.2104987444980736e+01
-    + mean   = 2.6499934068393420e+00
-    + stddev = 2.3723165784969584e+00
+    + mean   = 2.9212525744685660e+00
+    + stddev = 2.4760285070998300e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.1658755518783543e+00
     + max    = 1.1751844060042107e+01
-    + mean   = 2.6279728752967078e+00
-    + stddev = 2.4097902763140233e+00
+    + mean   = 2.8969779727680245e+00
+    + stddev = 2.5158486977911565e+00
 Analysis mean :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -216,16 +216,16 @@ Analysis mean :
   - air_temperature (2 levels):
     + min    = -3.7053062732152808e+00
     + max    = 1.2104987444980736e+01
-    + mean   = 2.6507831070623293e+00
-    + stddev = 2.3724511933164405e+00
+    + mean   = 2.9221231101474494e+00
+    + stddev = 2.4761618318054239e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
     + min    = -3.1685441889315054e+00
     + max    = 1.1751844060042107e+01
-    + mean   = 2.6287625755196933e+00
-    + stddev = 2.4095087345063959e+00
+    + mean   = 2.8978485084469061e+00
+    + stddev = 2.5155427507595931e+00
 Analysis mean increment :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -233,8 +233,8 @@ Analysis mean increment :
   - air_temperature (2 levels):
     + min    = -3.9504226991688540e-02
     + max    = 1.0704580721221202e-01
-    + mean   = 7.8970022298570689e-04
-    + stddev = 8.3998604552797864e-03
+    + mean   = 8.7053567888188167e-04
+    + stddev = 8.8192004424942263e-03
 Analysis mean increment :
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
@@ -242,8 +242,8 @@ Analysis mean increment :
   - air_temperature (2 levels):
     + min    = -3.9504226991689650e-02
     + max    = 1.0704580721221135e-01
-    + mean   = 7.8970022298571860e-04
-    + stddev = 8.3998604552798020e-03
+    + mean   = 8.7053567888189447e-04
+    + stddev = 8.8192004424942367e-03
 Forecast variance :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -251,8 +251,8 @@ Forecast variance :
   - air_temperature (2 levels):
     + min    = 1.2171120495856600e-03
     + max    = 2.8858115544075549e-02
-    + mean   = 8.6046585394894855e-03
-    + stddev = 4.5453827198554033e-03
+    + mean   = 9.4854503584923446e-03
+    + stddev = 4.6904630703599546e-03
 Forecast variance :
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
@@ -260,8 +260,8 @@ Forecast variance :
   - air_temperature (2 levels):
     + min    = 1.2171120495856624e-03
     + max    = 2.8858115544075472e-02
-    + mean   = 8.6046585394894855e-03
-    + stddev = 4.5453827198554042e-03
+    + mean   = 9.4854503584923446e-03
+    + stddev = 4.6904630703599563e-03
 Analysis variance :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: L40x21 [840]
@@ -269,8 +269,8 @@ Analysis variance :
   - air_temperature (2 levels):
     + min    = 1.2171120495856600e-03
     + max    = 2.8858115544075549e-02
-    + mean   = 8.6190775448180754e-03
-    + stddev = 4.5585080743280691e-03
+    + mean   = 9.5013453249963038e-03
+    + stddev = 4.7042078149935641e-03
 Analysis variance :
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
@@ -278,8 +278,8 @@ Analysis variance :
   - air_temperature (2 levels):
     + min    = 1.2171120495856624e-03
     + max    = 2.8858115544075472e-02
-    + mean   = 8.6190775448180771e-03
-    + stddev = 4.5585080743280682e-03
+    + mean   = 9.5013453249963055e-03
+    + stddev = 4.7042078149935659e-03
 H(x) for member 1:
 air_temperature nobs= 60 Min=-7.5723120387519338e-01, Max=6.9632137026234044e+00, RMS=2.9569398692750815e+00
 H(x) for member 2:

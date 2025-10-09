@@ -62,7 +62,7 @@ find_package( NetCDF REQUIRED COMPONENTS C Fortran )
 # atlas
 find_package( atlas 0.35.0 REQUIRED )
 if( atlas_VERSION VERSION_GREATER "0.41" )
-    add_definitions(-DATLAS_MAKE_SPARSE)
+    add_compile_definitions( ATLAS_MAKE_SPARSE )
 endif()
 
 # eccodes
@@ -72,7 +72,7 @@ find_package( eccodes QUIET )
 find_package( ECTRANS 1.6.0 COMPONENTS etrans double QUIET )
 find_package( falfilfa QUIET )
 if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS AND ectrans_HAVE_TRANSI ) AND falfilfa_FOUND )
-    add_definitions( -DREADFA )
+    add_compile_definitions( READFA )
 endif()
 
 # oops
@@ -110,6 +110,10 @@ ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 
 # Pybind11
 find_package( pybind11 CONFIG QUIET )
+if( pybind11_FOUND )
+    # Torch
+    find_package( Torch QUIET )
+endif()
 
 ################################################################################
 # Export package info
@@ -137,7 +141,7 @@ endforeach()
 ################################################################################
 
 if( ENABLE_SABER )
-    add_definitions( -DENABLE_SABER )
+    add_compile_definitions( ENABLE_SABER )
 endif()
 
 add_subdirectory( tools )

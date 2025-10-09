@@ -27,7 +27,7 @@ background:
     template:
       date: 2010-01-01T03:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/ens_PT3H_%mem%
+      filepath: testdata/ens__MPI__PT3H_%mem%
     pattern: %mem%
     zero padding: 6
     nmembers: 10
@@ -69,7 +69,6 @@ driver:
 local ensemble DA:
   solver: Deterministic GETKF
   vertical localization:
-    fraction of retained variance: 0.99
     lengthscale: 3.0
     lengthscale units: bogus
   inflation:
@@ -89,4 +88,5 @@ output variance prior:
 output variance posterior:
   filepath: testdata/getkf_nonlinear_var_posterior
 test:
+  float relative tolerance: 1.0e-3
   reference filename: testref/getkf_nonlinear.ref

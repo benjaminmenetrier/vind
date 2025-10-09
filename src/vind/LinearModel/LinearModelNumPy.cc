@@ -80,7 +80,7 @@ LinearModelNumPy::LinearModelNumPy(const Geometry & geom,
     const double deg2rad = M_PI/180.0;
     for (int jx = 0; jx < nx; ++jx) {
       for (int jy = 0; jy < ny; ++jy) {
-        const atlas::PointLonLat pointLonLat = grid.xy(jx, jy);
+        const atlas::PointLonLat pointLonLat = grid.lonlat(jx, jy);
         lonView(jy, jx) = pointLonLat.lon()*deg2rad;
         latView(jy, jx) = pointLonLat.lat()*deg2rad;
       }
@@ -261,8 +261,8 @@ void LinearModelNumPy::stepTL(Increment & dx,
       auto field = globalIncr[var.name()];
       if (pythonModule_ == "DDL95") {
         // Copy data from numpy array
-        const auto dataView = stepData["increment"][var.name().c_str()].cast<pybind11::array_t<double>>()
-          .unchecked<3>();
+        const auto dataView = stepData["increment"][var.name().c_str()]
+          .cast<pybind11::array_t<double>>().unchecked<3>();
         auto view = atlas::array::make_view<double, 2>(field);
         const atlas::StructuredGrid grid(geom.grid());
         int ix, iy;
@@ -424,8 +424,8 @@ void LinearModelNumPy::stepAD(Increment & dx,
       auto field = globalIncr[var.name()];
       if (pythonModule_ == "DDL95") {
         // Copy data from numpy array
-        const auto dataView = stepData["increment"][var.name().c_str()].cast<pybind11::array_t<double>>()
-          .unchecked<3>();
+        const auto dataView = stepData["increment"][var.name().c_str()]
+          .cast<pybind11::array_t<double>>().unchecked<3>();
         auto view = atlas::array::make_view<double, 2>(field);
         const atlas::StructuredGrid grid(geom.grid());
         int ix, iy;

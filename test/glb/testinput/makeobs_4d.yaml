@@ -15,7 +15,7 @@ geometry:
 initial condition:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/truth_PT0S
+  filepath: testdata/truth__MPI__PT0S
 forecast length: PT6H
 model:
   name: DDL95

@@ -17,19 +17,18 @@ geometry:
   - variables: [air_temperature]
     levels: 2
   halo: 2
-background:
+initial condition:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
   filepath: testdata/attractor__MPI__P2D
-linear variable change tests:
-- linear variable change:
-    input variables: [air_temperature]
-    output variables: [air_temperature]
-    atlas file:
-      date: 2010-01-01T00:00:00Z
-      state variables: [air_temperature]
-      filepath: testdata/stddev__MPI_
-  tolerance inverse: 1.0e-12
+model:
+  name: NumPy
+  python module: DDL95
+  time step: PT12M
+model aux control: {}
+model test:
+  forecast length: PT24M
+  final norm: 334.25489056702963
+  tolerance: 1.0e-12
 test:
-  float absolute tolerance: 1.0e-12
-  reference filename: testref/test_linear_variable_change.ref
+  reference filename: testref/test_model_numpy.ref

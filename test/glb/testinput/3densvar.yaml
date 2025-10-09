@@ -18,7 +18,7 @@ cost function:
   background:
     date: 2010-01-01T03:00:00Z
     state variables: [air_temperature]
-    filepath: testdata/bkg_PT3H_000001
+    filepath: testdata/bkg__MPI__PT3H_000001
   background error:
     covariance model: ensemble
     localization:
@@ -44,7 +44,7 @@ cost function:
       template:
         date: 2010-01-01T03:00:00Z
         state variables: [air_temperature]
-        filepath: testdata/ens_PT3H_%mem%
+        filepath: testdata/ens__MPI__PT3H_%mem%
       pattern: %mem%
       zero padding: 6
       nmembers: 10
@@ -84,8 +84,8 @@ final:
     geometry: *geom
     output:
       state component:
-        filepath: testdata/3densvar_incr
+        filepath: testdata/3densvar_incr__MPI_
 output:
-  filepath: testdata/3densvar_analysis
+  filepath: testdata/3densvar_analysis__MPI_
 test:
   reference filename: testref/3densvar.ref

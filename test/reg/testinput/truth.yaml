@@ -20,14 +20,14 @@ geometry:
 initial condition:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/attractor_P2D
+  filepath: testdata/attractor__MPI__P2D
 model:
   name: DDL95
   time step: PT12M
 forecast length: PT6H
 output:
-  filepath: testdata/truth___RANGE__
-  range pattern: __RANGE__
+  filepath: testdata/truth__MPI___RANGE_
+  range pattern: _RANGE_
   frequency: PT3H
 prints:
   frequency: PT3H

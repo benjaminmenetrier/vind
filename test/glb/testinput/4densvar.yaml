@@ -21,13 +21,13 @@ cost function:
     states:
     - date: 2010-01-01T00:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/bkg_PT0S_000001
+      filepath: testdata/bkg__MPI__PT0S_000001
     - date: 2010-01-01T03:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/bkg_PT3H_000001
+      filepath: testdata/bkg__MPI__PT3H_000001
     - date: 2010-01-01T06:00:00Z
       state variables: [air_temperature]
-      filepath: testdata/bkg_PT6H_000001
+      filepath: testdata/bkg__MPI__PT6H_000001
   background error:
     covariance model: ensemble
     localization:
@@ -54,13 +54,13 @@ cost function:
         states:
         - date: 2010-01-01T00:00:00Z
           state variables: [air_temperature]
-          filepath: testdata/ens_PT0S_%mem%
+          filepath: testdata/ens__MPI__PT0S_%mem%
         - date: 2010-01-01T03:00:00Z
           state variables: [air_temperature]
-          filepath: testdata/ens_PT3H_%mem%
+          filepath: testdata/ens__MPI__PT3H_%mem%
         - date: 2010-01-01T06:00:00Z
           state variables: [air_temperature]
-          filepath: testdata/ens_PT6H_%mem%
+          filepath: testdata/ens__MPI__PT6H_%mem%
       pattern: %mem%
       zero padding: 6
       nmembers: 10
@@ -102,18 +102,18 @@ final:
       state component:
         states:
         - date: 2010-01-01T00:00:00Z
-          filepath: testdata/4densvar_incr_00
+          filepath: testdata/4densvar_incr__MPI__PT0S
         - date: 2010-01-01T03:00:00Z
-          filepath: testdata/4densvar_incr_03
+          filepath: testdata/4densvar_incr__MPI__PT3H
         - date: 2010-01-01T06:00:00Z
-          filepath: testdata/4densvar_incr_06
+          filepath: testdata/4densvar_incr__MPI__PT6H
 output:
   states:
   - date: 2010-01-01T00:00:00Z
-    filepath: testdata/4densvar_analysis_00
+    filepath: testdata/4densvar_analysis__MPI__PT0S
   - date: 2010-01-01T03:00:00Z
-    filepath: testdata/4densvar_analysis_03
+    filepath: testdata/4densvar_analysis__MPI__PT3H
   - date: 2010-01-01T06:00:00Z
-    filepath: testdata/4densvar_analysis_06
+    filepath: testdata/4densvar_analysis__MPI__PT6H
 test:
   reference filename: testref/4densvar.ref

@@ -10,15 +10,15 @@ geometry:
 initial condition:
   date: 2010-01-01T00:00:00Z
   state variables: [air_temperature]
-  filepath: testdata/attractor_P2D
+  filepath: testdata/attractor__MPI__P2D
 model:
   name: NumPy
   python module: DDL95
   time step: PT12M
 model aux control: {}
 model test:
-  forecast length: P2D
-  final norm: 142.24439448351336
+  forecast length: PT24M
+  final norm: 148.36835682029673
   tolerance: 1.0e-12
 test:
   reference filename: testref/test_model_numpy.ref

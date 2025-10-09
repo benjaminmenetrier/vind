@@ -1,6 +1,7 @@
 Testing geometry: VIND geometry grid:
 - name: L360x181
 - size: 65160
+Duplicated points detected
 Partitioner:
 - type: equal_regions
 Function space:

@@ -17,5 +17,5 @@ State after variable change:
   - air_pressure_levels (8 levels):
     + min    = 1.6507899900000001e+02
     + max    = 1.0432431021058687e+05
-    + mean   = 5.2250953632115205e+04
-    + stddev = 4.3984742242230488e+04
+    + mean   = 5.2325146274408442e+04
+    + stddev = 4.4004538942140760e+04

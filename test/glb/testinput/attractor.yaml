@@ -18,8 +18,8 @@ model:
   time step: PT12M
 forecast length: P2D
 output:
-  filepath: testdata/attractor___RANGE__
-  range pattern: __RANGE__
+  filepath: testdata/attractor__MPI___RANGE_
+  range pattern: _RANGE_
   frequency: P2D
 prints:
   frequency: P2D
