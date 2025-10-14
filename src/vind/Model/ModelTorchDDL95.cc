@@ -3,7 +3,9 @@
  *
  */
 
-#include "vind/Model/ModelDDL95.h"
+#include "vind/Model/ModelTorchDDL95.h"
+
+#include <filesystem>
 
 #include "oops/util/Logger.h"
 
@@ -16,14 +18,14 @@ namespace vind {
 
 // -----------------------------------------------------------------------------
 
-static ModelMaker<ModelDDL95> makerDDL95_("DDL95");
+static ModelMaker<ModelTorchDDL95> makerTorchDDL95_("TorchDDL95");
 
 // -----------------------------------------------------------------------------
 
-ModelDDL95::ModelDDL95(const Geometry & geom,
-                       const eckit::Configuration & config)
+ModelTorchDDL95::ModelTorchDDL95(const Geometry & geom,
+                                 const eckit::Configuration & config)
   : timeResolution_(config.getString("time step")) {
-  oops::Log::trace() << classname() << "::ModelDDL95 starting" << std::endl;
+  oops::Log::trace() << classname() << "::ModelTorchDDL95 starting" << std::endl;
 
   // Check geometry
   ASSERT((geom.gridType() == "regional") || (geom.gridType() == "structured") ||
@@ -60,6 +62,29 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
     lonlatView(jnode, 1) *= deg2rad;
   }
 
+/*
+  // Define tensor options
+  opts_ = torch::TensorOptions()
+    .dtype(torch::kFloat64)     // kUInt8, kInt8, kInt16, kInt32, kInt64, kFloat32, or kFloat64
+    .layout(torch::kStrided)    // kStrided, or kSparse
+    .device(torch::kCPU)        // kCPU, or kCUDA
+    .requires_grad(false);      // true, or false
+
+  // Define x/y coordinates
+  lonNp_ = torch::empty({ny, nx}, opts_);
+  latNp_ = torch::empty({ny, nx}, opts_);
+  auto lonView = lonNp_.accessor<double, 2>();
+  auto latView = latNp_.accessor<double, 2>();
+  const double deg2rad = M_PI/180.0;
+  for (int jx = 0; jx < nx; ++jx) {
+    for (int jy = 0; jy < ny; ++jy) {
+      const atlas::PointLonLat pointLonLat = grid.lonlat(jx, jy);
+      lonView[jy][jx] = pointLonLat.lon()*deg2rad;
+      latView[jy][jx] = pointLonLat.lat()*deg2rad;
+    }
+  }
+*/
+
   // Internal time-step
   dti_ = static_cast<double>(timeResolution_.toSeconds())/36000.0;
 
@@ -67,13 +92,13 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   dt_half_ = util::Duration(static_cast<int64_t>(
     0.5*static_cast<double>(timeResolution_.toSeconds())));
 
-  oops::Log::trace() << classname() << "::ModelDDL95 done" << std::endl;
+  oops::Log::trace() << classname() << "::ModelTorchDDL95 done" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
-void ModelDDL95::step(State & xx,
-                      const ModelAuxControl & xxAux) const {
+void ModelTorchDDL95::step(State & xx,
+                           const ModelAuxControl & xxAux) const {
   oops::Log::trace() << classname() << "::step starting" << std::endl;
 
   // First step
@@ -100,8 +125,8 @@ void ModelDDL95::step(State & xx,
 
 // -----------------------------------------------------------------------------
 
-void ModelDDL95::tendency(const State & xx,
-                          Increment & dxTen) const {
+void ModelTorchDDL95::tendency(const State & xx,
+                               Increment & dxTen) const {
   oops::Log::trace() << classname() << "::tendency starting" << std::endl;
 
   // Assert number of variables
@@ -182,11 +207,11 @@ void ModelDDL95::tendency(const State & xx,
 
 // -----------------------------------------------------------------------------
 
-void ModelDDL95::print(std::ostream & os) const {
+void ModelTorchDDL95::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
-  os << "DDL95 model:" << std::endl;
-  os << "- dt: " << timeResolution_ << std::endl;
+  os << "TorchDDL95 model:" << std::endl;
+  os << "- dt = " << timeResolution_ << std::endl;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;
 }

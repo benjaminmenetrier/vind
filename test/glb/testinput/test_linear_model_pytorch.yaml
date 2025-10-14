@@ -35,11 +35,11 @@ background error:
         filepath: testdata/stddev__MPI_
 analysis variables: [air_temperature]
 model: &model
-  name: NumPyDDL95
+  name: PyTorchDDL95
   time step: PT12M
 model aux control: {}
 linear model:
-  name: NumPyDDL95
+  name: PyTorchDDL95
   time step: PT12M
 linear model test:
   forecast length: PT24M
@@ -51,4 +51,4 @@ time window:
   begin: 2010-01-01T00:00:00Z
   end: 2010-01-03T00:00:00Z
 test:
-  reference filename: testref/test_linear_model_numpy.ref
+  reference filename: testref/test_linear_model_pytorch.ref

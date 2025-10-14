@@ -41,13 +41,6 @@ foreach( mpi ${mpi_list} )
 
     # Truth
     create_test( reg truth ${mpi} forecast )
-    if( pybind11_FOUND )
-        create_test( reg truth_numpy ${mpi} forecast )
-        if( Torch_FOUND )
-#            create_test( reg truth_torch ${mpi} forecast )
-        endif()
-    endif()
-
 
     if( ENABLE_SABER )
         # Background

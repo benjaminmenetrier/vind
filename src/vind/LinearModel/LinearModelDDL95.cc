@@ -171,7 +171,7 @@ void LinearModelDDL95::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
   os << "DDL95 linear model:" << std::endl;
-  os << "- dt = " << timeResolution_ << std::endl;
+  os << "- dt: " << timeResolution_ << std::endl;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;
 }
@@ -183,68 +183,69 @@ void LinearModelDDL95::tendencyTL(const Increment & dx,
                                   Increment & dxTen) const {
   oops::Log::trace() << classname() << "::tendencyTL starting" << std::endl;
 
-  // Update all variables
-  for (const auto & var : dx.variables()) {
-    // Get fields
-    const auto field = dx.fieldSet()[var.name()];
-    const auto fieldTraj = xxTraj.fieldSet()[var.name()];
-    auto fieldTen = dxTen.fieldSet()[var.name()];
+  // Assert number of variables
+  ASSERT(dx.variables().size() == 1);
+  const oops::Variable var = dx.variables()[0];
 
-    // Get function space
-    atlas::functionspace::StructuredColumns fs(field.functionspace());
-    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
-    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
-    ASSERT(fs.halo() >= 2);
+  // Get fields
+  const auto field = dx.fieldSet()[var.name()];
+  const auto fieldTraj = xxTraj.fieldSet()[var.name()];
+  auto fieldTen = dxTen.fieldSet()[var.name()];
 
-    // Get ghost view
-    const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
+  // Get function space
+  atlas::functionspace::StructuredColumns fs(field.functionspace());
+  const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
+  const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+  ASSERT(fs.halo() >= 2);
 
-    // Get views
-    const auto view = atlas::array::make_view<double, 2>(field);
-    const auto viewTraj = atlas::array::make_view<double, 2>(fieldTraj);
-    auto viewTen = atlas::array::make_view<double, 2>(fieldTen);
+  // Get ghost view
+  const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
 
-    // Initialization
-    viewTen.assign(0.0);
+  // Get views
+  const auto view = atlas::array::make_view<double, 2>(field);
+  const auto viewTraj = atlas::array::make_view<double, 2>(fieldTraj);
+  auto viewTen = atlas::array::make_view<double, 2>(fieldTen);
 
-    for (int jnode = 0; jnode < field.shape(0); ++jnode) {
-      if (ghostView(jnode) == 0) {
-        // Get X/Y indices
-        const size_t ix = view_i(jnode)-1;
-        const size_t iy = view_j(jnode)-1;
+  // Initialization
+  viewTen.assign(0.0);
 
-        if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
-          // Inside computation zone
+  for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+    if (ghostView(jnode) == 0) {
+      // Get X/Y indices
+      const size_t ix = view_i(jnode)-1;
+      const size_t iy = view_j(jnode)-1;
 
-          // Retrieve array indices
-          const int ixp1 = fs.index(ix+1, iy);
-          const int ixm2 = fs.index(ix-2, iy);
-          const int ixm1 = fs.index(ix-1, iy);
-          const int iyp1 = fs.index(ix, iy+1);
-          const int iym1 = fs.index(ix, iy-1);
+      if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
+        // Inside computation zone
 
-          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            // Usual L95 in x direction
-            viewTen(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*viewTraj(ixm1, jlevel)
-              +(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel))*view(ixm1, jlevel)
-              -view(jnode, jlevel);
+        // Retrieve array indices
+        const int ixp1 = fs.index(ix+1, iy);
+        const int ixm2 = fs.index(ix-2, iy);
+        const int ixm1 = fs.index(ix-1, iy);
+        const int iyp1 = fs.index(ix, iy+1);
+        const int iym1 = fs.index(ix, iy-1);
 
-            // X-direction diffusion
-            viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)
-              +view(ixm1, jlevel));
+        for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+          // Usual L95 in x direction
+          viewTen(jnode, jlevel) = (view(ixp1, jlevel)-view(ixm2, jlevel))*viewTraj(ixm1, jlevel)
+            +(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel))*view(ixm1, jlevel)
+            -view(jnode, jlevel);
 
-            // Y-direction diffusion
-            if ((iy > iyMin_) && (iy < iyMax_)) {
-              viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)
-                +view(iym1, jlevel));
-            }
+          // X-direction diffusion
+          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)
+            +view(ixm1, jlevel));
+
+          // Y-direction diffusion
+          if ((iy > iyMin_) && (iy < iyMax_)) {
+            viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)
+              +view(iym1, jlevel));
           }
         }
       }
     }
-
-    fieldTen.set_dirty();
   }
+
+  fieldTen.set_dirty();
 
   oops::Log::trace() << classname() << "::tendencyTL done" << std::endl;
 }
@@ -256,72 +257,73 @@ void LinearModelDDL95::tendencyAD(const Increment & dxTen,
                                   Increment & dx) const {
   oops::Log::trace() << classname() << "::tendencyAD starting" << std::endl;
 
-  // Update all variables
-  for (const auto & var : dx.variables()) {
-    // Get fields
-    auto field = dx.fieldSet()[var.name()];
-    const auto fieldTraj = xxTraj.fieldSet()[var.name()];
-    const auto fieldTen = dxTen.fieldSet()[var.name()];
+  // Assert number of variables
+  ASSERT(dx.variables().size() == 1);
+  const oops::Variable var = dx.variables()[0];
 
-    // Get function space
-    atlas::functionspace::StructuredColumns fs(field.functionspace());
-    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
-    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
-    ASSERT(fs.halo() >= 2);
+  // Get fields
+  auto field = dx.fieldSet()[var.name()];
+  const auto fieldTraj = xxTraj.fieldSet()[var.name()];
+  const auto fieldTen = dxTen.fieldSet()[var.name()];
 
-    // Get ghost view
-    const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
+  // Get function space
+  atlas::functionspace::StructuredColumns fs(field.functionspace());
+  const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
+  const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+  ASSERT(fs.halo() >= 2);
 
-    // Get views
-    auto view = atlas::array::make_view<double, 2>(field);
-    const auto viewTraj = atlas::array::make_view<double, 2>(fieldTraj);
-    const auto viewTen = atlas::array::make_view<double, 2>(fieldTen);
+  // Get ghost view
+  const auto ghostView = atlas::array::make_view<int, 1>(fs.ghost());
 
-    // Initialization
-    view.assign(0.0);
+  // Get views
+  auto view = atlas::array::make_view<double, 2>(field);
+  const auto viewTraj = atlas::array::make_view<double, 2>(fieldTraj);
+  const auto viewTen = atlas::array::make_view<double, 2>(fieldTen);
 
-    for (int jnode = 0; jnode < field.shape(0); ++jnode) {
-      if (ghostView(jnode) == 0) {
-        // Get X/Y indices
-        const size_t ix = view_i(jnode)-1;
-        const size_t iy = view_j(jnode)-1;
+  // Initialization
+  view.assign(0.0);
 
-        if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
-          // Inside computation zone
+  for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+    if (ghostView(jnode) == 0) {
+      // Get X/Y indices
+      const size_t ix = view_i(jnode)-1;
+      const size_t iy = view_j(jnode)-1;
 
-          // Retrieve array indices
-          const int ixp1 = fs.index(ix+1, iy);
-          const int ixm2 = fs.index(ix-2, iy);
-          const int ixm1 = fs.index(ix-1, iy);
-          const int iyp1 = fs.index(ix, iy+1);
-          const int iym1 = fs.index(ix, iy-1);
+      if ((ix >= ixMin_) && (ix <= ixMax_) && (iy >= iyMin_) && (iy <= iyMax_)) {
+        // Inside computation zone
 
-          for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            // Usual L95 in x direction
-            view(ixp1, jlevel) += viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
-            view(ixm2, jlevel) -= viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
-            view(ixm1, jlevel) += viewTen(jnode, jlevel)
-              *(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel));
-            view(jnode, jlevel) -= viewTen(jnode, jlevel);
+        // Retrieve array indices
+        const int ixp1 = fs.index(ix+1, iy);
+        const int ixm2 = fs.index(ix-2, iy);
+        const int ixm1 = fs.index(ix-1, iy);
+        const int iyp1 = fs.index(ix, iy+1);
+        const int iym1 = fs.index(ix, iy-1);
 
-            // X-direction diffusion
-            view(ixp1, jlevel) += nu_*viewTen(jnode, jlevel);
+        for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+          // Usual L95 in x direction
+          view(ixp1, jlevel) += viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
+          view(ixm2, jlevel) -= viewTen(jnode, jlevel)*viewTraj(ixm1, jlevel);
+          view(ixm1, jlevel) += viewTen(jnode, jlevel)
+            *(viewTraj(ixp1, jlevel)-viewTraj(ixm2, jlevel));
+          view(jnode, jlevel) -= viewTen(jnode, jlevel);
+
+          // X-direction diffusion
+          view(ixp1, jlevel) += nu_*viewTen(jnode, jlevel);
+          view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
+          view(ixm1, jlevel) += nu_*viewTen(jnode, jlevel);
+
+          // Y-direction diffusion
+          if ((iy > iyMin_) && (iy < iyMax_)) {
+            view(iyp1, jlevel) += nu_*viewTen(jnode, jlevel);
             view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
-            view(ixm1, jlevel) += nu_*viewTen(jnode, jlevel);
-
-            // Y-direction diffusion
-            if ((iy > iyMin_) && (iy < iyMax_)) {
-              view(iyp1, jlevel) += nu_*viewTen(jnode, jlevel);
-              view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
-              view(iym1, jlevel) += nu_*viewTen(jnode, jlevel);
-            }
+            view(iym1, jlevel) += nu_*viewTen(jnode, jlevel);
           }
         }
       }
     }
-
-    field.set_dirty();
   }
+
+  field.set_dirty();
 
   oops::Log::trace() << classname() << "::tendencyAD done" << std::endl;
 }

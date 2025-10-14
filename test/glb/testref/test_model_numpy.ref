@@ -1,3 +1,2 @@
-Testing Model: NumPy model:
-- dt = PT12M
-- python module = DDL95
+Testing Model: NumPyDDL95 model:
+- dt: PT12M

@@ -12,7 +12,7 @@ initial condition:
   state variables: [air_temperature]
   filepath: testdata/attractor__MPI__P2D
 model:
-  name: NumPyDDL95
+  name: PyTorchDDL95
   time step: PT12M
 model aux control: {}
 model test:
@@ -20,4 +20,4 @@ model test:
   final norm: 148.36835682029673
   tolerance: 1.0e-12
 test:
-  reference filename: testref/test_model_numpy.ref
+  reference filename: testref/test_model_pytorch.ref

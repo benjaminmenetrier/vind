@@ -110,10 +110,9 @@ ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 
 # Pybind11
 find_package( pybind11 CONFIG QUIET )
-if( pybind11_FOUND )
-    # Torch
-    find_package( Torch QUIET )
-endif()
+
+# Torch
+find_package( Torch QUIET )
 
 ################################################################################
 # Export package info

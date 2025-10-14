@@ -4,7 +4,7 @@
 #
 # Diffusive Diurnal Lorenz 95 model
 
-import numpy as np
+import torch
 
 def step(params, lon, lat, t, xx):
   # Integration parameters
@@ -41,7 +41,7 @@ def tendency(params, lon, lat, t, xx):
     exit(1)
 
   # Create tendency
-  xxTen = np.zeros((nz,ny,nx))
+  xxTen = torch.zeros_like(xx)
 
   for jy in range(ny):
     for jx in range(nx):
@@ -56,7 +56,7 @@ def tendency(params, lon, lat, t, xx):
         iym1 = jy-1
 
         # Time-dependent forcing
-        FF = (1.0+0.4*np.sin(lon[jy,jx]-omega*t)*np.cos(lat[jy,jx]))*F
+        FF = (1.0+0.4*torch.sin(lon[jy,jx]-omega*t)*torch.cos(lat[jy,jx]))*F
 
         for jz in range(nz):
           # Usual L95 in x direction
@@ -107,7 +107,7 @@ def tendencyTL(params, xxTraj, dx):
     exit(1)
 
   # Create tendency
-  dxTen = np.zeros((nz,ny,nx))
+  dxTen = torch.zeros_like(dx)
 
   for jx in range(nx):
     for jy in range(ny):
@@ -171,7 +171,7 @@ def tendencyAD(params, xxTraj, dxTen):
     exit(1)
 
   # Create tendency
-  dx = np.zeros((nz,ny,nx))
+  dx = torch.zeros_like(dxTen)
 
   for jx in range(nx):
     for jy in range(ny):
