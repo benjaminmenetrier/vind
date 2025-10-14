@@ -64,13 +64,13 @@ endif()
 ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.31.4 )
 ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.0 )
 ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" BRANCH main )
-#ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" BRANCH main )
-ecbuild_bundle( PROJECT ectrans )
+ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" BRANCH main )
+#ecbuild_bundle( PROJECT ectrans )
 ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.43.1 )
 
 # oops
-#ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
-ecbuild_bundle( PROJECT oops )
+ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
+#ecbuild_bundle( PROJECT oops )
 
 # jedi-data
 #ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda/jedi-model-data.git" BRANCH develop UPDATE )
@@ -88,8 +88,8 @@ if( ENABLE_SABER )
 
     # saber
 #    ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
-#    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" BRANCH feature/nicas_article UPDATE )
-    ecbuild_bundle( PROJECT saber )
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" BRANCH feature/nicas_article UPDATE )
+#    ecbuild_bundle( PROJECT saber )
 endif()
 
 if( ENABLE_CRTM )

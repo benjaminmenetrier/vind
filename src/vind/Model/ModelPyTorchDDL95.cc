@@ -172,7 +172,8 @@ void ModelPyTorchDDL95::step(State & xx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("step")(*params_, lonTTensor_, latTTensor_, t, stateTTensor);
+    pybind11::object result = exec.attr("step")(*params_, lonTTensor_, latTTensor_, t,
+      stateTTensor);
 
     // Copy data from torch tensor
     for (int jnode = 0; jnode < globalState.shape(0); ++jnode) {

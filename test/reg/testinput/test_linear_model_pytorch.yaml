@@ -1,8 +1,18 @@
 geometry:
   function space: StructuredColumns
   grid:
-    type: regular_lonlat
-    N: 10
+    type: regional
+    nx: 35
+    ny: 53
+    dx: 5.0e3
+    dy: 5.0e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
   groups:
   - variables: [air_temperature]
     levels: 2
@@ -24,7 +34,7 @@ background error:
         explicit length-scales: true
         horizontal length-scale:
         - groups: [air_temperature]
-          value: 4.0e6
+          value: 3.0e4
         vertical length-scale:
         - groups: [air_temperature]
           value: 3.0
@@ -35,11 +45,11 @@ background error:
         filepath: testdata/stddev__MPI_
 analysis variables: [air_temperature]
 model: &model
-  name: TorchDDL95
+  name: PyTorchDDL95
   time step: PT12M
 model aux control: {}
 linear model:
-  name: TorchDDL95
+  name: PyTorchDDL95
   time step: PT12M
 linear model test:
   forecast length: PT24M
@@ -51,4 +61,4 @@ time window:
   begin: 2010-01-01T00:00:00Z
   end: 2010-01-03T00:00:00Z
 test:
-  reference filename: testref/test_linear_model_torch.ref
+  reference filename: testref/test_linear_model_pytorch.ref

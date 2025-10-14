@@ -65,7 +65,7 @@ cost function:
         covariance model: diagonal
 variational:
   minimizer:
-    algorithm: DRIPCG
+    algorithm: PCG
   iterations:
   - diagnostics:
       departures: ombg0

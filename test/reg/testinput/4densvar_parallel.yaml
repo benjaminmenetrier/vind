@@ -9,10 +9,10 @@ cost function:
     function space: StructuredColumns
     grid:
       type: regional
-      nx: 71
+      nx: 35
       ny: 53
-      dx: 2.5e3
-      dy: 2.5e3
+      dx: 5.0e3
+      dy: 5.0e3
       lonlat(centre): [9.9, 56.3]
       projection:
         type: lambert_conformal_conic
@@ -95,7 +95,7 @@ cost function:
         covariance model: diagonal
 variational:
   minimizer:
-    algorithm: DRIPCG
+    algorithm: PCG
   iterations:
   - diagnostics:
       departures: ombg0

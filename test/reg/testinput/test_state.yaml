@@ -2,10 +2,10 @@ geometry:
   function space: StructuredColumns
   grid:
     type: regional
-    nx: 71
+    nx: 35
     ny: 53
-    dx: 2.5e3
-    dy: 2.5e3
+    dx: 5.0e3
+    dy: 5.0e3
     lonlat(centre): [9.9, 56.3]
     projection:
       type: lambert_conformal_conic
@@ -35,8 +35,8 @@ state test:
     state variables: [air_temperature]
     constant value: 1.0
   date: 2010-01-01T00:00:00Z
-  norm file: 340.40041208283338
-  norm generated state: 86.752521577185291
+  norm file: 245.44287378304651
+  norm generated state: 60.909769331364245
   tolerance: 1.0e-12
   construct to variables: [air_temperature]
 test:

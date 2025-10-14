@@ -6,8 +6,8 @@
 #pragma once
 
 #include <pybind11/embed.h>
-#include <torch/torch.h>
 #include <torch/extension.h>
+#include <torch/torch.h>
 
 #include <memory>
 #include <ostream>

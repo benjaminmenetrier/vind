@@ -165,7 +165,8 @@ void ModelNumPyDDL95::step(State & xx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("step")(*params_, *lonNArray_, *latNArray_, t, stateNumpyArray);
+    pybind11::object result = exec.attr("step")(*params_, *lonNArray_, *latNArray_, t,
+      stateNumpyArray);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalState.shape(0); ++jnode) {

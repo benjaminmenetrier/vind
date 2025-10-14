@@ -2,10 +2,10 @@ geometry:
   function space: StructuredColumns
   grid:
     type: regional
-    nx: 71
+    nx: 35
     ny: 53
-    dx: 2.5e3
-    dy: 2.5e3
+    dx: 5.0e3
+    dy: 5.0e3
     lonlat(centre): [9.9, 56.3]
     projection:
       type: lambert_conformal_conic
@@ -21,10 +21,10 @@ other geometry:
   function space: StructuredColumns
   grid:
     type: regional
-    nx: 36
-    ny: 27
-    dx: 5.0e3
-    dy: 5.0e3
+    nx: 22
+    ny: 12
+    dx: 10.0e3
+    dy: 10.0e3
     lonlat(centre): [9.9, 56.3]
     projection:
       type: lambert_conformal_conic

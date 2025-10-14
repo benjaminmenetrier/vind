@@ -27,7 +27,7 @@ observations:
       name: air_temperature
       distribution:
         name: Halo
-        halo size: 1000.0e3
+        halo size: 1200.0e3
       simulated variables: [air_temperature]
       obsdatain:
         engine:

@@ -1,7 +1,7 @@
 Testing VariableChange: VariableChange
 State before variable change: 
 - Valid time: 2010-01-01T00:00:00Z
-  Geometry: structured [3763]
+  Geometry: structured [1855]
   Fields:
   - air_pressure_at_surface (1 levels):
     + min    = 1.0131500000000000e+05
@@ -9,7 +9,7 @@ State before variable change:
 Change of variables to [air_pressure_levels]
 State after variable change: 
 - Valid time: 2010-01-01T00:00:00Z
-  Geometry: structured [3763]
+  Geometry: structured [1855]
   Fields:
   - air_pressure_at_surface (1 levels):
     + min    = 1.0131500000000000e+05
@@ -17,5 +17,5 @@ State after variable change:
   - air_pressure_levels (8 levels):
     + min    = 1.6507899900000001e+02
     + max    = 1.0432431021058687e+05
-    + mean   = 5.2325146274408442e+04
-    + stddev = 4.4004538942140760e+04
+    + mean   = 5.2325146274412509e+04
+    + stddev = 4.4005290743818085e+04

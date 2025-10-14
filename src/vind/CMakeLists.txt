@@ -146,17 +146,6 @@ if( pybind11_FOUND )
     endif()
 endif()
 
-# Torch-based model
-if( Torch_FOUND )
-    message( STATUS "- TorchDDL95" )
-    list( APPEND vind_src_files
-
-    Model/ModelTorchDDL95.cc
-    Model/ModelTorchDDL95.h
-
-    )
-endif()
-
 ecbuild_add_library( TARGET   vind
                      SOURCES  ${vind_src_files}
                      PUBLIC_LIBS  ${VIND_PUBLIC_LIBS}
@@ -173,18 +162,10 @@ if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS ) AND falfilfa_FOUND )
 endif()
 if( pybind11_FOUND )
     target_link_libraries( vind PUBLIC pybind11::embed )
-endif()
-if( Torch_FOUND )
-     if( pybind11_FOUND )
-         find_library( TORCH_PYTHON_LIBRARY torch_python PATH "${TORCH_INSTALL_PREFIX}/lib")
-         target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} ${TORCH_PYTHON_LIBRARY} )
-     else()
-         target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} )
-     endif()
-endif()
-
-if( pybind11_FOUND )
-    # Link python modules
+    if( Torch_FOUND )
+        find_library( TORCH_PYTHON_LIBRARY torch_python PATH "${TORCH_INSTALL_PREFIX}/lib")
+        target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} ${TORCH_PYTHON_LIBRARY} )
+    endif()
     foreach( pyMod ${python_modules} )
         execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
         message(STATUS "- ${CMAKE_BINARY_DIR}/${pyMod}")

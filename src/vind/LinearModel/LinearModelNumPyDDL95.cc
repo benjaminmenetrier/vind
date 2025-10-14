@@ -185,7 +185,8 @@ void LinearModelNumPyDDL95::stepTL(Increment & dx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("stepTL")(*params_, *lonNArray_, *latNArray_, t, trajNArray, incrNArray);
+    pybind11::object result = exec.attr("stepTL")(*params_, *lonNArray_, *latNArray_, t,
+      trajNArray, incrNArray);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalIncr.shape(0); ++jnode) {
@@ -227,7 +228,8 @@ void LinearModelNumPyDDL95::stepAD(Increment & dx,
     | atlas::option::levels(var.getLevels()) | atlas::option::global());
 
   // Gather data on main processor
-  geom.functionSpace().gather(traj_.at(dx.validTime()-timeResolution_).fieldSet()[var.name()], globalTraj);
+  geom.functionSpace().gather(traj_.at(dx.validTime()-timeResolution_).fieldSet()[var.name()],
+    globalTraj);
   geom.functionSpace().gather(dx.fieldSet()[var.name()], globalIncr);
 
   // Get valid time components
@@ -267,7 +269,8 @@ void LinearModelNumPyDDL95::stepAD(Increment & dx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("stepAD")(*params_, *lonNArray_, *latNArray_, t, trajNArray, incrNArray);
+    pybind11::object result = exec.attr("stepAD")(*params_, *lonNArray_, *latNArray_, t,
+      trajNArray, incrNArray);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalIncr.shape(0); ++jnode) {

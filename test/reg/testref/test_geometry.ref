@@ -1,6 +1,6 @@
 Testing geometry: VIND geometry grid:
 - name: structured
-- size: 3763
+- size: 1855
 Regional grid detected
 Partitioner:
 - type: checkerboard

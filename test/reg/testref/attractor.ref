@@ -1,18 +1,18 @@
 Initial state: 
 - Valid time: 2009-12-30T00:00:00Z
-  Geometry: structured [3763]
+  Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.5536963420666615e+01
-    + max    = 1.5204909698952582e+01
-    + mean   = 1.1101170170275633e-02
-    + stddev = 4.0182497715238625e+00
+    + min    = -1.3610972183342525e+01
+    + max    = 1.4111118272592476e+01
+    + mean   = -2.5595004712434401e-02
+    + stddev = 4.0089948438085887e+00
 Final state: 
 - Valid time: 2010-01-01T00:00:00Z
-  Geometry: structured [3763]
+  Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.2737637622660445e+01
-    + max    = 1.4707989076749682e+01
-    + mean   = 2.3978095953212364e+00
-    + stddev = 3.1061352292252398e+00
+    + min    = -1.0287764472676125e+01
+    + max    = 1.9582387793721100e+01
+    + mean   = 2.4612641179440802e+00
+    + stddev = 3.1910365906225642e+00
