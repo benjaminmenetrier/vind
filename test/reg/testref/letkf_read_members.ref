@@ -1,0 +1,159 @@
+Initial state for member 1:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0272916804277608e+01
+    + max    = 1.8740481760074051e+01
+    + mean   = 2.1961001758681182e+00
+    + stddev = 2.8514424414275532e+00
+Initial state for member 2:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0345315914106127e+01
+    + max    = 1.8571805261116310e+01
+    + mean   = 2.2192193482732296e+00
+    + stddev = 2.8478755388573127e+00
+Initial state for member 3:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0279656748962816e+01
+    + max    = 1.8644069152415483e+01
+    + mean   = 2.1877262258572960e+00
+    + stddev = 2.8441569245650706e+00
+Initial state for member 4:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0240502338137325e+01
+    + max    = 1.8675853918837795e+01
+    + mean   = 2.2036774297260622e+00
+    + stddev = 2.8472497796821687e+00
+Initial state for member 5:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0283807777570551e+01
+    + max    = 1.8644989920588163e+01
+    + mean   = 2.1932883221742960e+00
+    + stddev = 2.8473063130026275e+00
+Initial state for member 6:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0406692783814259e+01
+    + max    = 1.8819427931232656e+01
+    + mean   = 2.2029788605963101e+00
+    + stddev = 2.8445180090287168e+00
+Initial state for member 7:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0220623189263415e+01
+    + max    = 1.8876841842386153e+01
+    + mean   = 2.1960289287861112e+00
+    + stddev = 2.8482208026553191e+00
+Initial state for member 8:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0272136420138436e+01
+    + max    = 1.8664322482275654e+01
+    + mean   = 2.1887556044999461e+00
+    + stddev = 2.8412451259362306e+00
+Initial state for member 9:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0137886041649526e+01
+    + max    = 1.8497301888272666e+01
+    + mean   = 2.1985712328394085e+00
+    + stddev = 2.8474739075373878e+00
+Initial state for member 10:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0323479917719220e+01
+    + max    = 1.8652489165589472e+01
+    + mean   = 2.1986593782124042e+00
+    + stddev = 2.8505535212368454e+00
+H(x) for member 1:
+air_temperature nobs= 25 Min=-8.0033177137374878e-01, Max=4.8198742866516113e+00, RMS=2.4503244038624641e+00
+H(x) for member 2:
+air_temperature nobs= 25 Min=-7.7341246604919434e-01, Max=4.7427525520324707e+00, RMS=2.4493810641035929e+00
+H(x) for member 3:
+air_temperature nobs= 25 Min=-7.3237270116806030e-01, Max=4.8281235694885254e+00, RMS=2.4161000595098359e+00
+H(x) for member 4:
+air_temperature nobs= 25 Min=-8.3278959989547729e-01, Max=4.6785268783569336e+00, RMS=2.4420403616802768e+00
+H(x) for member 5:
+air_temperature nobs= 25 Min=-8.3424925804138184e-01, Max=4.5588088035583496e+00, RMS=2.4341937838167738e+00
+H(x) for member 6:
+air_temperature nobs= 25 Min=-7.1947795152664185e-01, Max=4.6839380264282227e+00, RMS=2.4422220547087892e+00
+H(x) for member 7:
+air_temperature nobs= 25 Min=-8.9702683687210083e-01, Max=4.7376379966735840e+00, RMS=2.4503699748265508e+00
+H(x) for member 8:
+air_temperature nobs= 25 Min=-8.5064131021499634e-01, Max=4.8176875114440918e+00, RMS=2.4450249160218278e+00
+H(x) for member 9:
+air_temperature nobs= 25 Min=-8.4394013881683350e-01, Max=4.6950845718383789e+00, RMS=2.4337540143897050e+00
+H(x) for member 10:
+air_temperature nobs= 25 Min=-7.9330492019653320e-01, Max=4.7083015441894531e+00, RMS=2.4339895651445786e+00
+H(x) ensemble background mean: 
+air_temperature nobs= 25 Min=-8.0775469541549683e-01, Max=4.7270735740661625e+00, RMS=2.4384935859635299e+00
+background y - H(x): 
+air_temperature nobs= 25 Min=-2.3507590293884295e-01, Max=2.6369343791157007e-01, RMS=1.4649775968443526e-01
+Background mean :
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0278301793563930e+01
+    + max    = 1.8678758332278843e+01
+    + mean   = 2.1985005506833173e+00
+    + stddev = 2.8454484711447692e+00
+Analysis mean :
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.0270307941167431e+01
+    + max    = 1.8590217741142823e+01
+    + mean   = 2.2032032939252519e+00
+    + stddev = 2.8435038945943369e+00
+Analysis mean increment :
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -3.0166021560743328e-01
+    + max    = 3.5150183396685408e-01
+    + mean   = 4.7027432419351964e-03
+    + stddev = 9.4062752628784163e-02
+Forecast variance :
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = 4.6034591952436623e-04
+    + max    = 3.6294641722342598e-02
+    + mean   = 9.9273235952286910e-03
+    + stddev = 4.6717843128316850e-03
+Analysis variance :
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: structured [1855]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = 3.8648102943995106e-04
+    + max    = 3.0449565042113779e-02
+    + mean   = 8.2495324533573156e-03
+    + stddev = 3.8805249539636552e-03

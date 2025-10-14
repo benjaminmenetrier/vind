@@ -1,0 +1,23 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 35
+    ny: 53
+    dx: 5.0e3
+    dy: 5.0e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+model aux control: {}
+model aux error: {}
+test:
+  reference filename: testref/test_model_aux_covariance.ref

@@ -68,17 +68,18 @@ class State : public util::Printable,
   double norm() const
     {return fields_->norm();}
   const util::DateTime & validTime() const
-    {return fields_->time();}
+    {return fields_->validTime();}
   void updateTime(const util::Duration & dt)
-    {fields_->time() += dt;}
+    {fields_->updateTime(dt);}
 
   // Access to fields
-  Fields & fields()
+  Fields & fields()  // TODO(Benjamin): should be removed
     {return *fields_;}
-  const Fields & fields() const
+  const Fields & fields() const  // TODO(Benjamin): should be removed
     {return *fields_;}
 
-  // ATLAS FieldSet accessor
+  // ATLAS FieldSet accessors
+  // TODO(Benjamin): check what is actually needed
   void toFieldSet(atlas::FieldSet & fset) const
     {fields_->toFieldSet(fset);}
   void fromFieldSet(const atlas::FieldSet & fset)
@@ -90,12 +91,16 @@ class State : public util::Printable,
   void synchronizeFields()
     {fields_->synchronizeFields();}
 
-  // Other
+  // Accumulation
   void zero()
     {fields_->zero();}
   void accumul(const double & zz,
                const State & xx)
     {fields_->axpy(zz, xx.fields());}
+
+  // Geometry and variables accessors
+  const Geometry & geometry() const
+    {return fields_->geometry();}
   const oops::Variables & variables() const
     {return fields_->variables();}
 

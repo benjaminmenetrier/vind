@@ -1,0 +1,11 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+test:
+  reference filename: testref/test_geometry.ref

@@ -18,6 +18,7 @@ option( ENABLE_CUDA "Compile with CUDA" OFF )
 option( ENABLE_MKL "Compile with MKL" OFF )
 option( ENABLE_TRANSI "Compile TransI C-interface to trans" ON )
 option( ENABLE_ETRANS "Include Limited-Area-Model Transforms" ON )
+option( ENABLE_JEDI_MODEL_DATA "Obtain saber/vader test data from jedi-model-data repository (vs tarball)" ON )
 option( ENABLE_IODA_DATA "Obtain ioda test data from ioda-data repository (vs tarball)" ON )
 option( ENABLE_UFO_DATA "Obtain ufo test data from ufo-data repository (vs tarball)" ON )
 option( BUILD_IODA_CONVERTERS "Build IODA Converters" OFF )
@@ -28,13 +29,11 @@ option( ENABLE_OBS "Compile IODA/UFO" ON )
 option( ENABLE_CRTM "Compile CRTM" OFF )
 
 # What tests to run?
-option( ENABLE_GLB_TESTS "Run global tests" ON )
-option( ENABLE_REG_TESTS "Run regional tests" ON )
-option( ENABLE_PER_TESTS "Run persistence tests" ON )
-option( ENABLE_PYQG_TESTS "Run pyQG tests" ON )
-option( ENABLE_GENINT_TESTS "Run genint tests" ON )
-option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
 option( ENABLE_AQ_TESTS "Run aq tests" OFF )
+option( ENABLE_GENINT_TESTS "Run genint tests" ON )
+option( ENABLE_GLB_TESTS "Run global tests" ON )
+option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
+option( ENABLE_REG_TESTS "Run regional tests" ON )
 
 # Setup
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/lib )
@@ -61,7 +60,7 @@ else()
     list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
 endif()
 
-# Tools
+# ECMWF tools
 ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.31.4 )
 ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.0 )
 ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" BRANCH main )
@@ -72,6 +71,10 @@ ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.43.
 # oops
 ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
 #ecbuild_bundle( PROJECT oops )
+
+# jedi-data
+#ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda/jedi-model-data.git" BRANCH develop UPDATE )
+ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/benjaminmenetrier/jedi-model-data.git" BRANCH develop UPDATE )
 
 # vader
 #ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" BRANCH develop UPDATE )

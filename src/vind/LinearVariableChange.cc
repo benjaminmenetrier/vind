@@ -69,6 +69,9 @@ LinearVariableChange::LinearVariableChange(const Geometry & geom,
                        *params.inputVariables.value(),
                        conf,
                        multiplierFset_);
+
+    // Update halo
+    multiplierFset_.haloExchange();
   }
 
   oops::Log::trace() << classname() << "::LinearVariableChange done" << std::endl;

@@ -30,7 +30,6 @@
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
-#include "vind/GeometryIterator.h"
 
 #define ERR(e, msg) {std::string s(nc_strerror(e)); throw eckit::Exception(s + ": " + msg, Here());}
 
@@ -54,8 +53,7 @@ Geometry::Geometry(const eckit::Configuration & config,
   gridType_ = params.grid.value().getString("type", "no_type");
 
   // Deal with poles for structured grids
-  if ((gridType_ == "structured") || (gridType_ == "regular_lonlat")
-    || (gridType_ == "zonal_band")) {
+  if (((gridType_ == "structured") || (gridType_ == "regular_lonlat")) && grid_.domain().global()) {
     // Get structured function space and grid
     const atlas::functionspace::StructuredColumns fs(functionSpace_);
     const atlas::StructuredGrid & grid = fs.grid();
@@ -86,7 +84,7 @@ Geometry::Geometry(const eckit::Configuration & config,
     // Only keep the first of duplicated points in the owned mask
     const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
     const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
-    auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask.field("owned"));
+    auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask["owned"]);
     for (int jnode = 0; jnode < fs.size(); ++jnode) {
       if (((view_j(jnode) == 1) || (view_j(jnode) == grid.ny())) && (view_i(jnode) > 1)) {
         ownedView(jnode, 0) = 0;
@@ -98,7 +96,7 @@ Geometry::Geometry(const eckit::Configuration & config,
   fields_ = atlas::FieldSet();
 
   // Add owned points mask -- this mask does not depend on the group so was precomputed
-  fields_->add(fieldsetOwnedMask.field("owned"));
+  fields_->add(fieldsetOwnedMask["owned"]);
 
   // Levels direction
   levelsAreTopDown_ = params.levelsAreTopDown.value();
@@ -126,9 +124,9 @@ Geometry::Geometry(const eckit::Configuration & config,
 
   // Check for duplicate points
   const auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
-  const auto ownedView = atlas::array::make_view<int, 2>(fields_.field("owned"));
+  const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
   size_t duplicatedPointsCount = 0;
-  for (atlas::idx_t jnode = 0; jnode < fields_.field("owned").shape(0); ++jnode) {
+  for (atlas::idx_t jnode = 0; jnode < fields_["owned"].shape(0); ++jnode) {
     // Duplicate point = owned==0 and ghost==0 (see util::setupFunctionSpace in oops)
     if (ghostView(jnode) == 0 && ownedView(jnode, 0) == 0) {
       ++duplicatedPointsCount;
@@ -282,6 +280,19 @@ Interpolation & Geometry::getInterpolation(const Geometry & tgtGeom) const {
 
 // -----------------------------------------------------------------------------
 
+GeometryIterator Geometry::begin() const {
+  return GeometryIterator(*this, beginNode_, 0);
+}
+
+
+// -----------------------------------------------------------------------------
+
+GeometryIterator Geometry::end() const {
+  return GeometryIterator(*this, -1, -1);
+}
+
+// -----------------------------------------------------------------------------
+
 void Geometry::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
@@ -294,6 +305,9 @@ void Geometry::print(std::ostream & os) const {
   os << prefix << "- size: " << grid_.size() << std::endl;
   if (!grid_.domain().global()) {
     os << prefix << "Regional grid detected" << std::endl;
+  }
+  if (duplicatePoints_) {
+    os << prefix << "Duplicated points detected" << std::endl;
   }
   if (partitioner_) {
     os << prefix << "Partitioner:" << std::endl;
@@ -433,9 +447,8 @@ void Geometry::setupVertCoord(groupData & group) {
     }
   }
 
-  // Get ghost and owned views
-  const auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
-  const auto ownedView = atlas::array::make_view<int, 2>(fields_.field("owned"));
+  // Get owned view
+  const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
 
   // Average vertical coordinate
   for (size_t jlevel = 0; jlevel < group.levels_; ++jlevel) {
@@ -445,7 +458,7 @@ void Geometry::setupVertCoord(groupData & group) {
 
     // Loop over owned points
     for (atlas::idx_t jnode = 0; jnode < group.vertCoord_.shape(0); ++jnode) {
-      if (ghostView(jnode) == 0 && ownedView(jnode, 0) == 1) {
+      if (ownedView(jnode, 0) == 1) {
         avg += vertCoordView(jnode, jlevel);
         counter += 1.0;
       }
@@ -517,8 +530,8 @@ void Geometry::setupMask(groupData & group) {
   auto maskView = atlas::array::make_view<int, 2>(gmask);
   maskView.assign(1);
 
-  // Ghost view
-  auto ghostView = atlas::array::make_view<int, 1>(functionSpace_.ghost());
+  // Owned view
+  auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
 
   // Specific mask
   if (group.params_.maskType.value() == "none") {
@@ -591,7 +604,7 @@ void Geometry::setupMask(groupData & group) {
     comm_.broadcast(lsm.begin(), lsm.end(), 0);
 
     // Build KD-tree
-    atlas::Geometry geometry(atlas::util::Earth::radius());
+    const atlas::Geometry geometry(atlas::util::Earth::radius());
     atlas::util::IndexKDTree2D search(geometry);
     search.reserve(nlat*nlon);
     std::vector<double> lon2d;
@@ -610,11 +623,11 @@ void Geometry::setupMask(groupData & group) {
 
     if (functionSpace_.type() == "StructuredColumns") {
       // StructuredColumns
-      atlas::functionspace::StructuredColumns fs(functionSpace_);
-      auto lonlatView = atlas::array::make_view<double, 2>(fs.xy());
+      const atlas::functionspace::StructuredColumns fs(functionSpace_);
+      const auto lonlatView = atlas::array::make_view<double, 2>(fs.xy());
       auto maskView = atlas::array::make_view<int, 2>(gmask);
       for (atlas::idx_t jnode = 0; jnode < fs.xy().shape(0); ++jnode) {
-        if (ghostView(jnode) == 0) {
+        if (ownedView(jnode, 0) == 1) {
           // Find nearest neighbor
           size_t nn = search.closestPoint(atlas::PointLonLat{lonlatView(jnode, 0),
             lonlatView(jnode, 1)}).payload();
@@ -643,7 +656,7 @@ void Geometry::setupMask(groupData & group) {
   size_t domainSize = 0.0;
   for (atlas::idx_t jnode = 0; jnode < gmask.shape(0); ++jnode) {
     for (atlas::idx_t jlevel = 0; jlevel < gmask.shape(1); ++jlevel) {
-      if (ghostView(jnode) == 0) {
+      if (ownedView(jnode, 0) == 1) {
         if (maskView(jnode, jlevel) == 1) {
           group.gmaskSize_ += 1.0;
         }
@@ -721,39 +734,43 @@ void Geometry::checkLonLat(const eckit::Configuration & checkLonLatConf) {
 void Geometry::setupIterator(const eckit::Configuration & config) {
   oops::Log::trace() << classname() << "::setupIterator starting" << std::endl;
 
+  // Common vertical coordinate
+  commonVerticalCoordinate_ = config.getString("common vertical coordinate", "vert_coord_0");
+
   // Iterator dimension
   iteratorDimension_ = config.getInt("iterator dimension", 2);
   ASSERT((iteratorDimension_ == 2) || (iteratorDimension_ == 3));
 
   // First group vertical coordinate field
-  const auto vertCoord = groups_[0].vertCoord_;
+  const auto vertCoord = fields_[commonVerticalCoordinate_];
 
   // Domain size
   nnodes_ = vertCoord.shape(0);
   nlevs_ = vertCoord.shape(1);
 
-  // Averaged vertical coordinate
-  vertCoordAvg_ = groups_[0].vertCoordAvg_;
+  // First valid index
+  const auto ownedView = atlas::array::make_view<int, 2>(fields_["owned"]);
+  beginNode_ = -1;
+  bool ownedPoint = false;
+  do {
+    // Increment first valid index
+    ++beginNode_;
+
+    // Upper bound
+    ASSERT(beginNode_ < nnodes_);
+
+    // Check if the point is owned by this task
+    ownedPoint = (ownedView(beginNode_, 0) == 1);
+  } while (!ownedPoint);
+
+  // Averaged vertical coordinate corresponding to the common vertical coordinate
+  for (const auto & group : groups_) {
+    if (group.vertCoord_.name() == commonVerticalCoordinate_) {
+      vertCoordAvg_ = group.vertCoordAvg_;
+    }
+  }
 
   oops::Log::trace() << classname() << "::setupIterator done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
-GeometryIterator Geometry::begin() const {
-  return GeometryIterator(*this, 0, 0);
-}
-
-// -----------------------------------------------------------------------------
-
-GeometryIterator Geometry::end() const {
-  return GeometryIterator(*this, nnodes_, nlevs_);
-}
-
-// -----------------------------------------------------------------------------
-
-std::vector<double> Geometry::verticalCoord(std::string & vcUnits) const {
-  return vertCoordAvg_;
 }
 
 // -----------------------------------------------------------------------------

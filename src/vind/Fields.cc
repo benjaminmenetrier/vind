@@ -227,6 +227,35 @@ void Fields::zero() {
 
 // -----------------------------------------------------------------------------
 
+void Fields::zeroHalo() {
+  oops::Log::trace() << classname() << "::zeroHalo starting" << std::endl;
+
+  for (const auto & var : vars_) {
+    atlas::Field field = fset_[var.name()];
+    if (field.rank() == 2) {
+      // Get ghost view
+      const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
+
+      // Get view
+      auto view = atlas::array::make_view<double, 2>(field);
+
+      // Set halo to zero
+      for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
+        if (ghostView(jnode) != 0) {
+           for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+             view(jnode, jlevel) = 0.0;
+           }
+        }
+      }
+    }
+  }
+  fset_.set_dirty();
+
+  oops::Log::trace() << "Fields::zeroHalo end" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
 void Fields::constantValue(const double & value) {
   oops::Log::trace() << classname() << "::constantValue starting" << std::endl;
 
@@ -484,7 +513,7 @@ double Fields::dot_product_with(const Fields & fld2) const {
   ASSERT(checkFieldsCompatible(fld2));
 
   double zz = 0;
-  const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields().field("owned"));
+  const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
   for (const auto & var : vars_) {
     const atlas::Field field1 = fset_[var.name()];
     const std::string gmaskName = "gmask_" + std::to_string(geom_.groupIndex(var.name()));
@@ -543,10 +572,10 @@ void Fields::random(const int & seed) {
   oops::Log::trace() << classname() << "::random starting" << std::endl;
 
   for (size_t groupIndex = 0; groupIndex < geom_.groups(); ++groupIndex) {
-    // Mask and ghost points fields
+    // Mask and owned points fields
     const std::string gmaskName = "gmask_" + std::to_string(groupIndex);
     const auto gmaskView = atlas::array::make_view<int, 2>(geom_.fields()[gmaskName]);
-    const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
+    const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
 
     // Total size
     size_t n = 0;
@@ -561,7 +590,7 @@ void Fields::random(const int & seed) {
       if (field.rank() == 2) {
         for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
           for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-            if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) ++n;
+            if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) ++n;
           }
         }
       }
@@ -571,7 +600,7 @@ void Fields::random(const int & seed) {
     // Local masks
     atlas::FieldSet localMasks;
     localMasks.add(geom_.fields()[gmaskName]);
-    localMasks.add(geom_.functionSpace().ghost());
+    localMasks.add(geom_.fields()["owned"]);
 
     // Global masks
     atlas::FieldSet globalMasks;
@@ -579,9 +608,10 @@ void Fields::random(const int & seed) {
       atlas::option::name(gmaskName) | atlas::option::levels(geom_.levels(groupIndex))
       | atlas::option::global());
     globalMasks.add(gmaskGlobal);
-    atlas::Field ghostGlobal = geom_.functionSpace().createField<int>(atlas::option::name("ghost")
-     | atlas::option::global());
-    globalMasks.add(ghostGlobal);
+    atlas::Field ownedGlobal = geom_.functionSpace().createField<int>(
+      atlas::option::name("owned") | atlas::option::levels(1)
+      | atlas::option::global());
+    globalMasks.add(ownedGlobal);
 
     // Global data
     atlas::FieldSet globalData;
@@ -619,7 +649,7 @@ void Fields::random(const int & seed) {
 
       // Copy random values
       n = 0;
-      const auto ghostView = atlas::array::make_view<int, 1>(globalMasks["ghost"]);
+      const auto ownedView = atlas::array::make_view<int, 2>(globalMasks["owned"]);
       for (const auto & var : groupVars) {
         atlas::Field field = globalData[var.name()];
         const std::string gmaskName = "gmask_" + std::to_string(groupIndex);
@@ -628,7 +658,7 @@ void Fields::random(const int & seed) {
           auto view = atlas::array::make_view<double, 2>(field);
           for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
             for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-              if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) {
+              if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
                 view(jnode, jlevel) = rand_vec[n];
                 ++n;
               }
@@ -741,19 +771,18 @@ void Fields::dirac(const eckit::Configuration & config) {
     }
 
     // Build KDTree for each MPI task
-    const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
-    const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields().field("owned"));
+    const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
     const auto lonlatView = atlas::array::make_view<double, 2>(geom_.functionSpace().lonlat());
     atlas::idx_t n = 0;
     for (atlas::idx_t jnode = 0; jnode < geom_.functionSpace().size(); ++jnode) {
-      if ((ghostView(jnode) == 0) && (ownedView(jnode, 0) == 1)) {
+      if (ownedView(jnode, 0) == 1) {
         ++n;
       }
     }
     atlas::util::IndexKDTree search;
     search.reserve(n);
     for (atlas::idx_t jnode = 0; jnode < geom_.functionSpace().size(); ++jnode) {
-      if ((ghostView(jnode) == 0) && (ownedView(jnode, 0) == 1)) {
+      if (ownedView(jnode, 0) == 1) {
         atlas::PointLonLat pointLonLat(lonlatView(jnode, 0), lonlatView(jnode, 1));
         pointLonLat.normalise();
         atlas::PointXY point(pointLonLat);
@@ -952,6 +981,10 @@ void Fields::read(const eckit::Configuration & config) {
     updatedConfig.set("is state", this->isState());
   }
 
+  // Update MPI pattern
+  const std::string mpiPattern = updatedConfig.getString("mpi pattern", "_MPI_");
+  util::seekAndReplace(updatedConfig, mpiPattern, std::to_string(geom_.getComm().size()));
+
   // Read fieldset
   fieldsIO->read(vars_in_file, updatedConfig,  *this);
 
@@ -1027,6 +1060,10 @@ void Fields::write(const eckit::Configuration & config) const {
     updatedConfig.set("is state", this->isState());
   }
 
+  // Update MPI pattern
+  const std::string mpiPattern = updatedConfig.getString("mpi pattern", "_MPI_");
+  util::seekAndReplace(updatedConfig, mpiPattern, std::to_string(geom_.getComm().size()));
+
   for (const auto & ioFormat : ioFormats) {
     // Set FieldsIO
     std::unique_ptr<FieldsIOBase> fieldsIO(FieldsIOFactory::create(ioFormat));
@@ -1044,6 +1081,9 @@ void Fields::write(const eckit::Configuration & config) const {
     }
   }
 
+  // Wait
+  geom_.getComm().barrier();
+
   oops::Log::trace() << classname() << "::write done" << std::endl;
 }
 
@@ -1051,7 +1091,7 @@ void Fields::write(const eckit::Configuration & config) const {
 
 double Fields::norm() const {
   oops::Log::trace() << classname() << "::norm" << std::endl;
-  return util::normFieldSet(fset_, vars_.variables(), geom_.getComm());
+  return std::sqrt(dot_product_with(*this));
 }
 
 // -----------------------------------------------------------------------------
@@ -1118,9 +1158,67 @@ void Fields::deserialize(const std::vector<double> & vect,
 
 // -----------------------------------------------------------------------------
 
+oops::LocalIncrement Fields::getLocal(const GeometryIterator & geometryIterator) const {
+  int index = 0;
+  if (geometry().iteratorDimension() == 2) {
+    std::vector<int> variableSizes;
+    for (const auto & var : vars_) {
+      variableSizes.push_back(static_cast<int>(var.getLevels()));
+    }
+    size_t valuesSize = std::accumulate(variableSizes.begin(), variableSizes.end(), 0);
+    std::vector<double> values(valuesSize);
+    for (const auto & var : vars_) {
+      const auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
+        values[index] = view(geometryIterator.jnode(), jlevel);
+        ++index;
+      }
+    }
+    return oops::LocalIncrement(vars_, values, variableSizes);
+  } else {
+    std::vector<int> variableSizes(vars_.size(), 1);
+    size_t valuesSize = vars_.size();
+    std::vector<double> values(valuesSize);
+    for (const auto & var : vars_) {
+      const auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      values[index] = view(geometryIterator.jnode(), geometryIterator.jlevel());
+      ++index;
+    }
+    return oops::LocalIncrement(vars_, values, variableSizes);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void Fields::setLocal(const oops::LocalIncrement & localIncrement,
+                      const GeometryIterator & geometryIterator) {
+  std::vector<double> values = localIncrement.getVals();
+  size_t index = 0;
+  if (geometry().iteratorDimension() == 2) {
+    // Copy data
+    for (const auto & var : vars_) {
+      auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
+        view(geometryIterator.jnode(), jlevel) = values[index];
+        ++index;
+      }
+    }
+  } else {
+    // Copy data
+    for (const auto & var : vars_) {
+      auto view = atlas::array::make_view<double, 2>(fset_[var.name()]);
+      view(geometryIterator.jnode(), geometryIterator.jlevel()) = values[index];
+      ++index;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 void Fields::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
+  // Print header
   os << std::endl;
   std::string prefix;
   if (os.rdbuf() == oops::Log::info().rdbuf()) {
@@ -1129,65 +1227,92 @@ void Fields::print(std::ostream & os) const {
   os << prefix << "  Geometry: " << geom_.grid().name() << " [" << geom_.grid().size() << "]"
     << std::endl;
   os << prefix << "  Fields:";
-  const auto ghostView = atlas::array::make_view<int, 1>(geom_.functionSpace().ghost());
+
+  // Get owned view
+  const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields()["owned"]);
+
   for (const auto & var : vars_) {
     os << std::endl;
+
+    // Initialization
     double zzmin = std::numeric_limits<double>::max();
     double zzmax = -std::numeric_limits<double>::max();
     double zzave = 0.0;
     double zzstd = 0.0;
+    int counter = 0;
+
+    // Get field
     atlas::Field field = fset_[var.name()];
+
+    // Get mask view
     const std::string gmaskName = "gmask_" + std::to_string(geom_.groupIndex(var.name()));
     const auto gmaskView = atlas::array::make_view<int, 2>(geom_.fields()[gmaskName]);
+
+    // Compute min/max/average
     if (field.rank() == 2) {
       auto view = atlas::array::make_view<double, 2>(field);
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
         for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-          if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) {
+          if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
             zzmin = (view(jnode, jlevel) < zzmin) ? view(jnode, jlevel) : zzmin;
             zzmax = (view(jnode, jlevel) > zzmax) ? view(jnode, jlevel) : zzmax;
             zzave += view(jnode, jlevel);
+            ++counter;
           }
         }
       }
-      geom_.getComm().allReduceInPlace(zzmin, eckit::mpi::min());
-      geom_.getComm().allReduceInPlace(zzmax, eckit::mpi::max());
-      geom_.getComm().allReduceInPlace(zzave, eckit::mpi::sum());
-      zzave /= (geom_.grid().size()*field.shape(1));
+    }
+
+    // Communication
+    geom_.getComm().allReduceInPlace(zzmin, eckit::mpi::min());
+    geom_.getComm().allReduceInPlace(zzmax, eckit::mpi::max());
+    geom_.getComm().allReduceInPlace(zzave, eckit::mpi::sum());
+    geom_.getComm().allReduceInPlace(counter, eckit::mpi::sum());
+    zzave /= static_cast<double>(counter);
+
+    // Accumulate standard-deviation
+    if (field.rank() == 2) {
+      auto view = atlas::array::make_view<double, 2>(field);
       for (atlas::idx_t jnode = 0; jnode < field.shape(0); ++jnode) {
         for (atlas::idx_t jlevel = 0; jlevel < field.shape(1); ++jlevel) {
-          if (gmaskView(jnode, jlevel) == 1 && ghostView(jnode) == 0) {
+          if (gmaskView(jnode, jlevel) == 1 && ownedView(jnode, 0) == 1) {
             zzstd += (view(jnode, jlevel)-zzave)*(view(jnode, jlevel)-zzave);
           }
         }
       }
-      geom_.getComm().allReduceInPlace(zzstd, eckit::mpi::sum());
-      zzstd /= (geom_.grid().size()*field.shape(1)-1);
-      zzstd = std::sqrt(zzstd);
-      const double tiny = 1.0e-12*std::max({std::abs(zzmin), std::abs(zzmax), std::abs(zzave),
-        std::abs(zzstd)});
-      os << prefix << "  - " << var.name() << " (" << field.shape(1) << " levels):" << std::endl;
-      if ((std::abs(zzmin) > 0.0) && (std::abs(zzmin) < tiny)) {
-        os << prefix << "    + min    ~ 0" << std::endl;
+    }
+
+    // Communication
+    geom_.getComm().allReduceInPlace(zzstd, eckit::mpi::sum());
+
+    // Normalize standard-deviation
+    zzstd /= static_cast<double>(counter-1);
+    zzstd = std::sqrt(zzstd);
+
+    // Print results
+    const double tiny = 1.0e-12*std::max({std::abs(zzmin), std::abs(zzmax), std::abs(zzave),
+      std::abs(zzstd)});
+    os << prefix << "  - " << var.name() << " (" << field.shape(1) << " levels):" << std::endl;
+    if ((std::abs(zzmin) > 0.0) && (std::abs(zzmin) < tiny)) {
+      os << prefix << "    + min    ~ 0" << std::endl;
+    } else {
+      os << prefix << "    + min    = " << zzmin << std::endl;
+    }
+    if ((std::abs(zzmax) > 0.0) && (std::abs(zzmax) < tiny)) {
+      os << prefix << "    + max    ~ 0" << std::endl;
+    } else {
+      os << prefix << "    + max    = " << zzmax << std::endl;
+    }
+    if (zzmin != zzmax) {
+      if ((std::abs(zzave) > 0.0) && (std::abs(zzave) < tiny)) {
+        os << prefix << "    + mean   ~ 0" << std::endl;
       } else {
-        os << prefix << "    + min    = " << zzmin << std::endl;
+        os << prefix << "    + mean   = " << zzave << std::endl;
       }
-      if ((std::abs(zzmax) > 0.0) && (std::abs(zzmax) < tiny)) {
-        os << prefix << "    + max    ~ 0" << std::endl;
+      if ((std::abs(zzstd) > 0.0) && (std::abs(zzstd) < tiny)) {
+        os << prefix << "    + stddev ~ 0" << std::endl;
       } else {
-        os << prefix << "    + max    = " << zzmax << std::endl;
-      }
-      if (zzmin != zzmax) {
-        if ((std::abs(zzave) > 0.0) && (std::abs(zzave) < tiny)) {
-          os << prefix << "    + mean   ~ 0" << std::endl;
-        } else {
-          os << prefix << "    + mean   = " << zzave << std::endl;
-        }
-        if ((std::abs(zzstd) > 0.0) && (std::abs(zzstd) < tiny)) {
-          os << prefix << "    + stddev ~ 0" << std::endl;
-        } else {
-          os << prefix << "    + stddev = " << zzstd << std::endl;
-        }
+        os << prefix << "    + stddev = " << zzstd << std::endl;
       }
     }
   }
@@ -1201,8 +1326,7 @@ void Fields::resetDuplicatePoints() {
   oops::Log::trace() << classname() << "::resetDuplicatePoints starting" << std::endl;
 
   if (geom_.duplicatePoints()) {
-    if ((geom_.gridType() == "structured") || (geom_.gridType() == "regular_lonlat")
-      || (geom_.gridType() == "zonal_band")) {
+    if ((geom_.gridType() == "structured") || (geom_.gridType() == "regular_lonlat")) {
       // Deal with poles
       for (auto field_internal : fset_) {
         // Get first longitude value

@@ -15,6 +15,10 @@
 #include "oops/util/Logger.h"
 #include "oops/util/Printable.h"
 
+namespace util {
+  class DateTime;
+}
+
 namespace vind {
   class Geometry;
   class ModelAuxControl;

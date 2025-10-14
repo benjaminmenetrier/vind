@@ -46,7 +46,7 @@ class Increment : public util::Printable,
   Increment(const Geometry &,
             const Increment &);
   Increment(const Increment &,
-            const bool);
+            const bool & copy = true);
 
   // Basic operators
   void diff(const State &,
@@ -82,9 +82,9 @@ class Increment : public util::Printable,
   double norm() const
     {return fields_->norm();}
   const util::DateTime & validTime() const
-    {return fields_->time();}
+    {return fields_->validTime();}
   void updateTime(const util::Duration & dt)
-    {fields_->time() += dt;}
+    {fields_->updateTime(dt);}
 
   // ATLAS FieldSet accessor
   void toFieldSet(atlas::FieldSet & fset) const
@@ -99,17 +99,19 @@ class Increment : public util::Printable,
     {fields_->synchronizeFields();}
 
   // Access to fields
-  Fields & fields()
+  Fields & fields()  // TODO(Benjamin): should be removed
     {return *fields_;}
-  const Fields & fields() const
+  const Fields & fields() const  // TODO(Benjamin): should be removed
     {return *fields_;}
-  const Geometry & geometry() const
-    {return fields_->geometry();}
 
-  // Other
+  // Accumulation
   void accumul(const double & zz,
                const State & xx)
     {fields_->axpy(zz, xx.fields());}
+
+  // Geometry and variables accessors
+  const Geometry & geometry() const
+    {return fields_->geometry();}
   const oops::Variables & variables() const
     {return fields_->variables();}
 
@@ -123,9 +125,11 @@ class Increment : public util::Printable,
     {fields_->deserialize(vect, index);}
 
   // Local increment
-  oops::LocalIncrement getLocal(const GeometryIterator &) const;
-  void setLocal(const oops::LocalIncrement &,
-                const GeometryIterator &);
+  oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const
+    {return fields_->getLocal(geometryIterator);}
+  void setLocal(const oops::LocalIncrement & localIncrement,
+                const GeometryIterator & geometryIterator)
+    {return fields_->setLocal(localIncrement, geometryIterator);}
 
  private:
   // Print

@@ -9,9 +9,24 @@
 
 #include <vector>
 
+#include "vind/Geometry.h"
+
 // -----------------------------------------------------------------------------
 
 namespace vind {
+
+// -----------------------------------------------------------------------------
+
+GeometryIterator::GeometryIterator(const GeometryIterator & other)
+  : geom_(other.geom_), iteratorDimension_(other.iteratorDimension_), jnode_(other.jnode_),
+  jlevel_(other.jlevel_) {}
+
+// -----------------------------------------------------------------------------
+
+GeometryIterator::GeometryIterator(const Geometry & geom,
+                                   const int & jnode,
+                                   const int & jlevel)
+  : geom_(geom), iteratorDimension_(geom.iteratorDimension()), jnode_(jnode), jlevel_(jlevel) {}
 
 // -----------------------------------------------------------------------------
 
@@ -35,7 +50,8 @@ eckit::geometry::Point3 GeometryIterator::operator*() const {
   if (geom_.iteratorDimension() == 2) {
     return eckit::geometry::Point3(lonLatView(jnode_, 0), lonLatView(jnode_, 1), 0.0);
   } else {
-    const auto vcView = atlas::array::make_view<double, 2>(geom_.fields().field("vert_coord_0"));
+    const auto vcView = atlas::array::make_view<double, 2>(geom_.fields().field(
+      geom_.commonVerticalCoordinate()));
     return eckit::geometry::Point3(lonLatView(jnode_, 0), lonLatView(jnode_, 1),
       vcView(jnode_, jlevel_));
   }
@@ -47,27 +63,30 @@ GeometryIterator& GeometryIterator::operator++() {
   const auto ownedView = atlas::array::make_view<int, 2>(geom_.fields().field("owned"));
   bool ownedPoint = false;
   do {
+    // Increment index
     ++jnode_;
-    if (jnode_ < geom_.nnodes()) {
-      ownedPoint = (ownedView(jnode_, 0) == 1);
-    } else {
-      ownedPoint = true;
-    }
-  } while (!ownedPoint);
-  if (jnode_ == geom_.nnodes()) {
-    // End of horizontal counter
-    if (geom_.iteratorDimension() == 2) {
-      jlevel_ = geom_.nlevs();
-    } else {
-      ++jlevel_;
-      if (jlevel_ < geom_.nlevs()) {
-        jnode_ = 0;
-        do {
-          ++jnode_;
-        } while (ownedView(jnode_, 0) == 0);
+
+    if (jnode_ == static_cast<int>(geom_.nnodes())) {
+      if (geom_.iteratorDimension() == 2) {
+        // End of the 2D grid
+        jnode_ = -1;
+        jlevel_ = -1;
+        return *this;
+      } else {
+        // Next level of the 3D grid
+        ++jlevel_;
+        if (jlevel_ == static_cast<int>(geom_.nlevs())) {
+          // End of the 3D grid
+          jnode_ = -1;
+          jlevel_ = -1;
+          return *this;
+        }
       }
     }
-  }
+
+    // Check if the point is owned by this task
+    ownedPoint = (ownedView(jnode_, 0) == 1);
+  } while (!ownedPoint);
   return *this;
 }
 

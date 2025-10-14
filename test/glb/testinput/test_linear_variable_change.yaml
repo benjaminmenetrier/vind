@@ -1,0 +1,25 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regular_lonlat
+    N: 10
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+background:
+  date: 2010-01-01T00:00:00Z
+  state variables: [air_temperature]
+  filepath: testdata/attractor__MPI__P2D
+linear variable change tests:
+- linear variable change:
+    input variables: [air_temperature]
+    output variables: [air_temperature]
+    atlas file:
+      date: 2010-01-01T00:00:00Z
+      state variables: [air_temperature]
+      filepath: testdata/stddev__MPI_
+  tolerance inverse: 1.0e-12
+test:
+  float absolute tolerance: 1.0e-12
+  reference filename: testref/test_linear_variable_change.ref

@@ -1,0 +1,33 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 35
+    ny: 53
+    dx: 5.0e3
+    dy: 5.0e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables: [air_temperature]
+    levels: 2
+  halo: 2
+initial condition:
+  date: 2010-01-01T00:00:00Z
+  state variables: [air_temperature]
+  filepath: testdata/attractor__MPI__P2D
+model:
+  name: NumPyDDL95
+  time step: PT12M
+model aux control: {}
+model test:
+  forecast length: PT24M
+  final norm: 241.72182943497444
+  tolerance: 1.0e-12
+test:
+  reference filename: testref/test_model_numpy.ref

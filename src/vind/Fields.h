@@ -15,6 +15,7 @@
 
 #include "atlas/field.h"
 
+#include "oops/base/LocalIncrement.h"
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
@@ -24,6 +25,7 @@
 
 namespace vind {
   class Geometry;
+  class GeometryIterator;
 
 // -----------------------------------------------------------------------------
 /// Fields class
@@ -53,6 +55,7 @@ class Fields : public util::Printable,
 
   // Basic operators
   void zero();
+  void zeroHalo();
   void constantValue(const double &);
   void constantValue(const std::vector<double> &);
   void constantValue(const eckit::Configuration &);
@@ -90,9 +93,9 @@ class Fields : public util::Printable,
     {return geom_;}
   const oops::Variables & variables() const
     {return vars_;}
-  const util::DateTime & time() const
+  const util::DateTime & validTime() const
     {return time_;}
-  util::DateTime & time()
+  util::DateTime & validTime()
     {return time_;}
   void updateTime(const util::Duration & dt)
     {time_ += dt;}
@@ -102,6 +105,11 @@ class Fields : public util::Printable,
   void serialize(std::vector<double> &) const;
   void deserialize(const std::vector<double> &,
                    size_t &);
+
+  // Local increment
+  oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const;
+  void setLocal(const oops::LocalIncrement & localIncrement,
+                const GeometryIterator & geometryIterator);
 
  private:
   // Print

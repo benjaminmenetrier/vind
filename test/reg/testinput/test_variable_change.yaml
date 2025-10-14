@@ -1,0 +1,39 @@
+geometry:
+  function space: StructuredColumns
+  grid:
+    type: regional
+    nx: 35
+    ny: 53
+    dx: 5.0e3
+    dy: 5.0e3
+    lonlat(centre): [9.9, 56.3]
+    projection:
+      type: lambert_conformal_conic
+      latitude0: 56.3
+      longitude0: 0.0
+    y_numbering: 1
+  partitioner: checkerboard
+  groups:
+  - variables: [air_pressure_levels]
+    levels: 8
+  - variables: [air_pressure_at_surface]
+    levels: 1
+  halo: 2
+  model data:
+    sigma_pressure_hybrid_coordinate_a_coefficient: [1.65078999e+02, 9.29294154e+02, 4.01754119e+03, 1.50392994e+04, 2.03259006e+04, 1.09181702e+04, 4.53390107e+03, 0]
+    sigma_pressure_hybrid_coordinate_b_coefficient: [0, 0, 0, 0.200350105762482, 0.581041514873505, 0.813303887844086, 0.984951972961426, 1]
+    nLevels: 7
+variable change tests:
+- variable change:
+    input variables: [air_pressure_at_surface]
+    output variables: [air_pressure_levels]
+    vader:
+     recipe parameters:
+     - recipe name: AirPressureAtInterface_A
+  state:
+    date: 2010-01-01T00:00:00Z
+    state variables: [air_pressure_at_surface]
+    constant value: 101315.0
+  tolerance inverse: 1.0e-8
+test:
+  reference filename: testref/test_variable_change.ref

@@ -1,0 +1,18 @@
+Initial state: 
+- Valid time: 2009-12-30T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.3198408211528426e+01
+    + max    = 1.3416030777368801e+01
+    + mean   = -1.1707496029374660e-01
+    + stddev = 3.8998700015603047e+00
+Final state: 
+- Valid time: 2010-01-01T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -3.0181907010909312e+00
+    + max    = 1.0487693671589927e+01
+    + mean   = 2.9143919578582302e+00
+    + stddev = 2.4294364876410390e+00

@@ -1,0 +1,15 @@
+Testing geometry: VIND geometry grid:
+- name: L40x21
+- size: 840
+Duplicated points detected
+Partitioner:
+- type: equal_regions
+Function space:
+- type: StructuredColumns
+- halo: 2
+Groups: 
+- Group 0:
+  Vertical levels: 
+  - number: 2
+  - vertCoord: [1.0000000000000000e+00,2.0000000000000000e+00]
+  Mask size: 100%

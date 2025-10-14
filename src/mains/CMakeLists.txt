@@ -8,19 +8,6 @@
 set( LIBS ${VIND_PUBLIC_LIBS} )
 list( APPEND LIBS "vind" )
 
-# Test executables
-ecbuild_add_executable( TARGET  vind_test_geometry.x
-                        SOURCES vindTestGeometry.cc
-                        LIBS    ${LIBS} )
-
-ecbuild_add_executable( TARGET  vind_test_increment.x
-                        SOURCES vindTestIncrement.cc
-                        LIBS    ${LIBS} )
-
-ecbuild_add_executable( TARGET  vind_test_state.x
-                        SOURCES vindTestState.cc
-                        LIBS    ${LIBS} )
-
 # OOPS-only executables
 ecbuild_add_executable( TARGET  vind_forecast.x
                         SOURCES vindForecast.cc
@@ -65,8 +52,4 @@ if( ENABLE_SABER AND ENABLE_OBS )
     ecbuild_add_executable( TARGET  vind_variational.x
                             SOURCES vindVariational.cc
                             LIBS    ${LIBS} )
-
-#    ecbuild_add_executable( TARGET  vind_bgos.x
-#                            SOURCES vindBGOS.cc
-#                            LIBS    ${LIBS} )
 endif()

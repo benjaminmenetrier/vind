@@ -34,7 +34,7 @@ class Model: public util::Printable,
   static const std::string classname()
     {return "vind::Model";}
   static std::vector<std::string> names()
-    {return {"persistence", "python"};}
+    {return {"DDL95", "NumPyDDL95", "PyTorchDDL95"};}
 
   // Constructors/destructor
   Model(const Geometry &,
