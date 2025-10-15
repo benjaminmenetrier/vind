@@ -66,7 +66,7 @@ ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.
 ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" BRANCH main )
 ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" BRANCH main )
 #ecbuild_bundle( PROJECT ectrans )
-ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.43.1 )
+ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.40.0 )
 
 # oops
 ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )

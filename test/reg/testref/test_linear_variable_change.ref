@@ -1,8 +1,0 @@
-Testing linear variable change
-Doing zero test for inverse
-<dxout,KTdxin>-<Kdxout,dxin>/<dxout,KTdxin>=-4.3351167328713282e-16
-<dxout,KTdxin>-<Kdxout,dxin>/<Kdxout,dxin>=-4.3351167328713262e-16
-Doing adjoint test for inverse
-<dxout,KinvTdxin>-<Kinvdxout,dxin>/<dxout,KinvTdxin>=3.8214280666976242e-16
-<dxout,KinvTdxin>-<Kinvdxout,dxin>/<Kinvdxout,dxin>=3.8214280666976257e-16
-multiplyInverse test not executed

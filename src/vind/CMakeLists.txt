@@ -168,7 +168,6 @@ if( pybind11_FOUND )
     endif()
     foreach( pyMod ${python_modules} )
         execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
-        message(STATUS "- ${CMAKE_BINARY_DIR}/${pyMod}")
     endforeach()
 endif()
 
