@@ -64,4 +64,3 @@ state test:
 
 test:
   reference filename: testref/state.ref
-  test output filename: testdata/state.log
