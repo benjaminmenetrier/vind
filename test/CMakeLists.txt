@@ -36,7 +36,7 @@ endmacro()
 
 
 # Add tests
-if( ENABLE_AQTESTS )
+if( ENABLE_AQ_TESTS )
     add_subdirectory( aq )
 endif()
 if( ENABLE_GENINT_TESTS )
@@ -47,6 +47,9 @@ if( ENABLE_GLB_TESTS )
 endif()
 if( ENABLE_MONARCH_TESTS )
     add_subdirectory( monarch )
+endif()
+if( ENABLE_MONGLOB_TESTS )
+    add_subdirectory( monglob )
 endif()
 if( ENABLE_REG_TESTS )
     add_subdirectory( reg )

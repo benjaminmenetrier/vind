@@ -32,7 +32,8 @@ option( ENABLE_CRTM "Compile CRTM" OFF )
 option( ENABLE_AQ_TESTS "Run aq tests" OFF )
 option( ENABLE_GENINT_TESTS "Run genint tests" ON )
 option( ENABLE_GLB_TESTS "Run global tests" ON )
-option( ENABLE_MONARCH_TESTS "Run monarch tests" OFF )
+option( ENABLE_MONARCH_TESTS "Run regional monarch tests" OFF )
+option( ENABLE_MONGLOB_TESTS "Run global monarch tests" OFF )
 option( ENABLE_REG_TESTS "Run regional tests" ON )
 
 # Setup

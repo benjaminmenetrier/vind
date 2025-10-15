@@ -23,13 +23,6 @@ testdata/005
 testdata/006
 testdata/HDAT_AIRBASE_PM10-2022070112.nc
 testdata/HDAT_AIRBASE_O3-2022070112.nc
-testdata/G000
-testdata/G001
-testdata/G002
-testdata/G003
-testdata/G004
-testdata/G005
-testdata/G006
 
 )
 
@@ -47,6 +40,7 @@ create_test( monarch increment 8 test_increment )
 create_test( monarch ens_mean_variance 8 ens_mean_variance )
 
 if( ENABLE_OBS )
+    link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testinput/ufo_variable_name_map.yaml )
     create_test( monarch hofx3d_constant 8 hofx3d )
     create_test( monarch hofx3d_air_pressure 8 hofx3d )
     create_test( monarch hofx3d_logarithm 8 hofx3d )

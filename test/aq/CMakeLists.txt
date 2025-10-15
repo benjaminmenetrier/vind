@@ -23,7 +23,6 @@ testdata/E0005
 testdata/forecast
 testdata/HDAT_AIRBASE_PM10-2022070112.nc
 testdata/HDAT_AIRBASE_O3-2022070112.nc
-testdata/HDAT_AIRBASE_PM10-GLO-2017121612.nc
 
 )
 
@@ -39,6 +38,7 @@ create_test( aq increment 8 test_increment )
 create_test( aq ens_mean_variance 8 ens_mean_variance )
 
 if( ENABLE_OBS )
+    link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testinput/ufo_variable_name_map.yaml )
     create_test( aq hofx3d_constant 8 hofx3d )
     create_test( aq hofx3d_logarithm 8 hofx3d )
 endif()
