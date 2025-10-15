@@ -756,6 +756,7 @@ void Fields::dirac(const eckit::Configuration & config) {
       if (vertCoord.size() != lon.size()) throw eckit::UserError(
         "Inconsistent dirac specification size", Here());
       const double vertCoordTol = config.getDouble("vertical coordinate tolerance", 0.0);
+      level.resize(vertCoord.size());
       for (size_t jdir = 0; jdir < vertCoord.size(); ++jdir) {
         level[jdir] = -1;
         for (size_t jlev = 0; jlev < geom_.vertCoordAvg(vars[jdir]).size(); ++jlev) {

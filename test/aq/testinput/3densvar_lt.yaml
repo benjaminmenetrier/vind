@@ -229,7 +229,7 @@ cost function:
         constant vertical coordinate values: [0, 0, 0, 0, 1]
         observation vertical coordinate: air_pressure
         interpolation method: nearest-neighbor
-        observation alias file: testinput/monarch_ufo_variable_name_map.yaml
+        observation alias file: testinput/ufo_variable_name_map.yaml
       obs error:
         covariance model: diagonal
 variational:

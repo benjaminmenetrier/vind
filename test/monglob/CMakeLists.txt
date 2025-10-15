@@ -8,6 +8,9 @@ file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput )
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testdata )
 
+# Link ufo_variable_name_map.yaml
+link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testinput/ufo_variable_name_map.yaml )
+
 # Add tests
 create_test( monglob geometry 8 test_geometry )
 create_test( monglob convertstate 8 convertstate )

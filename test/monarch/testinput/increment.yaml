@@ -67,6 +67,7 @@ increment test:
     lon:                 [7.9]
     lat:                 [38.3]
     vertical coordinate: [23]
+    vertical coordinate tolerance: 1.0e-12
     variable:            ['ozone']
     
 inc variables: *chemvars

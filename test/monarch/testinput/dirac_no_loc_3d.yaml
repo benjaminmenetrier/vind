@@ -89,6 +89,7 @@ dirac:
   lon:                 [              7.9,   17.9]
   lat:                 [             38.3,   60.3]
   vertical coordinate: [               23,     23]
+  vertical coordinate tolerance: 1.0e-12
   variable:            ['carbon_monoxyde', 'pm10']
 
 background:
