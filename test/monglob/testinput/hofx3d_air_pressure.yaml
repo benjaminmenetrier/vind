@@ -91,7 +91,7 @@ observations:
       observation vertical coordinate: air_pressure
       observation vertical coordinate group: MetaData
       interpolation method: nearest-neighbor
-      observation alias file: testinput/monarch_ufo_variable_name_map.yaml
+      observation alias file: testinput/ufo_variable_name_map.yaml
 
 test:
   reference filename: testref/hofx3d_air_pressure.ref
