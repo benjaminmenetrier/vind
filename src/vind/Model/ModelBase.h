@@ -25,7 +25,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  ModelBase class
+/// ModelBase class
 
 class ModelBase : public util::Printable {
  public:
@@ -51,7 +51,7 @@ class ModelBase : public util::Printable {
 };
 
 // -----------------------------------------------------------------------------
-///  ModelFactory class
+/// ModelFactory class
 
 class ModelFactory {
  public:
@@ -74,7 +74,7 @@ class ModelFactory {
 };
 
 // -----------------------------------------------------------------------------
-///  ModelMaker class
+/// ModelMaker class
 
 template<class T>
 class ModelMaker : public ModelFactory {

@@ -78,7 +78,7 @@ void ModelDDL95::step(State & xx,
 
   // First step
   Increment dxTen1(xx.geometry(), xx.variables(), xx.validTime());
-  xx.fields().zeroHalo();
+  xx.zeroHalo();
   xx.fieldSet().haloExchange();
   tendency(xx, dxTen1);
   dxTen1 *= 0.5*dti_;
@@ -88,7 +88,7 @@ void ModelDDL95::step(State & xx,
 
   // Second step
   Increment dxTen2(xx.geometry(), xx.variables(), xx.validTime());
-  xxTmp.fields().zeroHalo();
+  xxTmp.zeroHalo();
   xxTmp.fieldSet().haloExchange();
   tendency(xxTmp, dxTen2);
   dxTen2 *= dti_;

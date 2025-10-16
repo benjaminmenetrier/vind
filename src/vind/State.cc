@@ -85,7 +85,7 @@ State & State::operator=(const State & rhs) {
 State & State::operator+=(const Increment & dx) {
   oops::Log::trace() << classname() << "::operator+= starting" << std::endl;
 
-  ASSERT(this->validTime() == dx.validTime());
+  ASSERT(validTime() == dx.validTime());
   ASSERT(fields_);
   *fields_ += dx.fields();
 
@@ -98,7 +98,7 @@ State & State::operator+=(const Increment & dx) {
 void State::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
-  os << std::endl << "- Valid time: " << this->validTime();
+  os << std::endl << "- Valid time: " << validTime();
   os << *fields_;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;

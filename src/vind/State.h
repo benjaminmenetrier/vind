@@ -19,6 +19,7 @@
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
+#include "oops/util/Serializable.h"
 
 #include "vind/Fields.h"
 
@@ -34,6 +35,7 @@ namespace vind {
 /// State class
 
 class State : public util::Printable,
+              public util::Serializable,
               private util::ObjectCounter<State> {
  public:
   static const std::string classname()
@@ -72,31 +74,34 @@ class State : public util::Printable,
   void updateTime(const util::Duration & dt)
     {fields_->updateTime(dt);}
 
-  // Access to fields
-  Fields & fields()  // TODO(Benjamin): should be removed
-    {return *fields_;}
-  const Fields & fields() const  // TODO(Benjamin): should be removed
-    {return *fields_;}
+  // Halo
+  void zeroHalo()
+    {fields_->zeroHalo();}
 
   // ATLAS FieldSet accessors
-  // TODO(Benjamin): check what is actually needed
-  void toFieldSet(atlas::FieldSet & fset) const
-    {fields_->toFieldSet(fset);}
-  void fromFieldSet(const atlas::FieldSet & fset)
-    {fields_->fromFieldSet(fset);}
   const atlas::FieldSet & fieldSet() const
     {return fields_->fieldSet();}
   atlas::FieldSet & fieldSet()
     {return fields_->fieldSet();}
+
+  // ATLAS FieldSet
+  void toFieldSet(atlas::FieldSet & fset) const
+    {fields_->toFieldSet(fset);}
+  void fromFieldSet(const atlas::FieldSet & fset)
+    {fields_->fromFieldSet(fset);}
   void synchronizeFields()
     {fields_->synchronizeFields();}
+
+  // Access to fields
+  const Fields & fields() const
+    {return *fields_;}
 
   // Accumulation
   void zero()
     {fields_->zero();}
   void accumul(const double & zz,
                const State & xx)
-    {fields_->axpy(zz, xx.fields());}
+    {fields_->axpy(zz, *xx.fields_);}
 
   // Geometry and variables accessors
   const Geometry & geometry() const

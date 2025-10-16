@@ -30,7 +30,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  ModelPyTorchDDL95 class
+/// ModelPyTorchDDL95 class
 
 class __attribute__((visibility("hidden"))) ModelPyTorchDDL95:
   public ModelBase,

@@ -26,7 +26,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  Model class
+/// Model class
 
 class Model: public util::Printable,
              private util::ObjectCounter<Model> {

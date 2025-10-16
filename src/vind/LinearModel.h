@@ -29,7 +29,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  LinearModel class
+/// LinearModel class
 
 class LinearModel: public util::Printable,
                    private util::ObjectCounter<LinearModel> {

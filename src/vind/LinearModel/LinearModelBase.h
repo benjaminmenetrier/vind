@@ -23,7 +23,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  LinearModelBase class
+/// LinearModelBase class
 
 class LinearModelBase : public util::Printable {
  public:
@@ -67,7 +67,7 @@ class LinearModelBase : public util::Printable {
 };
 
 // -----------------------------------------------------------------------------
-///  LinearModelFactory class
+/// LinearModelFactory class
 
 class LinearModelFactory {
  public:
@@ -90,7 +90,7 @@ class LinearModelFactory {
 };
 
 // -----------------------------------------------------------------------------
-///  LinearModelMaker class
+/// LinearModelMaker class
 
 template<class T>
 class LinearModelMaker : public LinearModelFactory {

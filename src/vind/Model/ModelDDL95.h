@@ -27,7 +27,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  ModelDDL95 class
+/// ModelDDL95 class
 
 class ModelDDL95: public ModelBase,
                   private util::ObjectCounter<ModelDDL95> {

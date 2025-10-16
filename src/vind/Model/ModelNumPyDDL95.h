@@ -29,7 +29,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  ModelNumPyDDL95 class
+/// ModelNumPyDDL95 class
 
 class __attribute__((visibility("hidden"))) ModelNumPyDDL95:
   public ModelBase,

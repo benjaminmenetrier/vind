@@ -82,7 +82,7 @@ void LinearModelDDL95::stepTL(Increment & dx,
 
   // Get initial trajectory state
   State xxTraj1(traj_.at(dx.validTime()));
-  xxTraj1.fields().zeroHalo();
+  xxTraj1.zeroHalo();
   xxTraj1.fieldSet().haloExchange();
 
   // Compute intermediate trajectory state
@@ -93,12 +93,12 @@ void LinearModelDDL95::stepTL(Increment & dx,
   State xxTraj2(xxTraj1);
   xxTraj2.updateTime(dt_half_);
   xxTraj2 += dxTrajTen;
-  xxTraj2.fields().zeroHalo();
+  xxTraj2.zeroHalo();
   xxTraj2.fieldSet().haloExchange();
 
   // First step
   Increment dxTen1(dx, false);
-  dx.fields().zeroHalo();
+  dx.zeroHalo();
   dx.fieldSet().haloExchange();
   tendencyTL(dx, xxTraj1, dxTen1);
   dxTen1 *= 0.5*dti_;
@@ -108,7 +108,7 @@ void LinearModelDDL95::stepTL(Increment & dx,
 
   // Second step
   Increment dxTen2(dx, false);
-  dxTmp.fields().zeroHalo();
+  dxTmp.zeroHalo();
   dxTmp.fieldSet().haloExchange();
   tendencyTL(dxTmp, xxTraj2, dxTen2);
   dxTen2 *= dti_;
@@ -126,7 +126,7 @@ void LinearModelDDL95::stepAD(Increment & dx,
 
   // Get initial trajectory state
   State xxTraj1(traj_.at(dx.validTime()-timeResolution_));
-  xxTraj1.fields().zeroHalo();
+  xxTraj1.zeroHalo();
   xxTraj1.fieldSet().haloExchange();
 
   // Compute intermediate trajectory state
@@ -137,10 +137,11 @@ void LinearModelDDL95::stepAD(Increment & dx,
   State xxTraj2(xxTraj1);
   xxTraj2.updateTime(dt_half_);
   xxTraj2 += dxTrajTen;
-  xxTraj2.fields().zeroHalo();
+  xxTraj2.zeroHalo();
   xxTraj2.fieldSet().haloExchange();
 
-  dx.fields().zeroHalo();
+  // Set increment halo to zero
+  dx.zeroHalo();
 
   // Second step
   Increment dxTen2(dx);

@@ -13,7 +13,7 @@ namespace vind {
   class Fields;
 
 // -----------------------------------------------------------------------------
-///  FieldsIOGrib class
+/// FieldsIOGrib class
 
 class FieldsIOGrib : public FieldsIOBase {
  public:

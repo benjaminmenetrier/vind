@@ -48,7 +48,6 @@ struct Traits {
   typedef vind::ModelAuxCovariance   ModelAuxCovariance;
   typedef vind::ModelAuxIncrement    ModelAuxIncrement;
   typedef vind::ModelData            ModelData;
-//  typedef vind::NormGradient         NormGradient;
   typedef vind::State                State;
   typedef vind::VariableChange       VariableChange;
 };

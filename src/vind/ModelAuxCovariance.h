@@ -33,14 +33,14 @@ class ModelAuxCovariance : public util::Printable,
   static const std::string classname()
     {return "vind::ModelAuxCovariance";}
 
-// Constructor/destructor
+  // Constructor/destructor
   ModelAuxCovariance(const eckit::Configuration & conf,
                      const Geometry &): conf_(conf)
     {}
   ~ModelAuxCovariance()
     {}
 
-// Linear algebra operators
+  // Linear algebra operators
   void linearize(const ModelAuxControl &,
                  const Geometry &)
     {}
@@ -59,7 +59,7 @@ class ModelAuxCovariance : public util::Printable,
   void randomize(ModelAuxIncrement &) const
     {}
 
-// Return configuration
+  // Return configuration
   const eckit::Configuration & config() const
     {return conf_;}
 

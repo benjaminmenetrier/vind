@@ -55,7 +55,7 @@ class Increment : public util::Printable,
     {fields_->zero();}
   void zero(const util::DateTime &);
   void ones()
-    {this->fields().constantValue(1.0);}
+    {fields_->constantValue(1.0);}
   void dirac(const eckit::Configuration & config)
     {fields_->dirac(config);}
   Increment & operator =(const Increment &);
@@ -86,22 +86,26 @@ class Increment : public util::Printable,
   void updateTime(const util::Duration & dt)
     {fields_->updateTime(dt);}
 
-  // ATLAS FieldSet accessor
-  void toFieldSet(atlas::FieldSet & fset) const
-    {fields_->toFieldSet(fset);}
-  void fromFieldSet(const atlas::FieldSet & fset)
-    {fields_->fromFieldSet(fset);}
+  // Halo
+  void zeroHalo()
+    {fields_->zeroHalo();}
+
+  // ATLAS FieldSet accessors
   const atlas::FieldSet & fieldSet() const
     {return fields_->fieldSet();}
   atlas::FieldSet & fieldSet()
     {return fields_->fieldSet();}
+
+  // ATLAS FieldSet
+  void toFieldSet(atlas::FieldSet & fset) const
+    {fields_->toFieldSet(fset);}
+  void fromFieldSet(const atlas::FieldSet & fset)
+    {fields_->fromFieldSet(fset);}
   void synchronizeFields()
     {fields_->synchronizeFields();}
 
   // Access to fields
-  Fields & fields()  // TODO(Benjamin): should be removed
-    {return *fields_;}
-  const Fields & fields() const  // TODO(Benjamin): should be removed
+  const Fields & fields() const
     {return *fields_;}
 
   // Accumulation

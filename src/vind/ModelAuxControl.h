@@ -9,11 +9,13 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "eckit/memory/NonCopyable.h"
 
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
+#include "oops/util/Serializable.h"
 
 namespace eckit {
   class Configuration;
@@ -27,13 +29,14 @@ namespace vind {
 /// ModelAuxControl class
 
 class ModelAuxControl : public util::Printable,
+                        public util::Serializable,
                         private eckit::NonCopyable,
                         private util::ObjectCounter<ModelAuxControl> {
  public:
   static const std::string classname()
     {return "vind::ModelAuxControl";}
 
-// Constructors/destructor
+  // Constructors/destructor
   ModelAuxControl(const Geometry &,
                   const eckit::Configuration &)
     {}
@@ -46,13 +49,25 @@ class ModelAuxControl : public util::Printable,
   ~ModelAuxControl()
     {}
 
-// Basic operator
+  // Basic operator
   ModelAuxControl & operator+=(const ModelAuxIncrement &) {return *this;}
 
-// I/O and diagnostics
-  void read(const eckit::Configuration &) {}
-  void write(const eckit::Configuration &) const {}
-  double norm() const {return 0.0;}
+  // I/O and diagnostics
+  void read(const eckit::Configuration &)
+    {}
+  void write(const eckit::Configuration &) const
+    {}
+  double norm() const
+    {return 0.0;}
+
+  // Serialization
+  size_t serialSize() const
+    {return 0;}
+  void serialize(std::vector<double> &) const
+    {}
+  void deserialize(const std::vector<double> &,
+                   size_t &)
+    {}
 
  private:
   void print(std::ostream & os) const {}

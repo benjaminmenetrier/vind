@@ -137,7 +137,7 @@ void LinearModelTorchPyDDL95::stepTL(Increment & dx,
   oops::Log::trace() << classname() << "::stepTL starting" << std::endl;
 
   // Get geometry
-  const Geometry & geom(dx.fields().geometry());
+  const Geometry & geom(dx.geometry());
 
   // Assert number of variables
   ASSERT(dx.variables().size() == 1);
@@ -220,7 +220,7 @@ void LinearModelTorchPyDDL95::stepAD(Increment & dx,
   oops::Log::trace() << classname() << "::stepAD starting" << std::endl;
 
   // Get geometry
-  const Geometry & geom(dx.fields().geometry());
+  const Geometry & geom(dx.geometry());
 
   // Assert number of variables
   ASSERT(dx.variables().size() == 1);

@@ -82,11 +82,11 @@ Geometry::Geometry(const eckit::Configuration & config,
     }
 
     // Only keep the first of duplicated points in the owned mask
-    const auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
-    const auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+    const auto view_i = atlas::array::make_indexview<int, 1>(fs.index_i());
+    const auto view_j = atlas::array::make_indexview<int, 1>(fs.index_j());
     auto ownedView = atlas::array::make_view<int, 2>(fieldsetOwnedMask["owned"]);
     for (int jnode = 0; jnode < fs.size(); ++jnode) {
-      if (((view_j(jnode) == 1) || (view_j(jnode) == grid.ny())) && (view_i(jnode) > 1)) {
+      if (((view_j(jnode) == 0) || (view_j(jnode) == grid.ny()-1)) && (view_i(jnode) > 0)) {
         ownedView(jnode, 0) = 0;
       }
     }
@@ -190,7 +190,7 @@ Geometry::Geometry(const eckit::Configuration & config,
   setupIterator(config);
 
   // Print summary
-  this->print(oops::Log::info());
+  print(oops::Log::info());
 
   oops::Log::trace() << classname() << "::Geometry done" << std::endl;
 }

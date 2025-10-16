@@ -18,7 +18,7 @@ namespace vind {
   class Fields;
 
 // -----------------------------------------------------------------------------
-///  FieldsIOArome class
+/// FieldsIOArome class
 
 class FieldsIOArome : public FieldsIOBase {
  public:

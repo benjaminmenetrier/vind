@@ -33,7 +33,7 @@ namespace vind {
   class ModelAuxIncrement;
 
 // -----------------------------------------------------------------------------
-///  LinearModelNumPyDDL95 class
+/// LinearModelNumPyDDL95 class
 
 class __attribute__((visibility("hidden"))) LinearModelNumPyDDL95:
   public LinearModelBase,

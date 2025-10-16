@@ -25,7 +25,7 @@ namespace vind {
   class State;
 
 // -----------------------------------------------------------------------------
-///  LinearModelDDL95 class
+/// LinearModelDDL95 class
 
 class LinearModelDDL95: public LinearModelBase,
                         private util::ObjectCounter<LinearModelDDL95> {

@@ -15,7 +15,7 @@ namespace vind {
   class Fields;
 
 // -----------------------------------------------------------------------------
-///  FieldsIOGmsh class
+/// FieldsIOGmsh class
 
 class FieldsIOGmsh : public FieldsIOBase {
  public:

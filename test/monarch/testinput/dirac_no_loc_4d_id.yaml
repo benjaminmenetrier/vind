@@ -84,7 +84,6 @@ dirac:
     lon:                 [ -10.0]
     lat:                 [  60.0]
     vertical coordinate: [    23]
-    vertical coordinate tolerance: 1.0e-12
     variable:            ['ozone']
   - {}
   - {}
@@ -92,7 +91,6 @@ dirac:
     lon:                 [   7.9]
     lat:                 [  38.3]
     vertical coordinate: [    23]
-    vertical coordinate tolerance: 1.0e-12
     variable:            ['carbon_monoxyde']
   - {}
 

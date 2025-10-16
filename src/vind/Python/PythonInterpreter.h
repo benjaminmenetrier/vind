@@ -10,6 +10,7 @@
 namespace vind {
 
 // -----------------------------------------------------------------------------
+/// PythonInterpreter class
 
 class PythonInterpreter {
  public:

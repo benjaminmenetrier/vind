@@ -16,6 +16,7 @@
 
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
+#include "oops/util/Serializable.h"
 
 namespace eckit {
   class Configuration;
@@ -30,13 +31,14 @@ namespace vind {
 /// ModelAuxIncrement class
 
 class ModelAuxIncrement : public util::Printable,
+                          public util::Serializable,
                           private eckit::NonCopyable,
                           private util::ObjectCounter<ModelAuxIncrement> {
  public:
   static const std::string classname()
     {return "vind::ModelAuxIncrement";}
 
-// Constructors/destructor
+  // Constructors/destructor
   ModelAuxIncrement(const Geometry &,
                     const eckit::Configuration &)
     {}
@@ -49,7 +51,7 @@ class ModelAuxIncrement : public util::Printable,
   ~ModelAuxIncrement()
     {}
 
-// Linear algebra operators
+  // Linear algebra operators
   void diff(const ModelAuxControl &,
             const ModelAuxControl &)
     {}
@@ -69,19 +71,22 @@ class ModelAuxIncrement : public util::Printable,
   double dot_product_with(const ModelAuxIncrement &) const
     {return 0.0;}
 
-/// Serialize-Deserialize
-  size_t serialSize() {return 0;}
-  void serialize(std::vector<double> & vect) const {}
-  void deserialize(const std::vector<double> &,
-                   size_t & index) {}
-
-// I/O and diagnostics
+  // I/O and diagnostics
   void read(const eckit::Configuration &)
     {}
   void write(const eckit::Configuration &) const
     {}
   double norm() const
     {return 0.0;}
+
+  // Serialization
+  size_t serialSize() const
+    {return 0;}
+  void serialize(std::vector<double> &) const
+    {}
+  void deserialize(const std::vector<double> &,
+                   size_t &)
+    {}
 
  private:
   void print(std::ostream & os) const

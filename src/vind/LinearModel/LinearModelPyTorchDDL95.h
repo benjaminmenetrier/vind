@@ -34,7 +34,7 @@ namespace vind {
   class ModelAuxIncrement;
 
 // -----------------------------------------------------------------------------
-///  LinearModelTorchPyDDL95 class
+/// LinearModelTorchPyDDL95 class
 
 class __attribute__((visibility("hidden"))) LinearModelTorchPyDDL95:
   public LinearModelBase,

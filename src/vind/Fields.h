@@ -55,7 +55,6 @@ class Fields : public util::Printable,
 
   // Basic operators
   void zero();
-  void zeroHalo();
   void constantValue(const double &);
   void constantValue(const std::vector<double> &);
   void constantValue(const eckit::Configuration &);
@@ -75,13 +74,18 @@ class Fields : public util::Printable,
   void diff(const Fields &,
             const Fields &);
 
-  // ATLAS FieldSet
-  void toFieldSet(atlas::FieldSet &) const;
-  void fromFieldSet(const atlas::FieldSet &);
+  // Halo
+  void zeroHalo();
+
+  // ATLAS FieldSet accessors
   const atlas::FieldSet & fieldSet() const
     {return fset_;}
   atlas::FieldSet & fieldSet()
     {return fset_;}
+
+  // ATLAS FieldSet
+  void toFieldSet(atlas::FieldSet &) const;
+  void fromFieldSet(const atlas::FieldSet &);
   void synchronizeFields()
     {resetDuplicatePoints();}
 

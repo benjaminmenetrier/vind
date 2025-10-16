@@ -58,8 +58,8 @@ void Increment::diff(const State & x1,
                      const State & x2) {
   oops::Log::trace() << classname() << "::diff starting" << std::endl;
 
-  ASSERT(this->validTime() == x1.validTime());
-  ASSERT(this->validTime() == x2.validTime());
+  ASSERT(validTime() == x1.validTime());
+  ASSERT(validTime() == x2.validTime());
   fields_->diff(x1.fields(), x2.fields());
 
   oops::Log::trace() << classname() << "::diff done" << std::endl;
@@ -81,7 +81,7 @@ Increment & Increment::operator=(const Increment & rhs) {
 Increment & Increment::operator+=(const Increment & dx) {
   oops::Log::trace() << classname() << "::operator+= starting" << std::endl;
 
-  ASSERT(this->validTime() == dx.validTime());
+  ASSERT(validTime() == dx.validTime());
   *fields_ += *dx.fields_;
 
   oops::Log::trace() << classname() << "::operator+= done" << std::endl;
@@ -93,7 +93,7 @@ Increment & Increment::operator+=(const Increment & dx) {
 Increment & Increment::operator-=(const Increment & dx) {
   oops::Log::trace() << classname() << "::operator-= starting" << std::endl;
 
-  ASSERT(this->validTime() == dx.validTime());
+  ASSERT(validTime() == dx.validTime());
   *fields_ -= *dx.fields_;
 
   oops::Log::trace() << classname() << "::operator-= done" << std::endl;
@@ -129,7 +129,7 @@ void Increment::axpy(const double & zz,
                      const bool check) {
   oops::Log::trace() << classname() << "::axpy starting" << std::endl;
 
-  ASSERT(!check || this->validTime() == dx.validTime());
+  ASSERT(!check || validTime() == dx.validTime());
   fields_->axpy(zz, *dx.fields_);
 
   oops::Log::trace() << classname() << "::axpy done" << std::endl;
@@ -140,7 +140,7 @@ void Increment::axpy(const double & zz,
 void Increment::print(std::ostream & os) const {
   oops::Log::trace() << classname() << "::print starting" << std::endl;
 
-  os << std::endl << "- Valid time: " << this->validTime();
+  os << std::endl << "- Valid time: " << validTime();
   os << *fields_;
 
   oops::Log::trace() << classname() << "::print done" << std::endl;
