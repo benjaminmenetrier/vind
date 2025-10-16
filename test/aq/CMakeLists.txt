@@ -9,7 +9,7 @@ file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testref )
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testdata )
 
 # Link ufo_variable_name_map.yaml
-link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testinput/ufo_variable_name_map.yaml )
+link_file( ${CMAKE_CURRENT_SOURCE_DIR}/../monarch ${CMAKE_CURRENT_BINARY_DIR} testinput/ufo_variable_name_map.yaml )
 
 # Print out data directory
 message( STATUS "AQ_DATA_DIR: " $ENV{MONARCH_DATA_DIR} )
@@ -26,7 +26,6 @@ testdata/E0005
 testdata/forecast
 testdata/HDAT_AIRBASE_PM10-2022070112.nc
 testdata/HDAT_AIRBASE_O3-2022070112.nc
-testdata/HDAT_AIRBASE_PM10-GLO-2017121612.nc
 
 )
 

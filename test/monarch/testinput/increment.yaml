@@ -74,4 +74,3 @@ inc variables: *chemvars
 
 test:
   reference filename: testref/increment.ref
-  test output filename: testdata/increment.log

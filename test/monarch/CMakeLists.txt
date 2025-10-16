@@ -26,13 +26,6 @@ testdata/005
 testdata/006
 testdata/HDAT_AIRBASE_PM10-2022070112.nc
 testdata/HDAT_AIRBASE_O3-2022070112.nc
-testdata/G000
-testdata/G001
-testdata/G002
-testdata/G003
-testdata/G004
-testdata/G005
-testdata/G006
 
 )
 
