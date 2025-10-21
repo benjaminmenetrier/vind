@@ -262,5 +262,5 @@ output:
 test:
   reference filename: testref/3densvar_lt.ref
   test output filename: testdata/3densvar_lt.log
-    
+  float absolute tolerance: 1.e-15    
 

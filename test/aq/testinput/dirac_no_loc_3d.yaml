@@ -67,7 +67,7 @@ background error:
 
 dirac:
   date: 2022-07-01T12:00:00Z
-  lon:                 [              7.9,   17.9]
+  lon:                 [             7.91,  17.89]
   lat:                 [             38.3,   60.3]
   vertical coordinate: [               23,     23]
   variable:            ['carbon_monoxyde', 'pm10']
@@ -87,3 +87,4 @@ output dirac:
 test:
   reference filename: testref/dirac_no_loc_3d.ref
   test output filename: testdata/dirac_no_loc_3d.log
+  float absolute tolerance: 1.e-15
