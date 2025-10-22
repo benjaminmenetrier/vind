@@ -58,7 +58,8 @@ if( DEFINED ENV{jedi_cmake_ROOT} )
     list( APPEND CMAKE_MODULE_PATH $ENV{jedi_cmake_ROOT}/share/jedicmake/Modules )
     message( INFO "CMAKE_MODULE_PATH" )
 else()
-    ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG 40d521f9a2d796fcbc6234d77abceeffefb8eb7f RECURSIVE )
+#    ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG 40d521f9a2d796fcbc6234d77abceeffefb8eb7f RECURSIVE )
+    ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" BRANCH develop UPDATE RECURSIVE )
     include( jedicmake/cmake/Functions/git_functions.cmake )
     list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
 endif()
@@ -71,39 +72,48 @@ ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" T
 ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
 
 # oops
-ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG d73dbc828f809c7a0dd6c8044436fa99e65df547 )
+#ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG d73dbc828f809c7a0dd6c8044436fa99e65df547 )
+ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
 
 # jedi-data
-ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/benjaminmenetrier/jedi-model-data.git" TAG 97bfb1110a199c0c1574e9b584e8ae1c073916aa )
+#ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/benjaminmenetrier/jedi-model-data.git" TAG 97bfb1110a199c0c1574e9b584e8ae1c073916aa )
+ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/benjaminmenetrier/jedi-model-data.git" BRANCH develop UPDATE )
 
 # vader
-ecbuild_bundle( PROJECT vader GIT "https://github.com/benjaminmenetrier/vader.git" TAG 79aaae0d3928ae2f462c985d483fbd550dd75503 )
+#ecbuild_bundle( PROJECT vader GIT "https://github.com/benjaminmenetrier/vader.git" TAG 79aaae0d3928ae2f462c985d483fbd550dd75503 )
+ecbuild_bundle( PROJECT vader GIT "https://github.com/benjaminmenetrier/vader.git" BRANCH feature/recipes_hmr_at_ap UPDATE )
 
 if( ENABLE_SABER )
     # gsibec
-    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
+#    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
+    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" BRANCH bugfix/fortran_line_length UPDATE )
 
 
     # saber
-    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG e3c9b8ade414116bc81a76e70d6a4f3a31fd8f27 )
+#    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG e3c9b8ade414116bc81a76e70d6a4f3a31fd8f27 )
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" BRANCH feature/nicas_article UPDATE )
 endif()
 
 if( ENABLE_CRTM )
     # crtm
-    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" TAG 524fcc623f65784dfb27277a7a35b53b1311f276 )
+#    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" TAG 524fcc623f65784dfb27277a7a35b53b1311f276 )
+    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" BRANCH develop UPDATE )
 endif()
 
 if( ENABLE_OBS )
     # ioda
 #    ecbuild_bundle( PROJECT ioda-data GIT "https://github.com/jcsda-internal/ioda-data.git" TAG 8fb8ea112b2998ac49e4b61a733f87796924efb7 )
-    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG 3a1b65488c7926e71a32a4fe03ac1b5ed48258fb )
+#    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG 3a1b65488c7926e71a32a4fe03ac1b5ed48258fb )
+    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" BRANCH develop UPDATE )
     if( BUILD_IODA_CONVERTERS )
-        ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG f794abc237046964bc9316f45698af9a0eced121 )
+#        ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG f794abc237046964bc9316f45698af9a0eced121 )
+        ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" BRANCH develop UPDATE )
     endif()
 
     # ufo
 #    ecbuild_bundle( PROJECT ufo-data GIT "https://github.com/jcsda-internal/ufo-data.git" TAG 2fa2e99503f7944274e5edd315a5cb92bf2acf8c )
-    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 61eafacd89139e60e48d84bc701b6ff075e13a39 )
+#    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 61eafacd89139e60e48d84bc701b6ff075e13a39 )
+    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" BRANCH develop UPDATE )
 endif()
 
 # vind
