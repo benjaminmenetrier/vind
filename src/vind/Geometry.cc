@@ -96,7 +96,7 @@ Geometry::Geometry(const eckit::Configuration & config,
   fields_ = atlas::FieldSet();
 
   // Add owned points mask -- this mask does not depend on the group so was precomputed
-  fields_->add(fieldsetOwnedMask["owned"]);
+  fields_.add(fieldsetOwnedMask["owned"]);
 
   // Levels direction
   levelsAreTopDown_ = params.levelsAreTopDown.value();
@@ -159,9 +159,6 @@ Geometry::Geometry(const eckit::Configuration & config,
 
     // Number of levels
     group.levels_ = groupParams.levels.value();
-
-    // Corresponding level for 2D variables (first or last)
-    group.lev2d_ = groupParams.lev2d.value();
 
     // Save group
     groups_.push_back(group);
@@ -512,7 +509,7 @@ void Geometry::setupVertCoord(groupData & group) {
   }
 
   // Add vertical coordinate in Geometry fields
-  fields_->add(group.vertCoord_);
+  fields_.add(group.vertCoord_);
 
   oops::Log::trace() << classname() << "::setupVertCoord starting" << std::endl;
 }
@@ -649,7 +646,6 @@ void Geometry::setupMask(groupData & group) {
   } else {
     throw eckit::UserError("Wrong mask type", Here());
   }
-  fields_->add(gmask);
 
   // Mask size
   group.gmaskSize_ = 0.0;
@@ -669,6 +665,9 @@ void Geometry::setupMask(groupData & group) {
   if (domainSize > 0) {
     group.gmaskSize_ = group.gmaskSize_/static_cast<double>(domainSize);
   }
+
+  // Add mask in Geometry fields
+  fields_.add(gmask);
 
   oops::Log::trace() << classname() << "::setupMask done" << std::endl;
 }
