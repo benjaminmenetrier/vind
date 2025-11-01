@@ -86,7 +86,7 @@ background error:
 
 dirac:
   date: 2022-07-01T12:00:00Z
-  lon:                 [              7.9,   17.9]
+  lon:                 [             7.91,  17.89]
   lat:                 [             38.3,   60.3]
   vertical coordinate: [               23,     23]
   variable:            ['carbon_monoxyde', 'pm10']

@@ -273,5 +273,5 @@ output:
 test:
   reference filename: testref/4densvar.ref
   test output filename: testdata/4densvar.log
-    
+  float absolute tolerance: 1.e-15    
 
