@@ -90,26 +90,6 @@ observations:
           value: *defaddconst
       - filter: Variable Assignment
         assignments:
-        - name: DerivedObsValue/particulatematter10Surface
-          type: float
-          function:
-            name: ObsFunction/Arithmetic
-            options:
-              variables:
-              - name: ObsValue/particulatematter10Surface
-              - name: MetaData/log_transf_c_t
-              total log base: 10
-      - filter: Variable Assignment
-        assignments:
-        - name: DerivedObsError/particulatematter10Surface
-    obs filters:
-      - filter: Variable Assignment
-        assignments:
-        - name: MetaData/log_transf_c_t
-          type: float
-          value: *defaddconst
-      - filter: Variable Assignment
-        assignments:
         - name: DerivedObsError/particulatematter10Surface_fraction
           type: float
           function:

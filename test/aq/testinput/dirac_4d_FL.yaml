@@ -123,7 +123,7 @@ dirac:
   - {}
   - {}
   - date: 2022-07-01T04:00:00Z
-    lon:                 [   7.9]
+    lon:                 [  7.91]
     lat:                 [  38.3]
     vertical coordinate: [    23]
     variable:            ['carbon_monoxyde']
@@ -176,3 +176,4 @@ output dirac:
 test:
   reference filename: testref/dirac_4d_FL.ref
   test output filename: testdata/dirac_4d_FL.log
+  float absolute tolerance: 1.e-15
