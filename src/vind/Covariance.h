@@ -17,8 +17,6 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-#include "vind/Increment.h"
-
 namespace eckit {
   class Configuration;
 }
