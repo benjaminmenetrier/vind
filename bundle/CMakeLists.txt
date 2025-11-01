@@ -74,7 +74,7 @@ ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.
 ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG d73dbc828f809c7a0dd6c8044436fa99e65df547 )
 
 # jedi-data
-ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/benjaminmenetrier/jedi-model-data.git" TAG d255823817fb5d2415b2b8a6517e0d719a14ca0d )
+ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG b7f9a399bafae3ad5c3bda465839943ae22007c0 )
 
 # vader
 ecbuild_bundle( PROJECT vader GIT "https://github.com/benjaminmenetrier/vader.git" TAG 79aaae0d3928ae2f462c985d483fbd550dd75503 )
