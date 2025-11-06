@@ -34,6 +34,10 @@ macro( create_test model name mpi exec )
                       DEPENDS  vind_${exec}.x )
 endmacro()
 
+# Base core count for 3D and 4D tests
+if(NOT VIND_TEST_CORES_FACTOR)
+    set(VIND_TEST_CORES_FACTOR 1)
+endif()
 
 # Add tests
 if( ENABLE_AQ_TESTS )
