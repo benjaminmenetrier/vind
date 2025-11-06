@@ -161,8 +161,7 @@ cost function:
             universe length-scale: *common_length_scale
           drivers:
             multivariate strategy: duplicated and weighted
-            compute nicas: true
-            write local nicas: true
+            read local nicas: true
           io:
             data directory: testdata
             files prefix: nicas_4d
