@@ -114,7 +114,11 @@ background error:
           universe length-scale: *common_length_scale
         drivers:
           multivariate strategy: duplicated and weighted
-          compute nicas: true
+          read local nicas: true
+        io:
+          data directory: testdata
+          files prefix: nicas_4d
+          io tasks: 2
 
 dirac:
   - {}
