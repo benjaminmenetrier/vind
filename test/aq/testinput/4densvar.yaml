@@ -138,7 +138,7 @@ cost function:
       time decay: PT3H
       saber central block:
         saber block name: BUMP_NICAS
-        calibration:
+        read:
           nicas:
             resolution: 5.0
             explicit length-scales: true
