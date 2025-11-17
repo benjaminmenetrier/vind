@@ -46,9 +46,8 @@ _memo:
     state variables: *chemvars
   - &out_ref
     date: 2022-07-01T09:00:00Z
-    filepath: testdata/4densvar_lt_analysis_20220701.nc
+    filepath: testdata/4densvar_lt_analysis_2022070109.nc
     formats: [bsc]
-    single date: false
     state variables: *chemvars
 
 cost function:
@@ -299,16 +298,22 @@ output:
   states:
     - <<: *out_ref
       date: 2022-07-01T09:00:00Z
+      filepath: testdata/4densvar_lt_analysis_2022070109.nc
     - <<: *out_ref
       date: 2022-07-01T10:00:00Z
+      filepath: testdata/4densvar_lt_analysis_2022070110.nc
     - <<: *out_ref
       date: 2022-07-01T11:00:00Z
+      filepath: testdata/4densvar_lt_analysis_2022070111.nc
     - <<: *out_ref
       date: 2022-07-01T12:00:00Z
+      filepath: testdata/4densvar_lt_analysis_2022070112.nc
     - <<: *out_ref
       date: 2022-07-01T13:00:00Z
+      filepath: testdata/4densvar_lt_analysis_2022070113.nc
     - <<: *out_ref
       date: 2022-07-01T14:00:00Z
+      filepath: testdata/4densvar_lt_analysis_2022070114.nc
 
 test:
   reference filename: testref/4densvar_lt.ref

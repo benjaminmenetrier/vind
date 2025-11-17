@@ -98,7 +98,7 @@ states:
     - surface_geopotential
   output:
     date: 2022-07-01T00:00:00Z
-    filepath: testdata/levsel_logtransf_output.nc
+    filepath: testdata/levsel_logtransf_output_2022070100.nc
     formats: [bsc]
 - input:
     date: 2022-07-01T12:00:00Z
@@ -113,7 +113,7 @@ states:
     - surface_geopotential
   output:
     date: 2022-07-01T12:00:00Z
-    filepath: testdata/levsel_logtransf_output.nc
+    filepath: testdata/levsel_logtransf_output_2022070112.nc
     formats: [bsc]
 test:
   reference filename: testref/convertstate_levsel_logtransf.ref

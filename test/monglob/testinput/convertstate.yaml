@@ -62,7 +62,7 @@ states:
     - air_pressure_levels
   output:
     date: 2017-12-17T00:00:00Z
-    filepath: testdata/output.nc
+    filepath: testdata/output_2017121700.nc
     formats: [bsc]
 - input:
     date: 2017-12-17T12:00:00Z
@@ -76,7 +76,7 @@ states:
     - air_pressure_levels
   output:
     date: 2017-12-17T12:00:00Z
-    filepath: testdata/output.nc
+    filepath: testdata/output_2017121712.nc
     formats: [bsc]
 test:
   reference filename: testref/convertstate.ref

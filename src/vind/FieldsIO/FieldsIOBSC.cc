@@ -342,7 +342,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   const util::DateTime validTime(conf.getString("date"));
 
   // Get timeseries mode
-  const bool singleDate = conf.getBool("single date", false);
+  const bool singleDate = conf.getBool("single date", true);
 
   // Get optional time step
   const size_t timeStep = static_cast<size_t>(geom.io().getDouble("time step", 3600.0));

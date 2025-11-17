@@ -26,7 +26,6 @@ _memo:
     date: 2022-07-01T00:00:00Z
     filepath: testdata/D4IDreg_2022070100.nc
     formats: [bsc]
-    single date: true
 
 geometry:
   function space: StructuredColumns
