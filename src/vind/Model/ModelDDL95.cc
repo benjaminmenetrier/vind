@@ -164,13 +164,13 @@ void ModelDDL95::tendency(const State & xx,
             -view(jnode, jlevel)+FF;
 
           // X-direction diffusion
-          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)
-            +view(ixm1, jlevel));
+          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)+view(ixm1, jlevel)
+            -2.0*view(jnode, jlevel));
 
           // Y-direction diffusion
           if ((iy > iyMin_) && (iy < iyMax_)) {
-           viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)
-             +view(iym1, jlevel));
+           viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)+view(iym1, jlevel)
+             -2.0*view(jnode, jlevel));
           }
         }
       }
