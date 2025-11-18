@@ -6,25 +6,21 @@
 
 import numpy as np
 
-def step(params, lon, lat, t, xx):
+def step(params, lon, lat, cMask, yMask, t, xx):
   # Integration parameters
   dt = params["dt"]
   dti = params["dti"]
 
   # First step
-  xxTmp = xx+tendency(params, lon, lat, t, xx)*0.5*dti
+  xxTmp = xx+tendency(params, lon, lat, cMask, yMask, t, xx)*0.5*dti
 
   # Second step
-  xx += tendency(params, lon, lat, t+0.5*dt, xxTmp)*dti
+  xx += tendency(params, lon, lat, cMask, yMask, t+0.5*dt, xxTmp)*dti
 
-def tendency(params, lon, lat, t, xx):
+def tendency(params, lon, lat, cMask, yMask, t, xx):
   # Parameters
   nx = params["nx"]
   ny = params["ny"]
-  ixMin = params["ixMin"]
-  ixMax = params["ixMax"]
-  iyMin = params["iyMin"]
-  iyMax = params["iyMax"]
   F = params["F"]
   omega = params["omega"]
   nu = params["nu"]
@@ -43,56 +39,45 @@ def tendency(params, lon, lat, t, xx):
   # Create tendency
   xxTen = np.zeros((nz,ny,nx))
 
-  for jy in range(ny):
-    for jx in range(nx):
-      if jx >= ixMin and jx <= ixMax and jy >= iyMin and jy <= iyMax:
-        # Inside computation zone
+  # Time-dependent forcing
+  FF = np.tile((1.0+0.4*np.sin(lon-omega*t)*np.cos(lat))*F, (nz, 1, 1))
 
-        # Retrieve array indices
-        ixp1 = (jx+1)%nx
-        ixm2 = (jx-2)%nx
-        ixm1 = (jx-1)%nx
-        iyp1 = jy+1
-        iym1 = jy-1
+  # Shift state
+  xx_xp1 = np.roll(xx, shift=(-1), axis=(2))
+  xx_xm1 = np.roll(xx, shift=(1), axis=(2))
+  xx_xm2 = np.roll(xx, shift=(2), axis=(2))
+  xx_yp1 = np.roll(xx, shift=(-1), axis=(1))
+  xx_ym1 = np.roll(xx, shift=(1), axis=(1))
 
-        # Time-dependent forcing
-        FF = (1.0+0.4*np.sin(lon[jy,jx]-omega*t)*np.cos(lat[jy,jx]))*F
+  # Usual L95 in x direction
+  xxTen = ((xx_xp1-xx_xm2)*xx_xm1-xx+FF)*cMask
 
-        for jz in range(nz):
-          # Usual L95 in x direction
-          xxTen[jz,jy,jx] = (xx[jz,jy,ixp1]-xx[jz,jy,ixm2])*xx[jz,jy,ixm1]-xx[jz,jy,jx]+FF
+  # Diffusion in x direction
+  xxTen += nu*(xx_xp1+xx_xm1-2.0*xx)*cMask
 
-          # X-direction diffusion
-          xxTen[jz,jy,jx] += nu*(xx[jz,jy,ixp1]-2.0*xx[jz,jy,jx]+xx[jz,jy,ixm1])
-
-          # Y-direction diffusion
-          if jy > iyMin and jy < iyMax:
-            xxTen[jz,jy,jx] += nu*(xx[jz,iyp1,jx]-2.0*xx[jz,jy,jx]+xx[jz,iym1,jx])
+  # Diffusion in y direction
+  xxTen += nu*(xx_yp1+xx_ym1-2.0*xx)*yMask
 
   return xxTen
 
-def stepTL(params, lon, lat, t, xxTraj, dx):
+def stepTL(params, lon, lat, cMask, yMask, t, xxTraj, dx):
   # Integration parameters
   dt = params["dt"]
   dti = params["dti"]
 
   # Compute intermediate trajectory state
-  xxTrajTmp = xxTraj+tendency(params, lon, lat, t, xxTraj)*0.5*dti
+  xxTrajTmp = xxTraj+tendency(params, lon, lat, cMask, yMask, t, xxTraj)*0.5*dti
 
   # First step
-  dxTmp = dx+tendencyTL(params, xxTraj, dx)*0.5*dti
+  dxTmp = dx+tendencyTL(params, cMask, yMask, xxTraj, dx)*0.5*dti
 
   # Second step
-  dx += tendencyTL(params, xxTrajTmp, dxTmp)*dti
+  dx += tendencyTL(params, cMask, yMask, xxTrajTmp, dxTmp)*dti
 
-def tendencyTL(params, xxTraj, dx):
+def tendencyTL(params, cMask, yMask, xxTraj, dx):
   # Parameters
   nx = params["nx"]
   ny = params["ny"]
-  ixMin = params["ixMin"]
-  ixMax = params["ixMax"]
-  iyMin = params["iyMin"]
-  iyMax = params["iyMax"]
   nu = params["nu"]
 
   # Number of levels
@@ -109,54 +94,50 @@ def tendencyTL(params, xxTraj, dx):
   # Create tendency
   dxTen = np.zeros((nz,ny,nx))
 
-  for jx in range(nx):
-    for jy in range(ny):
-      if jx >= ixMin and jx <= ixMax and jy >= iyMin and jy <= iyMax:
-        # Inside computation zone
+  # Shift trajectory
+  xxTraj_xp1 = np.roll(xxTraj, shift=(-1), axis=(2))
+  xxTraj_xm1 = np.roll(xxTraj, shift=(1), axis=(2))
+  xxTraj_xm2 = np.roll(xxTraj, shift=(2), axis=(2))
+  xxTraj_yp1 = np.roll(xxTraj, shift=(-1), axis=(1))
+  xxTraj_ym1 = np.roll(xxTraj, shift=(1), axis=(1))
 
-        # Retrieve array indices
-        ixp1 = (jx+1)%nx
-        ixm2 = (jx-2)%nx
-        ixm1 = (jx-1)%nx
-        iyp1 = jy+1
-        iym1 = jy-1
+  # Shift increment
+  dx_xp1 = np.roll(dx, shift=(-1), axis=(2))
+  dx_xm1 = np.roll(dx, shift=(1), axis=(2))
+  dx_xm2 = np.roll(dx, shift=(2), axis=(2))
+  dx_yp1 = np.roll(dx, shift=(-1), axis=(1))
+  dx_ym1 = np.roll(dx, shift=(1), axis=(1))
 
-        for jz in range(nz):
-          # Usual L95 in x direction
-          dxTen[jz,jy,jx] = (dx[jz,jy,ixp1]-dx[jz,jy,ixm2])*xxTraj[jz,jy,ixm1]+(xxTraj[jz,jy,ixp1]-xxTraj[jz,jy,ixm2])*dx[jz,jy,ixm1]-dx[jz,jy,jx]
+  # Usual L95 in x direction
+  dxTen = ((dx_xp1-dx_xm2)*xxTraj_xm1+(xxTraj_xp1-xxTraj_xm2)*dx_xm1-dx)*cMask
 
-          # X-direction diffusion
-          dxTen[jz,jy,jx] += nu*(dx[jz,jy,ixp1]-2.0*dx[jz,jy,jx]+dx[jz,jy,ixm1])
+  # X-direction diffusion
+  dxTen += nu*(dx_xp1+dx_xm1-2.0*dx)*cMask
 
-          # Y-direction diffusion
-          if jy > iyMin and jy < iyMax:
-            dxTen[jz,jy,jx] += nu*(dx[jz,iyp1,jx]-2.0*dx[jz,jy,jx]+dx[jz,iym1,jx])
+  # Y-direction diffusion
+  dxTen += nu*(dx_yp1+dx_ym1-2.0*dx)*yMask
 
   return dxTen
 
-def stepAD(params, lon, lat, t, xxTraj, dx):
+def stepAD(params, lon, lat, cMask, yMask, t, xxTraj, dx):
   # Integration parameters
   dt = params["dt"]
   dti = params["dti"]
 
   # Compute intermediate trajectory state
-  xxTrajTmp = xxTraj+tendency(params, lon, lat, t, xxTraj)*0.5*dti
+  xxTrajTmp = xxTraj+tendency(params, lon, lat, cMask, yMask, t, xxTraj)*0.5*dti
 
   # Second step
-  dxTmp = tendencyAD(params, xxTrajTmp, dx*dti)
+  dxTmp = tendencyAD(params, cMask, yMask, xxTrajTmp, dx*dti)
   dx += dxTmp
 
   # First step
-  dx += tendencyAD(params, xxTraj, dxTmp*0.5*dti)
+  dx += tendencyAD(params, cMask, yMask, xxTraj, dxTmp*0.5*dti)
 
-def tendencyAD(params, xxTraj, dxTen):
+def tendencyAD(params, cMask, yMask, xxTraj, dxTen):
   # Parameters
   nx = params["nx"]
   ny = params["ny"]
-  ixMin = params["ixMin"]
-  ixMax = params["ixMax"]
-  iyMin = params["iyMin"]
-  iyMax = params["iyMax"]
   nu = params["nu"]
 
   # Number of levels
@@ -170,37 +151,44 @@ def tendencyAD(params, xxTraj, dxTen):
     print("inconsistent nx dimension")
     exit(1)
 
-  # Create tendency
+  # Create increment
   dx = np.zeros((nz,ny,nx))
 
-  for jx in range(nx):
-    for jy in range(ny):
-      if jx >= ixMin and jx <= ixMax and jy >= iyMin and jy <= iyMax:
-        # Inside computation zone
+  # Shift trajectory
+  xxTraj_xp1 = np.roll(xxTraj, shift=(-1), axis=(2))
+  xxTraj_xm1 = np.roll(xxTraj, shift=(1), axis=(2))
+  xxTraj_xm2 = np.roll(xxTraj, shift=(2), axis=(2))
+  xxTraj_yp1 = np.roll(xxTraj, shift=(-1), axis=(1))
+  xxTraj_ym1 = np.roll(xxTraj, shift=(1), axis=(1))
 
-        # Retrieve array indices
-        ixp1 = (jx+1)%nx
-        ixm2 = (jx-2)%nx
-        ixm1 = (jx-1)%nx
-        iyp1 = jy+1
-        iym1 = jy-1
+  # Create shifted increments
+  dx_xp1 = np.zeros((nz,ny,nx))
+  dx_xm1 = np.zeros((nz,ny,nx))
+  dx_xm2 = np.zeros((nz,ny,nx))
+  dx_yp1 = np.zeros((nz,ny,nx))
+  dx_ym1 = np.zeros((nz,ny,nx))
 
-        for jz in range(nz):
-          # Usual L95 in x direction
-          dx[jz,jy,ixp1] += dxTen[jz,jy,jx]*xxTraj[jz,jy,ixm1]
-          dx[jz,jy,ixm2] -= dxTen[jz,jy,jx]*xxTraj[jz,jy,ixm1]
-          dx[jz,jy,ixm1] += dxTen[jz,jy,jx]*(xxTraj[jz,jy,ixp1]-xxTraj[jz,jy,ixm2])
-          dx[jz,jy,jx] -= dxTen[jz,jy,jx]
+  # Usual L95 in x direction
+  dx_xp1 += dxTen*xxTraj_xm1*cMask
+  dx_xm2 -= dxTen*xxTraj_xm1*cMask
+  dx_xm1 += dxTen*(xxTraj_xp1-xxTraj_xm2)*cMask
+  dx -= dxTen*cMask
 
-          # X-direction diffusion
-          dx[jz,jy,ixp1] += nu*dxTen[jz,jy,jx]
-          dx[jz,jy,jx] -= 2.0*nu*dxTen[jz,jy,jx]
-          dx[jz,jy,ixm1] += nu*dxTen[jz,jy,jx]
+  # X-direction diffusion
+  dx_xp1 += nu*dxTen*cMask
+  dx_xm1 += nu*dxTen*cMask
+  dx -= 2.0*nu*dxTen*cMask
 
-          # Y-direction diffusion
-          if jy > iyMin and jy < iyMax:
-            dx[jz,iyp1,jx] += nu*dxTen[jz,jy,jx]
-            dx[jz,jy,jx] -= 2.0*nu*dxTen[jz,jy,jx]
-            dx[jz,iym1,jx] += nu*dxTen[jz,jy,jx]
+  # Y-direction diffusion
+  dx_yp1 += nu*dxTen*yMask
+  dx_ym1 += nu*dxTen*yMask
+  dx -= 2.0*nu*dxTen*yMask
+
+  # Un-shift and accumulate shifted increments
+  dx += np.roll(dx_xp1, shift=(1), axis=(2))
+  dx += np.roll(dx_xm1, shift=(-1), axis=(2))
+  dx += np.roll(dx_xm2, shift=(-2), axis=(2))
+  dx += np.roll(dx_yp1, shift=(1), axis=(1))
+  dx += np.roll(dx_ym1, shift=(-1), axis=(1))
 
   return dx
