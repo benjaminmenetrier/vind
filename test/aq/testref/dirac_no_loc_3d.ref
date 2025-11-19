@@ -6,7 +6,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 1.0000000000000000e+00
     + mean   = 6.3131313131313133e-07
@@ -40,7 +40,7 @@ Covariance(ensemble) * Increment:
     + mean   = 1.3705709875903127e-18
     + stddev = 2.8981731256261710e-18
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.5607174434389382e-17
     + max    = 1.7379992917578424e-16
     + mean   = 1.3146592940241680e-18

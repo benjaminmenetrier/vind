@@ -8,7 +8,7 @@ Input state:
     + mean   = 1.0000012942501162e-30
     + stddev = 1.5094181815285623e-36
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 9.9997922043095431e-31
     + max    = 1.0000110057982005e-30
     + mean   = 1.0000012942501162e-30
@@ -42,7 +42,7 @@ Output state:
     + mean   = 1.0000012942501162e-30
     + stddev = 1.5094181815285623e-36
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 9.9997922043095431e-31
     + max    = 1.0000110057982005e-30
     + mean   = 1.0000012942501162e-30
@@ -76,7 +76,7 @@ Input state:
     + mean   = 2.7333214578240697e-04
     + stddev = 1.6628058157109344e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    ~ 0
     + max    = 5.8062577247619629e+00
     + mean   = 2.4165915246408447e-03
@@ -110,7 +110,7 @@ Output state:
     + mean   = 2.7333214578240697e-04
     + stddev = 1.6628058157109344e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    ~ 0
     + max    = 5.8062577247619629e+00
     + mean   = 2.4165915246408447e-03

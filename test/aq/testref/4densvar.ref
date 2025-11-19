@@ -10,7 +10,7 @@ CostFunction::addIncrement: Analysis:
     + max    = 7.9941131048144598e-08
     + mean   = 3.8926155630495122e-08
     + stddev = 1.0222608841901692e-08
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.4859661702266749e-08
     + max    = 5.0267465212527895e-07
     + mean   = 1.0018857007630778e-07
@@ -44,7 +44,7 @@ CostFunction::addIncrement: Analysis:
     + max    = 8.6246124908484489e-08
     + mean   = 3.9591790011271978e-08
     + stddev = 1.0400788167159830e-08
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.5960416744937902e-08
     + max    = 4.5531047021540871e-07
     + mean   = 9.9960919883093921e-08
@@ -78,7 +78,7 @@ CostFunction::addIncrement: Analysis:
     + max    = 9.0286903287051246e-08
     + mean   = 4.0140258591965655e-08
     + stddev = 1.0525343907019283e-08
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.5817210409259133e-08
     + max    = 4.0530747469347261e-07
     + mean   = 9.9709768163083769e-08
@@ -112,7 +112,7 @@ CostFunction::addIncrement: Analysis:
     + max    = 9.3951392443614168e-08
     + mean   = 4.0532483027520101e-08
     + stddev = 1.0629425846754375e-08
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.5720754232879699e-08
     + max    = 3.5127209230267908e-07
     + mean   = 9.9463738747775045e-08
@@ -146,7 +146,7 @@ CostFunction::addIncrement: Analysis:
     + max    = 9.5853621928654320e-08
     + mean   = 4.0777650021200001e-08
     + stddev = 1.0736770597211599e-08
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.5354838934817963e-08
     + max    = 3.0767662906328042e-07
     + mean   = 9.9284884321826748e-08
@@ -180,7 +180,7 @@ CostFunction::addIncrement: Analysis:
     + max    = 9.3102443088355358e-08
     + mean   = 4.0880621930432707e-08
     + stddev = 1.0834132338521456e-08
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.4948937844301327e-08
     + max    = 2.9916134280938422e-07
     + mean   = 9.9196430845314948e-08

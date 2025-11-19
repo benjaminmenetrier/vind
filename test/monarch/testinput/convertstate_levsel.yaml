@@ -26,7 +26,7 @@ input geometry: &geom
   groups:
   - variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     levels: 5
     vertical coordinate:
@@ -50,7 +50,7 @@ input geometry: &geom
   alias:
   - in code: ozone
     in file: O3
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
   - in code: pm10
     in file: dry_pm10_mass
@@ -76,7 +76,7 @@ states:
     format: bsc
     state variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     - air_pressure
     - air_pressure_levels
@@ -91,7 +91,7 @@ states:
     format: bsc
     state variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     - air_pressure
     - air_pressure_levels

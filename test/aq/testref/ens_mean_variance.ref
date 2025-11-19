@@ -9,7 +9,7 @@ Mean:
     + mean   = 4.0353695107674084e-08
     + stddev = 1.0551628532662912e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.5733660649555830e-08
     + max    = 3.0207342168372026e-07
     + mean   = 9.9729036444110125e-08
@@ -50,7 +50,7 @@ Variance:
     + mean   = 9.5897256701830891e-18
     + stddev = 2.0646970629924501e-17
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    ~ 0
     + max    = 5.1049687704245968e-14
     + mean   = 1.0159020489551931e-17
@@ -91,7 +91,7 @@ Standard Deviation:
     + mean   = 2.2010050433965164e-09
     + stddev = 2.1783722053175513e-09
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 1.0378951679183220e-13
     + max    = 2.2594177945711141e-07
     + mean   = 1.8436344938938234e-09
