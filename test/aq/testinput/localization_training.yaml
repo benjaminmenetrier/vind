@@ -68,10 +68,6 @@ background error:
         vertical length-scale:
           - groups: [common]
             value: 3.0
-        common localization weights:
-          - row variables: *chemvars
-            column variables: *chemvars
-            value: 0.5
         default off-diagonal weight: 0.5
         specific off-diagonal weights:
           - variables pair: [ozone, carbon_monoxide]
