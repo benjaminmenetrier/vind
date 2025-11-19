@@ -69,11 +69,11 @@ class ModelDDL95: public ModelBase,
   const double nu_ = 1.0;
   size_t nx_;
   size_t ny_;
+  atlas::Field lonLatField_;
   size_t ixMin_;
   size_t ixMax_;
   size_t iyMin_;
   size_t iyMax_;
-  atlas::Field lonLatField_;
   double dti_;
   util::Duration dt_half_;
 };

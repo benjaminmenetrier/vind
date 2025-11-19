@@ -63,22 +63,6 @@ LinearModelTorchPyDDL95::LinearModelTorchPyDDL95(const Geometry & geom,
   (*params_)["nx"] = grid.nx();
   (*params_)["ny"] = grid.ny();
 
-  // Get computation zone boundaries
-  if (grid.periodic()) {
-    (*params_)["ixMin"] = 0;
-    (*params_)["ixMax"] = nx-1;
-  } else {
-    (*params_)["ixMin"] = 2;
-    (*params_)["ixMax"] = nx-2;
-  }
-  if (geom.gridType() == "regional") {
-    (*params_)["iyMin"] = 0;
-    (*params_)["iyMax"] = ny-1;
-  } else {
-    (*params_)["iyMin"] = 1;
-    (*params_)["iyMax"] = ny-2;
-  }
-
   // Define tensor options
   opts_ = torch::TensorOptions()
     .dtype(torch::kFloat64)
@@ -97,6 +81,40 @@ LinearModelTorchPyDDL95::LinearModelTorchPyDDL95(const Geometry & geom,
       const atlas::PointLonLat pointLonLat = grid.lonlat(jx, jy);
       lonTView[jy][jx] = pointLonLat.lon()*deg2rad;
       latTView[jy][jx] = pointLonLat.lat()*deg2rad;
+    }
+  }
+
+  // Compute masks
+  int ixMin, ixMax, iyMin, iyMax;
+  if (grid.periodic()) {
+    ixMin = 0;
+    ixMax = nx-1;
+  } else {
+    ixMin = 2;
+    ixMax = nx-2;
+  }
+  if (geom.gridType() == "regional") {
+    iyMin = 0;
+    iyMax = ny-1;
+  } else {
+    iyMin = 1;
+    iyMax = ny-2;
+  }
+  cMaskTTensor_ = torch::zeros({ny, nx}, opts_);
+  yMaskTTensor_ = torch::zeros({ny, nx}, opts_);
+  auto cMaskTView = cMaskTTensor_.accessor<double, 2>();
+  auto yMaskTView = yMaskTTensor_.accessor<double, 2>();
+  for (int jx = 0; jx < nx; ++jx) {
+    for (int jy = 0; jy < ny; ++jy) {
+      if ((jx >= ixMin) && (jx <= ixMax) && (jy >= iyMin) & (jy <= iyMax)) {
+        // Inside computation zone
+        cMaskTView[jy][jx] = 1.0;
+
+        if ((jy > iyMin) && (jy < iyMax)) {
+          // Y-direction diffusion
+          yMaskTView[jy][jx] = 1.0;
+        }
+      }
     }
   }
 
@@ -192,8 +210,8 @@ void LinearModelTorchPyDDL95::stepTL(Increment & dx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("stepTL")(*params_, lonTTensor_, latTTensor_, t,
-      trajTTensor, incrTTensor);
+    pybind11::object result = exec.attr("stepTL")(*params_, lonTTensor_, latTTensor_, cMaskTTensor_,
+      yMaskTTensor_, t, trajTTensor, incrTTensor);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalIncr.shape(0); ++jnode) {
@@ -276,8 +294,8 @@ void LinearModelTorchPyDDL95::stepAD(Increment & dx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("stepAD")(*params_, lonTTensor_, latTTensor_, t,
-      trajTTensor, incrTTensor);
+    pybind11::object result = exec.attr("stepAD")(*params_, lonTTensor_, latTTensor_, cMaskTTensor_,
+      yMaskTTensor_, t, trajTTensor, incrTTensor);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalIncr.shape(0); ++jnode) {

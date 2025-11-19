@@ -90,6 +90,8 @@ class __attribute__((visibility("hidden"))) LinearModelNumPyDDL95:
   std::unique_ptr<pybind11::dict> params_;
   std::unique_ptr<pybind11::array_t<double>> lonNArray_;
   std::unique_ptr<pybind11::array_t<double>> latNArray_;
+  std::unique_ptr<pybind11::array_t<double>> cMaskNArray_;
+  std::unique_ptr<pybind11::array_t<double>> yMaskNArray_;
   std::map<util::DateTime, State> traj_;
 };
 // -----------------------------------------------------------------------------

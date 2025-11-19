@@ -34,7 +34,17 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   nx_ = grid.nx();
   ny_ = grid.ny();
 
-  // Get computation zone boundaries
+  // Define x/y coordinates
+  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
+  lonLatField_ = fs.xy().clone();
+  auto lonlatView = atlas::array::make_view<double, 2>(lonLatField_);
+  const double deg2rad = M_PI/180.0;
+  for (int jnode = 0; jnode < lonLatField_.shape(0); ++jnode) {
+    lonlatView(jnode, 0) *= deg2rad;
+    lonlatView(jnode, 1) *= deg2rad;
+  }
+
+  // Get mask boundaries
   if (grid.periodic()) {
     ixMin_ = 0;
     ixMax_ = nx_-1;
@@ -48,16 +58,6 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   } else {
     iyMin_ = 1;
     iyMax_ = ny_-2;
-  }
-
-  // Define x/y coordinates
-  const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
-  lonLatField_ = fs.xy().clone();
-  auto lonlatView = atlas::array::make_view<double, 2>(lonLatField_);
-  const double deg2rad = M_PI/180.0;
-  for (int jnode = 0; jnode < lonLatField_.shape(0); ++jnode) {
-    lonlatView(jnode, 0) *= deg2rad;
-    lonlatView(jnode, 1) *= deg2rad;
   }
 
   // Internal time-step
@@ -164,13 +164,13 @@ void ModelDDL95::tendency(const State & xx,
             -view(jnode, jlevel)+FF;
 
           // X-direction diffusion
-          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)
-            +view(ixm1, jlevel));
+          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)+view(ixm1, jlevel)
+            -2.0*view(jnode, jlevel));
 
           // Y-direction diffusion
           if ((iy > iyMin_) && (iy < iyMax_)) {
-           viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)
-             +view(iym1, jlevel));
+           viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)+view(iym1, jlevel)
+             -2.0*view(jnode, jlevel));
           }
         }
       }

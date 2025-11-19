@@ -233,13 +233,13 @@ void LinearModelDDL95::tendencyTL(const Increment & dx,
             -view(jnode, jlevel);
 
           // X-direction diffusion
-          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)-2.0*view(jnode, jlevel)
-            +view(ixm1, jlevel));
+          viewTen(jnode, jlevel) += nu_*(view(ixp1, jlevel)+view(ixm1, jlevel)
+            -2.0*view(jnode, jlevel));
 
           // Y-direction diffusion
           if ((iy > iyMin_) && (iy < iyMax_)) {
-            viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)-2.0*view(jnode, jlevel)
-              +view(iym1, jlevel));
+            viewTen(jnode, jlevel) += nu_*(view(iyp1, jlevel)+view(iym1, jlevel)
+              -2.0*view(jnode, jlevel));
           }
         }
       }
@@ -310,14 +310,14 @@ void LinearModelDDL95::tendencyAD(const Increment & dxTen,
 
           // X-direction diffusion
           view(ixp1, jlevel) += nu_*viewTen(jnode, jlevel);
-          view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
           view(ixm1, jlevel) += nu_*viewTen(jnode, jlevel);
+          view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
 
           // Y-direction diffusion
           if ((iy > iyMin_) && (iy < iyMax_)) {
             view(iyp1, jlevel) += nu_*viewTen(jnode, jlevel);
-            view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
             view(iym1, jlevel) += nu_*viewTen(jnode, jlevel);
+            view(jnode, jlevel) -= 2.0*nu_*viewTen(jnode, jlevel);
           }
         }
       }

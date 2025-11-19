@@ -92,6 +92,8 @@ class __attribute__((visibility("hidden"))) LinearModelTorchPyDDL95:
   torch::TensorOptions opts_;
   torch::Tensor lonTTensor_;
   torch::Tensor latTTensor_;
+  torch::Tensor cMaskTTensor_;
+  torch::Tensor yMaskTTensor_;
   std::map<util::DateTime, State> traj_;
 };
 // -----------------------------------------------------------------------------
