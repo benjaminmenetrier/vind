@@ -116,12 +116,11 @@ void FieldsIOAQ::read(const oops::Variables & vars,
     const std::string initialTimeFromFileStr = time_units_value.substr(14, 10) + "T"
      + time_units_value.substr(25, 5) + ":00Z";
     const util::DateTime initialTimeFromFile(initialTimeFromFileStr);
-    ASSERT(initialTime == initialTimeFromFile);
 
     // Check that state time and model time are the same
     float modtime;
     if ((retval = nc_get_var_float(ncid, time_id, &modtime))) ERR(retval, "time");
-    ASSERT((validTime-initialTime).toSeconds() == modtime);
+    ASSERT((validTime-initialTimeFromFile).toSeconds() == static_cast<int64_t>(modtime));
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
       // Get variables ID
@@ -317,7 +316,7 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
   const util::DateTime validTime(conf.getString("date"));
 
   // Reference for time coordinate
-  size_t timeOffset =
+  int64_t timeOffset =
     (validTime- util::DateTime(geom.io().getString("initial date"))).toSeconds();
 
   // Single date file

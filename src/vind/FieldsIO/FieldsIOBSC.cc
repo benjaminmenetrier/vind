@@ -85,11 +85,12 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   const util::DateTime finalTime(geom.io().getString("final date"));
 
   // Get optional time step
-  const double timeStep = geom.io().getDouble("time step", 3600.0);
+  const size_t timeStep = static_cast<size_t>(geom.io().getDouble("time step", 3600.0));
 
   // Get total number of hours
   ASSERT(finalTime >= initialTime);
-  const size_t timeMax = (finalTime-initialTime).toSeconds()/timeStep+1;
+  const size_t timeMax = static_cast<size_t>((finalTime-initialTime).toSeconds())/
+    timeStep+1;
 
   // Get read time
   const util::DateTime validTime(conf.getString("date"));
@@ -97,7 +98,8 @@ void FieldsIOBSC::read(const oops::Variables & vars,
   // Difference in hours
   ASSERT(validTime >= initialTime);
   ASSERT(validTime <= finalTime);
-  const size_t time = (validTime-initialTime).toSeconds()/timeStep;
+  const size_t time = static_cast<size_t>((validTime-initialTime).toSeconds())/
+    timeStep;
 
   // NetCDF IDs
   int ncid, retval, time_id, var_id[vars.size()];
@@ -340,10 +342,10 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   const util::DateTime validTime(conf.getString("date"));
 
   // Get timeseries mode
-  const bool singleDate = conf.getBool("single date", false);
+  const bool singleDate = conf.getBool("single date", true);
 
   // Get optional time step
-  const double timeStep = geom.io().getDouble("time step", 3600.0);
+  const size_t timeStep = static_cast<size_t>(geom.io().getDouble("time step", 3600.0));
 
   // Get file initial and final time
   util::DateTime initialTime;
@@ -368,18 +370,18 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
 
     // Reference for time coordinate
     timeOffset =
-      (initialTime - util::DateTime(geom.io().getString("initial date"))).toSeconds()
-      /timeStep;
+      static_cast<size_t>((initialTime - util::DateTime(geom.io().getString("initial date")))
+                          .toSeconds())/timeStep;
   }
 
   // Get total number of hours
   ASSERT(finalTime >= initialTime);
-  const size_t timeMax = (finalTime-initialTime).toSeconds()/timeStep+1;
+  const size_t timeMax = static_cast<size_t>((finalTime-initialTime).toSeconds())/timeStep+1;
 
   // Difference in hours
   ASSERT(validTime >= initialTime);
   ASSERT(validTime <= finalTime);
-  const size_t time = (validTime-initialTime).toSeconds()/timeStep;
+  const size_t time = static_cast<size_t>((validTime-initialTime).toSeconds())/timeStep;
 
   // NetCDF IDs
   int retval, ncid, rlon_id, rlat_id, lm_id, lmp_id, time_id,

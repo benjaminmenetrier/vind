@@ -1,6 +1,6 @@
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -32,7 +32,7 @@ geometry:
   groups:
   - variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -43,7 +43,7 @@ geometry:
   alias:
   - in code: ozone
     in file: O3
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
   - in code: nitrogen_dioxide
     in file: NO2
@@ -69,6 +69,7 @@ state test:
       date: 2022-07-01T00:00:00Z
       filepath: testdata/state_out.nc
       formats: [bsc]
+      single date: false
       state variables: *vars
     state read:
       date: 2022-07-01T00:00:00Z

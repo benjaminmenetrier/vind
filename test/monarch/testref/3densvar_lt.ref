@@ -24,7 +24,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = -7.3714958057353046e+00
     + stddev = 1.1263532580076903e-01
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2671655658169705e+00
     + max    = -6.4227027258506313e+00
     + mean   = -7.0361037939796711e+00

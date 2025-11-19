@@ -1,13 +1,13 @@
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
     - pm2p5
 _chemVariables: &chemvars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -31,9 +31,8 @@ _memo:
     state variables: *chemvars
   - &out_ref
     date: 2022-07-01T00:00:00Z
-    filepath: testdata/D4reg_FL_20220701_%id%.nc
+    filepath: testdata/D4reg_FL_2022070100_%id%.nc
     formats: [bsc]
-    single date: false
 
 geometry:
   function space: StructuredColumns
@@ -65,7 +64,7 @@ geometry:
   - in code: ozone
     in file: O3
     <<: *scalegas
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
     <<: *scalegas
   - in code: nitrogen_dioxide
@@ -122,7 +121,7 @@ background error:
           value: 3.0
         default off-diagonal weight: 0.5
         specific off-diagonal weights:
-        - variables pair: [ozone, carbon_monoxyde]
+        - variables pair: [ozone, carbon_monoxide]
           weight: 0.2
         number of layers: 3
         resolution: 8
@@ -140,7 +139,7 @@ dirac:
     lon:                 [  7.91]
     lat:                 [  38.3]
     vertical coordinate: [    23]
-    variable:            ['carbon_monoxyde']
+    variable:            ['carbon_monoxide']
   - {}
 
 background:
@@ -163,16 +162,22 @@ output dirac:
   states:
     - <<: *out_ref
       date: 2022-07-01T00:00:00Z
+      filepath: testdata/D4reg_FL_2022070100_%id%.nc
     - <<: *out_ref
       date: 2022-07-01T01:00:00Z
+      filepath: testdata/D4reg_FL_2022070101_%id%.nc
     - <<: *out_ref
       date: 2022-07-01T02:00:00Z
+      filepath: testdata/D4reg_FL_2022070102_%id%.nc
     - <<: *out_ref
       date: 2022-07-01T03:00:00Z
+      filepath: testdata/D4reg_FL_2022070103_%id%.nc
     - <<: *out_ref
       date: 2022-07-01T04:00:00Z
+      filepath: testdata/D4reg_FL_2022070104_%id%.nc
     - <<: *out_ref
       date: 2022-07-01T05:00:00Z
+      filepath: testdata/D4reg_FL_2022070105_%id%.nc
 
 test:
   reference filename: testref/dirac_4d_FL.ref

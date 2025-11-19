@@ -10,16 +10,16 @@
 
 #include "ufo/instantiateObsErrorFactory.h"
 #include "ufo/instantiateObsFilterFactory.h"
-#include "ufo/instantiateObsLocFactory.h"
 #include "ufo/ObsTraits.h"
 
+#include "vind/instantiateObsLocFactory.h"
 #include "vind/Traits.h"
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
   ufo::instantiateObsErrorFactory();
   ufo::instantiateObsFilterFactory();
-  ufo::instantiateObsLocFactory<vind::Traits>();
+  vind::instantiateObsLocFactory();
   oops::LocalEnsembleDA<vind::Traits, ufo::ObsTraits> letkf;
   return run.execute(letkf);
 }

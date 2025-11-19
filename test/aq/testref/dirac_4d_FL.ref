@@ -6,7 +6,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -35,7 +35,7 @@ Input Dirac increment:
     + mean   = 6.3131313131313133e-07
     + stddev = 7.9455215770583973e-04
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -62,7 +62,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -89,7 +89,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -116,7 +116,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 1.0000000000000000e+00
     + mean   = 6.3131313131313133e-07
@@ -145,7 +145,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -187,7 +187,7 @@ Covariance(ensemble) * Increment:
     + mean   = 1.8367088976354177e-22
     + stddev = 5.3652268461017226e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -5.4160880476399693e-20
     + max    = 7.0482641546365108e-20
     + mean   = 2.4953183600986454e-23
@@ -226,7 +226,7 @@ Covariance(ensemble) * Increment:
     + mean   = 2.0514686782290620e-22
     + stddev = 5.8430159771451436e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -5.0562605181345631e-20
     + max    = 1.4304559903295768e-19
     + mean   = 3.3746108488897649e-23
@@ -265,7 +265,7 @@ Covariance(ensemble) * Increment:
     + mean   = 2.0277971222918189e-22
     + stddev = 5.6113957393902875e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -5.1004852798768580e-20
     + max    = 2.2658399472217101e-19
     + mean   = 4.1637068895069384e-23
@@ -304,7 +304,7 @@ Covariance(ensemble) * Increment:
     + mean   = 1.8026698354613606e-22
     + stddev = 4.8306628287508917e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -5.8269128185520459e-20
     + max    = 2.8907825481099606e-19
     + mean   = 4.7085584848301995e-23
@@ -343,7 +343,7 @@ Covariance(ensemble) * Increment:
     + mean   = 1.4428402144690412e-22
     + stddev = 3.8296364354963834e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.5437583079249416e-20
     + max    = 3.1631552734255159e-19
     + mean   = 4.9205640637347470e-23
@@ -382,7 +382,7 @@ Covariance(ensemble) * Increment:
     + mean   = 1.0497674151272877e-22
     + stddev = 2.8489117014835363e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -8.2583448165238919e-20
     + max    = 3.3896331641712834e-19
     + mean   = 4.3250899799511147e-23
@@ -427,7 +427,7 @@ Covariance(ensemble) * Increment:
 Localization(ensemble_localization) diagnostics:
 - Localization at zero separation:
   + Value for variable ozone, subwindow 1, at (longitude, latitude, vertical index) point (-10.05000, 60.05000, 5): 9.9999999999999989e-01
-  + Value for variable carbon_monoxyde, subwindow 4, at (longitude, latitude, vertical index) point (7.95000, 38.35000, 5): 9.9999999999999989e-01
+  + Value for variable carbon_monoxide, subwindow 4, at (longitude, latitude, vertical index) point (7.95000, 38.35000, 5): 9.9999999999999989e-01
 Localization(ensemble) * Increment:
 - Valid time: 2022-07-01T00:00:00Z
   Geometry: structured [316800]
@@ -438,7 +438,7 @@ Localization(ensemble) * Increment:
     + mean   = 3.9587256322626361e-04
     + stddev = 1.1987032855072128e-02
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 4.1111229050718751e-01
     + mean   = 1.7989952112991271e-04
@@ -477,7 +477,7 @@ Localization(ensemble) * Increment:
     + mean   = 4.2726380642431946e-04
     + stddev = 1.2700048639851290e-02
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 6.0653065971263342e-01
     + mean   = 2.3405645729791965e-04
@@ -516,7 +516,7 @@ Localization(ensemble) * Increment:
     + mean   = 4.1576017141926988e-04
     + stddev = 1.2065705491831984e-02
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 8.0073740291680795e-01
     + mean   = 2.7933756209494204e-04
@@ -555,7 +555,7 @@ Localization(ensemble) * Increment:
     + mean   = 3.6562054374235733e-04
     + stddev = 1.0298717531510392e-02
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 9.4595946890676530e-01
     + mean   = 3.0488992488164650e-04
@@ -594,7 +594,7 @@ Localization(ensemble) * Increment:
     + mean   = 2.9141388520329827e-04
     + stddev = 7.9254539492469942e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 9.9999999999999989e-01
     + mean   = 3.0328885156203841e-04
@@ -633,7 +633,7 @@ Localization(ensemble) * Increment:
     + mean   = 2.1121027925313221e-04
     + stddev = 5.5328219062412091e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 9.4595946890676530e-01
     + mean   = 2.7400787198380070e-04

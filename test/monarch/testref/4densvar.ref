@@ -24,7 +24,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = 3.7783314978547580e-08
     + stddev = 1.0888129138940921e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.3828570991754529e-08
     + max    = 5.0643813610076906e-07
     + mean   = 9.4346620085595077e-08
@@ -63,7 +63,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = 3.8294848244822119e-08
     + stddev = 1.1028777867343819e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.4518964141607281e-08
     + max    = 4.5914891362190245e-07
     + mean   = 9.4116211051771942e-08
@@ -102,7 +102,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = 3.8695829715666137e-08
     + stddev = 1.1118672133489290e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.3598038852214810e-08
     + max    = 4.0874800086021421e-07
     + mean   = 9.3872321483269971e-08
@@ -141,7 +141,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = 3.8935367885101955e-08
     + stddev = 1.1206180308464629e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.3954821079969401e-08
     + max    = 3.7773072719573970e-07
     + mean   = 9.3638417224644055e-08
@@ -180,7 +180,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = 3.9076925222424425e-08
     + stddev = 1.1268907065419678e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.3980909287929534e-08
     + max    = 3.3575358986854554e-07
     + mean   = 9.3467684521535476e-08
@@ -219,7 +219,7 @@ CostFunction::addIncrement: Analysis:
     + mean   = 3.9102055929441970e-08
     + stddev = 1.1352049327525812e-08
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.3402759134769438e-08
     + max    = 3.1875523924827575e-07
     + mean   = 9.3362187664621572e-08
