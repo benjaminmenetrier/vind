@@ -107,7 +107,6 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
     # ufo
     ecbuild_bundle( PROJECT ufo SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ufo )
   endif()
- 
 else()
   # ECMWF tools
   ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.32.2 )
@@ -123,7 +122,7 @@ else()
   ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG b7f9a399bafae3ad5c3bda465839943ae22007c0 )
   
   # vader
-  ecbuild_bundle( PROJECT vader GIT "https://github.com/benjaminmenetrier/vader.git" TAG 79aaae0d3928ae2f462c985d483fbd550dd75503 )
+  ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG 5c5970db95d7ad1191737e84c0b0f16e1f704110 )
 
   if( ENABLE_SABER )
     # gsibec
@@ -148,7 +147,6 @@ else()
     # ufo
     ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 61eafacd89139e60e48d84bc701b6ff075e13a39 )
   endif()
-  
 endif()
 
 # vind
