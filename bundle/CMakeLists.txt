@@ -116,10 +116,10 @@ else()
   ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
 
   # oops
-  ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG d73dbc828f809c7a0dd6c8044436fa99e65df547 )
+  ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG 47a42647228c3fa00165647227a2adba95b142fe )
 
   # jedi-data
-  ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG b7f9a399bafae3ad5c3bda465839943ae22007c0 )
+  ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG 3123dfc8c1fdd6aa99ca75cb62369c641dc6f42e )
   
   # vader
   ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG 5c5970db95d7ad1191737e84c0b0f16e1f704110 )
@@ -129,23 +129,23 @@ else()
     ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
 
     # saber
-    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG e3c9b8ade414116bc81a76e70d6a4f3a31fd8f27 )
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG 2dfa980aa0b314103c870d28e02b26c973689cef )
   endif()
   
   if( ENABLE_CRTM )
     # crtm
-    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" TAG 524fcc623f65784dfb27277a7a35b53b1311f276 )
+    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" TAG 177306f1736b2ccf3c2d11629353ad24852f2863 )
   endif()
 
   if( ENABLE_OBS )
     # ioda
-    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG 3a1b65488c7926e71a32a4fe03ac1b5ed48258fb )
+    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG 875a1b7796c3ce1ff5e8710c7d8da5190188cfd9 )
     if( BUILD_IODA_CONVERTERS )
-      ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG f794abc237046964bc9316f45698af9a0eced121 )
+      ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG e2203185527b7b634a709ccbdf3967d70c9a541c )
     endif()
 
     # ufo
-    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 61eafacd89139e60e48d84bc701b6ff075e13a39 )
+    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 2cf2ae128643f5b72b917a6291bd836b778c2d1b )
   endif()
 endif()
 

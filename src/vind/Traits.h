@@ -11,6 +11,9 @@
 #include <string>
 
 #include "oops/generic/AtlasInterpolator.h"
+
+#include "ufo/obslocalization/ObsLocalization.h"
+
 #include "vind/Covariance.h"
 #include "vind/Geometry.h"
 #include "vind/GeometryIterator.h"
@@ -37,19 +40,20 @@ struct Traits {
   static std::string nameCovar()
     {return "vindCovariance";}
 
-  typedef vind::Covariance           Covariance;
-  typedef vind::Geometry             Geometry;
-  typedef vind::GeometryIterator     GeometryIterator;
-  typedef vind::Increment            Increment;
-  typedef vind::LinearModel          LinearModel;
-  typedef vind::LinearVariableChange LinearVariableChange;
-  typedef vind::Model                Model;
-  typedef vind::ModelAuxControl      ModelAuxControl;
-  typedef vind::ModelAuxCovariance   ModelAuxCovariance;
-  typedef vind::ModelAuxIncrement    ModelAuxIncrement;
-  typedef vind::ModelData            ModelData;
-  typedef vind::State                State;
-  typedef vind::VariableChange       VariableChange;
+  typedef vind::Covariance                       Covariance;
+  typedef vind::Geometry                         Geometry;
+  typedef vind::GeometryIterator                 GeometryIterator;
+  typedef vind::Increment                        Increment;
+  typedef vind::LinearModel                      LinearModel;
+  typedef vind::LinearVariableChange             LinearVariableChange;
+  typedef vind::Model                            Model;
+  typedef vind::ModelAuxControl                  ModelAuxControl;
+  typedef vind::ModelAuxCovariance               ModelAuxCovariance;
+  typedef vind::ModelAuxIncrement                ModelAuxIncrement;
+  typedef vind::ModelData                        ModelData;
+  typedef ufo::ObsLocalization<GeometryIterator> ObsLocalization;
+  typedef vind::State                            State;
+  typedef vind::VariableChange                   VariableChange;
 };
 
 }  // namespace vind
