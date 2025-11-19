@@ -8,7 +8,7 @@ State:
     + mean   = 3.8935252564226051e-02
     + stddev = 1.1205936104805308e-02
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 5.3954821079969406e-02
     + max    = 3.7773072719573975e-01
     + mean   = 9.3638391719483252e-02

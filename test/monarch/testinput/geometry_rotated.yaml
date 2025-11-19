@@ -24,7 +24,7 @@ geometry:
   - variables:
     - lev_height
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     levels: 5
     vertical coordinate:

@@ -1,13 +1,13 @@
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
     - pm2p5
 _chemVariables: &chemvars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -47,7 +47,7 @@ geometry:
   - in code: ozone
     in file: O3
     <<: *scalegas
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
     <<: *scalegas
   - in code: nitrogen_dioxide
@@ -94,7 +94,7 @@ background error:
           value: 3.0
         default off-diagonal weight: 0.5
         specific off-diagonal weights:
-        - variables pair: [ozone, carbon_monoxyde]
+        - variables pair: [ozone, carbon_monoxide]
           weight: 0.2
         number of layers: 3
         resolution: 8
@@ -104,7 +104,7 @@ dirac:
   lon:                 [             7.91,  17.89]
   lat:                 [             38.3,   60.3]
   vertical coordinate: [               23,     23]
-  variable:            ['carbon_monoxyde', 'pm10']
+  variable:            ['carbon_monoxide', 'pm10']
 
 background:
   date: 2022-07-01T12:00:00Z

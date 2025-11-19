@@ -1,6 +1,6 @@
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -8,7 +8,7 @@ _variables: &vars
     - air_pressure
 _chemVariables: &chemvars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -54,7 +54,7 @@ geometry: &geom
   alias:
   - in code: ozone
     in file: O3
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
   - in code: nitrogen_dioxide
     in file: NO2

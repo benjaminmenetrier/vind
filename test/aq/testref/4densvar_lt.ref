@@ -10,7 +10,7 @@ CostFunction::addIncrement: Analysis:
     + max    = -7.0708819603844546e+00
     + mean   = -7.3691657064725016e+00
     + stddev = 1.0231595876343690e-01
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2599559491888801e+00
     + max    = -6.2986266258142729e+00
     + mean   = -7.0082007365136416e+00
@@ -44,7 +44,7 @@ CostFunction::addIncrement: Analysis:
     + max    = -7.0397855703410483e+00
     + mean   = -7.3626525952400419e+00
     + stddev = 1.0231070284017151e-01
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2513436780820797e+00
     + max    = -6.3415969888624995e+00
     + mean   = -7.0090092820858043e+00
@@ -78,7 +78,7 @@ CostFunction::addIncrement: Analysis:
     + max    = -7.0209667868855856e+00
     + mean   = -7.3573576850440512e+00
     + stddev = 1.0242458519998375e-01
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2524545027502985e+00
     + max    = -6.3921082482720113e+00
     + mean   = -7.0099983188107000e+00
@@ -112,7 +112,7 @@ CostFunction::addIncrement: Analysis:
     + max    = -7.0045780900243049e+00
     + mean   = -7.3536424137189575e+00
     + stddev = 1.0264406876704787e-01
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2532042997541453e+00
     + max    = -6.4542327352717361e+00
     + mean   = -7.0110027129926786e+00
@@ -146,7 +146,7 @@ CostFunction::addIncrement: Analysis:
     + max    = -6.9963085004717112e+00
     + mean   = -7.3514311932339531e+00
     + stddev = 1.0318637747221557e-01
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2560605517510943e+00
     + max    = -6.5117643612888427e+00
     + mean   = -7.0117589471173396e+00
@@ -180,7 +180,7 @@ CostFunction::addIncrement: Analysis:
     + max    = -7.0083201770585850e+00
     + mean   = -7.3506191431858294e+00
     + stddev = 1.0387991798417950e-01
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.2592510562164625e+00
     + max    = -6.5239493796812269e+00
     + mean   = -7.0121615798487991e+00

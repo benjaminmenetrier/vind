@@ -5,7 +5,7 @@ Input Dirac increment:
   - ozone (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 1.0000000000000000e+00
     + mean   = 6.3131313131313133e-07
@@ -34,7 +34,7 @@ Covariance(ensemble) * Increment:
     + max    = 1.4362030768959645e-18
     + mean   = 4.6995673598722166e-22
     + stddev = 1.8255951725561926e-20
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -7.3643938203701216e-19
     + max    = 3.0786217553153826e-18
     + mean   = 6.7493876200432820e-22
@@ -62,7 +62,7 @@ Covariance(ensemble) * Increment:
 
 Localization(ensemble_localization) diagnostics:
 - Localization at zero separation:
-  + Value for variable carbon_monoxyde, subwindow 0, at (longitude, latitude, vertical index) point (7.95000, 38.35000, 5): 9.9999999999999978e-01
+  + Value for variable carbon_monoxide, subwindow 0, at (longitude, latitude, vertical index) point (7.95000, 38.35000, 5): 9.9999999999999978e-01
   + Value for variable pm10, subwindow 0, at (longitude, latitude, vertical index) point (17.85000, 60.35000, 5): 9.9999999999999989e-01
 Localization(ensemble) * Increment:
 - Valid time: 2022-07-01T12:00:00Z
@@ -73,7 +73,7 @@ Localization(ensemble) * Increment:
     + max    = 4.9999999999999989e-01
     + mean   = 2.3510316869327155e-04
     + stddev = 6.5770773656291578e-03
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 9.9999999999999978e-01
     + mean   = 4.2760762495184428e-04

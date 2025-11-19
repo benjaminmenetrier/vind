@@ -1,13 +1,13 @@
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
     - pm2p5
 _chemVariables: &chemvars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -64,7 +64,7 @@ geometry:
   - in code: ozone
     in file: O3
     <<: *scalegas
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
     <<: *scalegas
   - in code: nitrogen_dioxide
@@ -117,7 +117,7 @@ dirac:
     lon:                 [  7.91]
     lat:                 [  38.3]
     vertical coordinate: [     23]
-    variable:            ['carbon_monoxyde']
+    variable:            ['carbon_monoxide']
   - {}
 
 background:

@@ -1,13 +1,13 @@
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
     - pm2p5
 _chemVariables: &chemvars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -41,7 +41,7 @@ geometry:
   alias:
   - in code: ozone
     in file: O3
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
   - in code: nitrogen_dioxide
     in file: NO2
@@ -74,7 +74,7 @@ background error:
             value: 0.5
         default off-diagonal weight: 0.5
         specific off-diagonal weights:
-          - variables pair: [ozone, carbon_monoxyde]
+          - variables pair: [ozone, carbon_monoxide]
             weight: 0.2
       general:
         deprecated hull: false
