@@ -129,7 +129,7 @@ else()
     ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
 
     # saber
-    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG d787150d5584d0ea49013dcecdd8c6517d86bdbd )
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG a3b6ed567e75e931bfaa82eaa95789c786df2f90 )
   endif()
   
   if( ENABLE_CRTM )
