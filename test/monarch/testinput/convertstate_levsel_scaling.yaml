@@ -28,7 +28,7 @@ input geometry: &geom
   groups:
   - variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     levels: 5
     vertical coordinate:
@@ -53,7 +53,7 @@ input geometry: &geom
   - in code: ozone
     in file: O3
     <<: *scalegas
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
     <<: *scalegas
   - in code: pm10
@@ -80,14 +80,14 @@ states:
     format: bsc
     state variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     - air_pressure
     - air_pressure_levels
     - surface_geopotential
   output:
     date: 2022-07-01T00:00:00Z
-    filepath: testdata/levsel_scaling_output.nc
+    filepath: testdata/levsel_scaling_output_2022070100.nc
     formats: [bsc]
 - input:
     date: 2022-07-01T12:00:00Z
@@ -95,14 +95,14 @@ states:
     format: bsc
     state variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - pm10
     - air_pressure
     - air_pressure_levels
     - surface_geopotential
   output:
     date: 2022-07-01T12:00:00Z
-    filepath: testdata/levsel_scaling_output.nc
+    filepath: testdata/levsel_scaling_output_2022070112.nc
     formats: [bsc]
 test:
   reference filename: testref/convertstate_levsel_scaling.ref

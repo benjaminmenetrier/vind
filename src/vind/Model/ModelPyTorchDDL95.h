@@ -69,6 +69,8 @@ class __attribute__((visibility("hidden"))) ModelPyTorchDDL95:
   torch::TensorOptions opts_;
   torch::Tensor lonTTensor_;
   torch::Tensor latTTensor_;
+  torch::Tensor cMaskTTensor_;
+  torch::Tensor yMaskTTensor_;
 };
 // -----------------------------------------------------------------------------
 

@@ -63,22 +63,6 @@ LinearModelNumPyDDL95::LinearModelNumPyDDL95(const Geometry & geom,
   (*params_)["nx"] = grid.nx();
   (*params_)["ny"] = grid.ny();
 
-  // Get computation zone boundaries
-  if (grid.periodic()) {
-    (*params_)["ixMin"] = 0;
-    (*params_)["ixMax"] = nx-1;
-  } else {
-    (*params_)["ixMin"] = 2;
-    (*params_)["ixMax"] = nx-2;
-  }
-  if (geom.gridType() == "regional") {
-    (*params_)["iyMin"] = 0;
-    (*params_)["iyMax"] = ny-1;
-  } else {
-    (*params_)["iyMin"] = 1;
-    (*params_)["iyMax"] = ny-2;
-  }
-
   // Define coordinates
   lonNArray_.reset(new pybind11::array_t<double>({ny, nx}));
   latNArray_.reset(new pybind11::array_t<double>({ny, nx}));
@@ -90,6 +74,42 @@ LinearModelNumPyDDL95::LinearModelNumPyDDL95(const Geometry & geom,
       const atlas::PointLonLat pointLonLat = grid.lonlat(jx, jy);
       lonNView(jy, jx) = pointLonLat.lon()*deg2rad;
       latNView(jy, jx) = pointLonLat.lat()*deg2rad;
+    }
+  }
+
+  // Compute masks
+  int ixMin, ixMax, iyMin, iyMax;
+  if (grid.periodic()) {
+    ixMin = 0;
+    ixMax = nx-1;
+  } else {
+    ixMin = 2;
+    ixMax = nx-2;
+  }
+  if (geom.gridType() == "regional") {
+    iyMin = 0;
+    iyMax = ny-1;
+  } else {
+    iyMin = 1;
+    iyMax = ny-2;
+  }
+  cMaskNArray_.reset(new pybind11::array_t<double>({ny, nx}));
+  yMaskNArray_.reset(new pybind11::array_t<double>({ny, nx}));
+  (*cMaskNArray_)[pybind11::make_tuple(pybind11::ellipsis())] = 0.0;
+  (*yMaskNArray_)[pybind11::make_tuple(pybind11::ellipsis())] = 0.0;
+  auto cMaskNView = cMaskNArray_->mutable_unchecked<2>();
+  auto yMaskNView = yMaskNArray_->mutable_unchecked<2>();
+  for (int jx = 0; jx < nx; ++jx) {
+    for (int jy = 0; jy < ny; ++jy) {
+      if ((jx >= ixMin) && (jx <= ixMax) && (jy >= iyMin) && (jy <= iyMax)) {
+        // Inside computation zone
+        cMaskNView(jy, jx) = 1.0;
+
+        if ((jy > iyMin) && (jy < iyMax)) {
+          // Y-direction diffusion
+          yMaskNView(jy, jx) = 1.0;
+        }
+      }
     }
   }
 
@@ -185,8 +205,8 @@ void LinearModelNumPyDDL95::stepTL(Increment & dx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("stepTL")(*params_, *lonNArray_, *latNArray_, t,
-      trajNArray, incrNArray);
+    pybind11::object result = exec.attr("stepTL")(*params_, *lonNArray_, *latNArray_, *cMaskNArray_,
+      *yMaskNArray_, t, trajNArray, incrNArray);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalIncr.shape(0); ++jnode) {
@@ -269,8 +289,8 @@ void LinearModelNumPyDDL95::stepAD(Increment & dx,
     pybind11::module_ exec = pybind11::module_::import(moduleName.c_str());
 
     // Execute time step
-    pybind11::object result = exec.attr("stepAD")(*params_, *lonNArray_, *latNArray_, t,
-      trajNArray, incrNArray);
+    pybind11::object result = exec.attr("stepAD")(*params_, *lonNArray_, *latNArray_, *cMaskNArray_,
+      *yMaskNArray_, t, trajNArray, incrNArray);
 
     // Copy data from numpy array
     for (int jnode = 0; jnode < globalIncr.shape(0); ++jnode) {

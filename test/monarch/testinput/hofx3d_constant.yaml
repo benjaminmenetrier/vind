@@ -1,6 +1,6 @@
 _chemVariables: &chemvars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -50,7 +50,7 @@ geometry: &geom
   - in code: ozone
     in file: O3
     <<: *scalegas
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
     <<: *scalegas
   - in code: nitrogen_dioxide

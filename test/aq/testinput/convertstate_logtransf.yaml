@@ -8,7 +8,7 @@ _logTransform: &logtransform
 
 _variables: &vars
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10
@@ -38,7 +38,7 @@ input geometry: &geom
     in file: O3
     <<: *logtransform
     additive constant: *o3addconst
-  - in code: carbon_monoxyde
+  - in code: carbon_monoxide
     in file: CO
     <<: *logtransform
   - in code: nitrogen_dioxide

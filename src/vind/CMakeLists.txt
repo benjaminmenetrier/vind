@@ -19,6 +19,7 @@ GeometryIterator.h
 GeometryParameters.h
 Increment.cc
 Increment.h
+instantiateObsLocFactory.h
 Interpolation.cc
 Interpolation.h
 LinearModel.cc

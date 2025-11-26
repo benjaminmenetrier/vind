@@ -32,14 +32,17 @@ testdata/HDAT_AIRBASE_PM10-GLO-2017121612.nc
 link_files( $ENV{MONARCH_DATA_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${monglob_data} )
 
 # Add tests
-create_test( monglob geometry 8 test_geometry )
-create_test( monglob convertstate 8 convertstate )
-create_test( monglob convertstate_levsel 8 convertstate )
+math(EXPR 3DCORES "8 * ${VIND_TEST_CORES_FACTOR}")
+math(EXPR 4DCORES "12 * ${VIND_TEST_CORES_FACTOR}")
+
+create_test( monglob geometry ${3DCORES} test_geometry )
+create_test( monglob convertstate ${3DCORES} convertstate )
+create_test( monglob convertstate_levsel ${3DCORES} convertstate )
 
 if( ENABLE_OBS )
-    create_test( monglob hofx3d_air_pressure 8 hofx3d )
+    create_test( monglob hofx3d_air_pressure ${3DCORES} hofx3d )
 endif()
   
 if( ENABLE_SABER )
-    create_test( monglob dirac_3d 8 error_covariance_toolbox )
+    create_test( monglob dirac_3d ${3DCORES} error_covariance_toolbox )
 endif()

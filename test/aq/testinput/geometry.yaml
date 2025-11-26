@@ -15,7 +15,7 @@ geometry:
   groups:
   - variables:
     - ozone
-    - carbon_monoxyde
+    - carbon_monoxide
     - nitrogen_dioxide
     - sulfur_dioxide
     - pm10

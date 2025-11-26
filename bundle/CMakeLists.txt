@@ -58,52 +58,95 @@ if( DEFINED ENV{jedi_cmake_ROOT} )
     list( APPEND CMAKE_MODULE_PATH $ENV{jedi_cmake_ROOT}/share/jedicmake/Modules )
     message( INFO "CMAKE_MODULE_PATH" )
 else()
-    ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG 40d521f9a2d796fcbc6234d77abceeffefb8eb7f RECURSIVE )
+    if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
+      ecbuild_bundle( PROJECT jedicmake SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/jedicmake )
+    else()
+      ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG 40d521f9a2d796fcbc6234d77abceeffefb8eb7f RECURSIVE )
+    endif()
     include( jedicmake/cmake/Functions/git_functions.cmake )
     list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
 endif()
 
-# ECMWF tools
-ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.32.2 )
-ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.0 )
-ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" TAG 1.6.1 )
-ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" TAG 3094b24ec9c1862772e2b02f4e06c797247d57fc )
-ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
+if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
+  # ECMWF tools
+  ecbuild_bundle( PROJECT eckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eckit )
+  ecbuild_bundle( PROJECT fckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fckit )
+  ecbuild_bundle( PROJECT fiat SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fiat )
+  ecbuild_bundle( PROJECT ectrans SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ectrans )
+  ecbuild_bundle( PROJECT atlas SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/atlas )
 
-# oops
-ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG d73dbc828f809c7a0dd6c8044436fa99e65df547 )
+  # oops
+  ecbuild_bundle( PROJECT oops SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/oops )
 
-# jedi-data
-ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG b7f9a399bafae3ad5c3bda465839943ae22007c0 )
+  # jedi-data
+  ecbuild_bundle( PROJECT jedi-model-data SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/jedi-model-data )
 
-# vader
-ecbuild_bundle( PROJECT vader GIT "https://github.com/benjaminmenetrier/vader.git" TAG 79aaae0d3928ae2f462c985d483fbd550dd75503 )
+  # vader
+  ecbuild_bundle( PROJECT vader SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/vader )
 
-if( ENABLE_SABER )
+  if( ENABLE_SABER )
     # gsibec
-    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
-
+    ecbuild_bundle( PROJECT gsibec SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/gsibec )
 
     # saber
-    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG e3c9b8ade414116bc81a76e70d6a4f3a31fd8f27 )
-endif()
+    ecbuild_bundle( PROJECT saber SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/saber )
+  endif()
 
-if( ENABLE_CRTM )
+  if( ENABLE_CRTM )
     # crtm
-    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" TAG 524fcc623f65784dfb27277a7a35b53b1311f276 )
-endif()
+    ecbuild_bundle( PROJECT crtm SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/crtm )
+  endif()
 
-if( ENABLE_OBS )
+  if( ENABLE_OBS )
     # ioda
-#    ecbuild_bundle( PROJECT ioda-data GIT "https://github.com/jcsda-internal/ioda-data.git" TAG 8fb8ea112b2998ac49e4b61a733f87796924efb7 )
-    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG 3a1b65488c7926e71a32a4fe03ac1b5ed48258fb )
+    ecbuild_bundle( PROJECT ioda SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ioda )
     if( BUILD_IODA_CONVERTERS )
-        ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG f794abc237046964bc9316f45698af9a0eced121 )
+        ecbuild_bundle( PROJECT iodaconv GIT SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/iodaconv )
     endif()
 
     # ufo
-#    ecbuild_bundle( PROJECT ufo-data GIT "https://github.com/jcsda-internal/ufo-data.git" TAG 2fa2e99503f7944274e5edd315a5cb92bf2acf8c )
-    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 61eafacd89139e60e48d84bc701b6ff075e13a39 )
+    ecbuild_bundle( PROJECT ufo SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ufo )
+  endif()
+else()
+  # ECMWF tools
+  ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.32.2 )
+  ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.0 )
+  ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" TAG 1.6.1 )
+  ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" TAG 3094b24ec9c1862772e2b02f4e06c797247d57fc )
+  ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
+
+  # oops
+  ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG 47a42647228c3fa00165647227a2adba95b142fe )
+
+  # jedi-data
+  ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG e725b7f642e85fd33c4405e5244f2c2aefaaa21f )
+  
+  # vader
+  ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG 5c5970db95d7ad1191737e84c0b0f16e1f704110 )
+
+  if( ENABLE_SABER )
+    # gsibec
+    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
+
+    # saber
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG a3b6ed567e75e931bfaa82eaa95789c786df2f90 )
+  endif()
+  
+  if( ENABLE_CRTM )
+    # crtm
+    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" TAG 177306f1736b2ccf3c2d11629353ad24852f2863 )
+  endif()
+
+  if( ENABLE_OBS )
+    # ioda
+    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG 875a1b7796c3ce1ff5e8710c7d8da5190188cfd9 )
+    if( BUILD_IODA_CONVERTERS )
+      ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG e2203185527b7b634a709ccbdf3967d70c9a541c )
+    endif()
+
+    # ufo
+    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 2cf2ae128643f5b72b917a6291bd836b778c2d1b )
+  endif()
 endif()
 
 # vind

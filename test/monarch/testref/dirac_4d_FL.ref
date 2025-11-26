@@ -6,7 +6,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -35,7 +35,7 @@ Input Dirac increment:
     + mean   = 2.1025851284153869e-06
     + stddev = 1.4500293543311827e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -62,7 +62,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -89,7 +89,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -116,7 +116,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 1.0000000000000000e+00
     + mean   = 2.1025851284153869e-06
@@ -145,7 +145,7 @@ Input Dirac increment:
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 0.0000000000000000e+00
 
@@ -187,7 +187,7 @@ Covariance(ensemble) * Increment:
     + mean   = 7.7540562883322991e-23
     + stddev = 3.4957879686077147e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -2.2496886957034756e-20
     + max    = 7.8941958277000403e-20
     + mean   = 1.4521028954334651e-23
@@ -226,7 +226,7 @@ Covariance(ensemble) * Increment:
     + mean   = 8.8619553803410243e-23
     + stddev = 3.8912252995621534e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -2.8922815706565264e-20
     + max    = 1.5403713677743619e-19
     + mean   = 2.0615392867707361e-23
@@ -265,7 +265,7 @@ Covariance(ensemble) * Increment:
     + mean   = 9.0234595543290475e-23
     + stddev = 3.8377792748227983e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -2.7558381288305446e-20
     + max    = 2.3335091794715067e-19
     + mean   = 2.6269819830071942e-23
@@ -304,7 +304,7 @@ Covariance(ensemble) * Increment:
     + mean   = 8.3456398186729937e-23
     + stddev = 3.3793046256290759e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -3.5460288588911858e-20
     + max    = 2.9875869828581642e-19
     + mean   = 3.0508273348051135e-23
@@ -343,7 +343,7 @@ Covariance(ensemble) * Increment:
     + mean   = 6.9397227863785817e-23
     + stddev = 2.7176615092709264e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -4.8496259067980322e-20
     + max    = 2.9999689529079206e-19
     + mean   = 3.2399249375370121e-23
@@ -382,7 +382,7 @@ Covariance(ensemble) * Increment:
     + mean   = 5.2316367946721043e-23
     + stddev = 2.0621295932460550e-21
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = -5.8452196376893497e-20
     + max    = 3.3474460562329631e-19
     + mean   = 2.9222041042034733e-23
@@ -427,7 +427,7 @@ Covariance(ensemble) * Increment:
 Localization(ensemble_localization) diagnostics:
 - Localization at zero separation:
   + Value for variable ozone, subwindow 1, at (longitude, latitude, vertical index) point (-9.99876, 60.03955, 5): 9.9999999999999978e-01
-  + Value for variable carbon_monoxyde, subwindow 4, at (longitude, latitude, vertical index) point (8.00801, 38.37838, 5): 1.0000000000000000e+00
+  + Value for variable carbon_monoxide, subwindow 4, at (longitude, latitude, vertical index) point (8.00801, 38.37838, 5): 1.0000000000000000e+00
 Localization(ensemble) * Increment:
 - Valid time: 2022-07-01T00:00:00Z
   Geometry: structured [95121]
@@ -438,7 +438,7 @@ Localization(ensemble) * Increment:
     + mean   = 1.6714862455162154e-04
     + stddev = 7.7834086421848907e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 4.1111229050718756e-01
     + mean   = 9.8574580922182464e-05
@@ -477,7 +477,7 @@ Localization(ensemble) * Increment:
     + mean   = 1.8237336877162226e-04
     + stddev = 8.2575753279878605e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 6.0653065971263354e-01
     + mean   = 1.3258552571890738e-04
@@ -516,7 +516,7 @@ Localization(ensemble) * Increment:
     + mean   = 1.8001112406038067e-04
     + stddev = 7.8654913307707741e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 8.0073740291680817e-01
     + mean   = 1.6288707846597795e-04
@@ -555,7 +555,7 @@ Localization(ensemble) * Increment:
     + mean   = 1.6122842540152981e-04
     + stddev = 6.7464622136319003e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 9.4595946890676541e-01
     + mean   = 1.8214242817927594e-04
@@ -594,7 +594,7 @@ Localization(ensemble) * Increment:
     + mean   = 1.3148292041079601e-04
     + stddev = 5.2383389036984697e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 1.0000000000000000e+00
     + mean   = 1.8475659006127822e-04
@@ -633,7 +633,7 @@ Localization(ensemble) * Increment:
     + mean   = 9.7972681405966459e-05
     + stddev = 3.7139888618658067e-03
 
-  - carbon_monoxyde (5 levels):
+  - carbon_monoxide (5 levels):
     + min    = 0.0000000000000000e+00
     + max    = 9.4595946890676541e-01
     + mean   = 1.6949127938016391e-04
