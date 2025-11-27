@@ -119,7 +119,7 @@ else()
   ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG 47a42647228c3fa00165647227a2adba95b142fe )
 
   # jedi-data
-  ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG 3123dfc8c1fdd6aa99ca75cb62369c641dc6f42e )
+  ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG e725b7f642e85fd33c4405e5244f2c2aefaaa21f )
   
   # vader
   ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG 5c5970db95d7ad1191737e84c0b0f16e1f704110 )
@@ -129,7 +129,7 @@ else()
     ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" TAG a81044719ab3a5bfec72dbf6aab138b451e01ccb )
 
     # saber
-    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG 2dfa980aa0b314103c870d28e02b26c973689cef )
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG a3b6ed567e75e931bfaa82eaa95789c786df2f90 )
   endif()
   
   if( ENABLE_CRTM )
