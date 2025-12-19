@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1042229431.svg)](https://doi.org/10.5281/zenodo.17985466)
+
 # VIND
 
 ### Licence
