@@ -8,7 +8,6 @@
 #include "oops/runs/LocalEnsembleDA.h"
 #include "oops/runs/Run.h"
 
-#include "ufo/instantiateObsErrorFactory.h"
 #include "ufo/instantiateObsFilterFactory.h"
 #include "ufo/ObsTraits.h"
 
@@ -17,7 +16,6 @@
 
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
-  ufo::instantiateObsErrorFactory();
   ufo::instantiateObsFilterFactory();
   vind::instantiateObsLocFactory();
   oops::LocalEnsembleDA<vind::Traits, ufo::ObsTraits> letkf;

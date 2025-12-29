@@ -11,6 +11,7 @@
 #include <string>
 
 #include "oops/generic/AtlasInterpolator.h"
+#include "oops/generic/UnstructuredInterpolator.h"
 
 #include "ufo/obslocalization/ObsLocalization.h"
 
@@ -46,6 +47,7 @@ struct Traits {
   typedef vind::Increment                        Increment;
   typedef vind::LinearModel                      LinearModel;
   typedef vind::LinearVariableChange             LinearVariableChange;
+  typedef oops::UnstructuredInterpolator         LocalInterpolator;
   typedef vind::Model                            Model;
   typedef vind::ModelAuxControl                  ModelAuxControl;
   typedef vind::ModelAuxCovariance               ModelAuxCovariance;

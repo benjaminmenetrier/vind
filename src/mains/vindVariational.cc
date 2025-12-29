@@ -10,7 +10,6 @@
 
 #include "saber/oops/instantiateCovarFactory.h"
 
-#include "ufo/instantiateObsErrorFactory.h"
 #include "ufo/instantiateObsFilterFactory.h"
 #include "ufo/ObsTraits.h"
 
@@ -19,7 +18,6 @@
 int main(int argc,  char ** argv) {
   oops::Run run(argc, argv);
   saber::instantiateCovarFactory<vind::Traits>();
-  ufo::instantiateObsErrorFactory();
   ufo::instantiateObsFilterFactory();
   oops::Variational<vind::Traits, ufo::ObsTraits> var;
   return run.execute(var);
