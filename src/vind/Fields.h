@@ -123,7 +123,8 @@ class Fields : public util::Printable,
   void resetDuplicatePoints();
 
   // Check that fields are compatible
-  bool checkFieldsCompatible(const Fields &) const;
+  bool checkFieldsCompatible(const Fields &,
+                             const bool & superset = true) const;
 
   // Geometry
   const Geometry & geom_;
