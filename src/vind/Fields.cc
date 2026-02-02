@@ -887,8 +887,8 @@ void Fields::diff(const Fields & x1,
   oops::Log::trace() << classname() << "::diff starting" << std::endl;
 
   // Check that fields are compatible
-  ASSERT(checkFieldsCompatible(x1));
-  ASSERT(checkFieldsCompatible(x2));
+  ASSERT(checkFieldsCompatible(x1, false));
+  ASSERT(checkFieldsCompatible(x2, false));
 
   for (const auto & var : vars_) {
     atlas::Field field = fset_[var.name()];
@@ -1407,26 +1407,59 @@ void Fields::resetDuplicatePoints() {
 
 // -----------------------------------------------------------------------------
 
-bool Fields::checkFieldsCompatible(const Fields & other) const {
-  // Number of fields check
-  if (fset_.size() < other.fset_.size()) {
-    oops::Log::warning() << "checkFieldsCompatible: Fields 1 is not a superset of Fields 2"
-      << std::endl;
-    return false;
-  }
+bool Fields::checkFieldsCompatible(const Fields & other,
+                                   const bool & superset) const {
+  // Create vector of fields to check
+  std::vector<std::string> fieldsToCheck;
 
-  for (const auto & otherField : other.fset_) {
-    // Variables check
-    if (!fset_.has(otherField.name())) {
-      oops::Log::warning() << "checkFieldsCompatible: Fields do not contain the same variables"
-        << std::endl;
+  if (superset) {
+    // Number of fields check
+    if (fset_.size() < other.fset_.size()) {
+        oops::Log::warning() << "checkFieldsCompatible: this Fields is not a superset of the other "
+        << "Fields" << std::endl;
       return false;
     }
 
+    for (const auto & otherField : other.fset_) {
+      // Variables check
+      if (!fset_.has(otherField.name())) {
+        oops::Log::warning() << "checkFieldsCompatible: this Fields does not contain the other "
+          << "Fields variable:" << otherField.name() << std::endl;
+        return false;
+      }
+    }
+
+    // List of fields to check
+    fieldsToCheck = other.fset_.field_names();
+  } else {
+    // Number of fields check
+    if (fset_.size() > other.fset_.size()) {
+        oops::Log::warning() << "checkFieldsCompatible: this Fields is not a subset of the other "
+        << "Fields" << std::endl;
+      return false;
+    }
+
+    for (const auto & field : fset_) {
+      // Variables check
+      if (!other.fset_.has(field.name())) {
+        oops::Log::warning() << "checkFieldsCompatible: the other Fields does not contain the "
+          << "Fields variable:" << field.name() << std::endl;
+        return false;
+      }
+    }
+
+    // List of fields to check
+    fieldsToCheck = fset_.field_names();
+  }
+
+  // Geometry checks
+  for (const auto & fieldName : fieldsToCheck) {
     // Levels check
-    const auto field = fset_[otherField.name()];
+    const auto field = fset_[fieldName];
+    const auto otherField = other.fset_[fieldName];
     if (field.shape(1) != otherField.shape(1)) {
-      oops::Log::warning() << "checkFieldsCompatible: Fields have differing levels" << std::endl;
+      oops::Log::warning() << "checkFieldsCompatible: the variable " << otherField.name() << " has "
+        << "a different number of levels in this Fields and in the other Fields" << std::endl;
       return false;
     }
 
