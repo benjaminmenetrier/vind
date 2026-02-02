@@ -75,6 +75,7 @@ GeometryIterator& GeometryIterator::operator++() {
       } else {
         // Next level of the 3D grid
         ++jlevel_;
+        jnode_ = 0;
         if (jlevel_ == static_cast<int>(geom_.nlevs())) {
           // End of the 3D grid
           jnode_ = -1;
