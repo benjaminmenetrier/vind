@@ -4,8 +4,8 @@ Initial state:
   Fields:
   - air_temperature (2 levels):
     + min    = -1.0287764472676125e+01
-    + max    = 1.9582387793721100e+01
-    + mean   = 2.4612641179440802e+00
+    + max    = 1.9582387793721104e+01
+    + mean   = 2.4612641179440797e+00
     + stddev = 3.1910365906225642e+00
 Final state: 
 - Valid time: 2010-01-01T06:00:00Z
@@ -13,12 +13,12 @@ Final state:
   Fields:
   - air_temperature (2 levels):
     + min    = -1.0287764472676125e+01
-    + max    = 1.7448337162181407e+01
-    + mean   = 2.1257161672117437e+00
-    + stddev = 2.5109522301847389e+00
+    + max    = 1.7448337162181403e+01
+    + mean   = 2.1257161672117442e+00
+    + stddev = 2.5109522301847385e+00
 H(x): 
-air_temperature nobs= 50 Min=-1.3311231528550436e+00, Max=5.2747832452627996e+00, RMS=2.4044863832455081e+00
+air_temperature nobs= 50 Min=-1.3311231528550431e+00, Max=5.2747832452627987e+00, RMS=2.4044863832455081e+00
 End H(x)
 Perturbed H(x): 
-air_temperature nobs= 50 Min=-1.3028111157343716e+00, Max=5.3402882786570558e+00, RMS=2.4030954753449647e+00
+air_temperature nobs= 50 Min=-1.2467055664814741e+00, Max=5.5450869038783122e+00, RMS=2.4209308316571185e+00
 End Perturbed H(x)

@@ -26,6 +26,9 @@ background:
   members from template:
     template:
       states:
+      - date: 2010-01-01T00:00:00Z
+        state variables: [air_temperature]
+        filepath: testdata/ens__MPI__PT0S_%mem%
       - date: 2010-01-01T03:00:00Z
         state variables: [air_temperature]
         filepath: testdata/ens__MPI__PT3H_%mem%
@@ -78,6 +81,8 @@ local ensemble DA:
     mult: 1.1
 output:
   states:
+  - date: 2010-01-01T00:00:00Z
+    filepath: testdata/letkf_nonlinear_4d_state__MPI__PT0S
   - date: 2010-01-01T03:00:00Z
     filepath: testdata/letkf_nonlinear_4d_state__MPI__PT3H
   - date: 2010-01-01T06:00:00Z
@@ -88,6 +93,8 @@ output ensemble increments:
   filepath: testdata/letkf_nonlinear_4d_increment__MPI_
 output mean prior:
   states:
+  - date: 2010-01-01T00:00:00Z
+    filepath: testdata/letkf_nonlinear_4d_mean_prior__MPI__PT0S
   - date: 2010-01-01T03:00:00Z
     filepath: testdata/letkf_nonlinear_4d_mean_prior__MPI__PT3H
   - date: 2010-01-01T06:00:00Z
