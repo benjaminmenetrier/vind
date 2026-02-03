@@ -205,6 +205,8 @@ observations:
       observation alias file: testinput/ufo_variable_name_map.yaml
     obs error:
       covariance model: diagonal
+    get values:
+      time interpolation: nearest
     obs localizations:
     - localization method: Horizontal Gaspari-Cohn
       lengthscale: 250e3
