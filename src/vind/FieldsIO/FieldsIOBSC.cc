@@ -342,10 +342,10 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   util::DateTime validTime;
   if (conf.has("date")) {
     validTime = util::DateTime(conf.getString("date"));
+  } else if (conf.has("date pattern")) {
+    validTime = util::DateTime(conf.getString("date pattern"));
   } else {
-    if (conf.has("date pattern")) {
-        validTime = util::DateTime(conf.getString("date pattern"));
-    }
+    throw eckit::UserError("Missing date or date pattern", Here());
   }
 
   // Get timeseries mode
