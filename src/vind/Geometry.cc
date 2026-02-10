@@ -42,15 +42,15 @@ Geometry::Geometry(const eckit::Configuration & config,
   : comm_(comm), groups_() {
   oops::Log::trace() << classname() << "::Geometry starting" << std::endl;
 
-  GeometryParameters params;
-  params.deserialize(config);
+  // Deserialize and save parameters
+  params_.deserialize(config);
 
   // Setup atlas geometric data structures
   atlas::FieldSet fieldsetOwnedMask;
   util::setupFunctionSpace(comm_, config, grid_, partitioner_, mesh_, functionSpace_,
     fieldsetOwnedMask);
-  halo_ = params.halo.value();
-  gridType_ = params.grid.value().getString("type", "no_type");
+  halo_ = params_.halo.value();
+  gridType_ = params_.grid.value().getString("type", "no_type");
 
   // Deal with poles for structured grids
   if (((gridType_ == "structured") || (gridType_ == "regular_lonlat")) && grid_.domain().global()) {
@@ -99,23 +99,23 @@ Geometry::Geometry(const eckit::Configuration & config,
   fields_.add(fieldsetOwnedMask["owned"]);
 
   // Levels direction
-  levelsAreTopDown_ = params.levelsAreTopDown.value();
+  levelsAreTopDown_ = params_.levelsAreTopDown.value();
 
   // Levels counter origin
-  levelsCountFrom_ = params.levelsCountFrom.value();
+  levelsCountFrom_ = params_.levelsCountFrom.value();
 
   // Model data
-  modelData_ = params.modelData.value();
+  modelData_ = params_.modelData.value();
 
   // Variable name alias
-  setupAlias(params);
+  setupAlias();
 
   // IO parameters
-  io_ = params.io.value();
+  io_ = params_.io.value();
 
   // Interpolation
-  const auto &interpParams = params.interpolation.value();
-  if (interpParams != boost::none) {
+  const auto &interpParams = params_.interpolation.value();
+  if (interpParams) {
     interpolation_ = interpParams->toConfiguration();
   } else {
     interpolation_ = eckit::LocalConfiguration();
@@ -137,7 +137,7 @@ Geometry::Geometry(const eckit::Configuration & config,
 
   // Groups
   size_t groupIndex = 0;
-  for (const auto & groupParams : params.groups.value()) {
+  for (const auto & groupParams : params_.groups.value()) {
     // Define group
     groupData group;
 
@@ -178,13 +178,10 @@ Geometry::Geometry(const eckit::Configuration & config,
   }
 
   // Check lon/lat from files
-  const auto &checkLonLatConf = params.checkLonLat.value();
-  if (checkLonLatConf != boost::none) {
-    checkLonLat(*checkLonLatConf);
-  }
+  checkLonLat();
 
   // Setup iterator
-  setupIterator(config);
+  setupIterator();
 
   // Print summary
   print(oops::Log::info());
@@ -332,36 +329,33 @@ void Geometry::print(std::ostream & os) const {
 
 // -----------------------------------------------------------------------------
 
-void Geometry::setupAlias(const GeometryParameters & params) {
+void Geometry::setupAlias() {
   oops::Log::trace() << classname() << "::setupAlias starting" << std::endl;
 
-  for (const auto & item : params.alias.value()) {
-    eckit::LocalConfiguration confItem;
-    item.serialize(confItem);
-    alias_.push_back(confItem);
+  // Add pairs into vector
+  for (const auto & item : params_.alias.value()) {
+    alias_.push_back(std::make_pair(item.inCode, item.inFile));
   }
 
   // Check alias consistency
   std::vector<std::string> vars;
-  for (const auto & groupParams : params.groups.value()) {
+  for (const auto & groupParams : params_.groups.value()) {
     const std::vector<std::string> grpVars = groupParams.variables.value();
     vars.insert(vars.end(), grpVars.begin(), grpVars.end());
   }
   for (const auto & item : alias_) {
-    const std::string codeVar = item.getString("in code");
-    if (std::find(vars.begin(), vars.end(), codeVar) == vars.end()) {
+    if (std::find(vars.begin(), vars.end(), item.first) == vars.end()) {
       // Code variable not available in the list of variables anymore
       throw eckit::UserError("Alias error: code variable not available anymore", Here());
     } else {
       // Remove code variable from the list of available variables
-      vars.erase(std::remove(vars.begin(), vars.end(), codeVar), vars.end());
+      vars.erase(std::remove(vars.begin(), vars.end(), item.first), vars.end());
     }
   }
   for (const auto & item : alias_) {
-    const std::string fileVar = item.getString("in file");
-    if (std::find(vars.begin(), vars.end(), fileVar) == vars.end()) {
+    if (std::find(vars.begin(), vars.end(), item.second) == vars.end()) {
       // Add file variable to the list of variables
-      vars.push_back(fileVar);
+      vars.push_back(item.second);
     } else {
       // File variable is already present in the list of variables
       throw eckit::UserError("Alias error: duplicated file variable", Here());
@@ -381,7 +375,7 @@ void Geometry::setupVertCoord(groupData & group) {
 
   // Get vertical coordinate name
   std::string vertCoordName = "vert_coord_" + std::to_string(group.index_);
-  if (vertCoordConf != boost::none) {
+  if (vertCoordConf) {
     if (vertCoordConf->has("name")) {
       vertCoordName = vertCoordConf->getString("name");
     }
@@ -397,7 +391,7 @@ void Geometry::setupVertCoord(groupData & group) {
   // Get view
   auto vertCoordView = atlas::array::make_view<double, 2>(group.vertCoord_);
 
-  if (vertCoordConf != boost::none) {
+  if (vertCoordConf) {
     // Vertical coordinate from a configuration
     if (vertCoordConf->has("profile")) {
       // From a vector of doubles (one for each level)
@@ -476,7 +470,7 @@ void Geometry::setupVertCoord(groupData & group) {
 
   // Add orography (mountain) on bottom level
   const auto &orographyParams = group.params_.orography.value();
-  if (orographyParams != boost::none) {
+  if (orographyParams) {
     // Get top latitude value
     const atlas::PointLonLat topPoint({orographyParams->topLon.value(),
       orographyParams->topLat.value()});
@@ -674,13 +668,16 @@ void Geometry::setupMask(groupData & group) {
 
 // -----------------------------------------------------------------------------
 
-void Geometry::checkLonLat(const eckit::Configuration & checkLonLatConf) {
+void Geometry::checkLonLat() {
   oops::Log::trace() << classname() << "::checkLonLat starting" << std::endl;
 
   // Return if configuration is empty
-  if (checkLonLatConf.empty()) {
+  if (!params_.checkLonLat.value()) {
     return;
   }
+
+  // Get configuration
+  const auto & checkLonLatConf = *params_.checkLonLat.value();
 
   // Get variable to read
   const std::string lonName = checkLonLatConf.getString("longitude", "longitude");
@@ -730,14 +727,14 @@ void Geometry::checkLonLat(const eckit::Configuration & checkLonLatConf) {
 
 // -----------------------------------------------------------------------------
 
-void Geometry::setupIterator(const eckit::Configuration & config) {
+void Geometry::setupIterator() {
   oops::Log::trace() << classname() << "::setupIterator starting" << std::endl;
 
   // Common vertical coordinate
-  commonVerticalCoordinate_ = config.getString("common vertical coordinate", "vert_coord_0");
+  commonVerticalCoordinate_ = params_.commonVertCoord.value();
 
   // Iterator dimension
-  iteratorDimension_ = config.getInt("iterator dimension", 2);
+  iteratorDimension_ = params_.iteratorDim.value();
   ASSERT((iteratorDimension_ == 2) || (iteratorDimension_ == 3));
 
   // First group vertical coordinate field

@@ -32,10 +32,10 @@ LinearVariableChange::LinearVariableChange(const Geometry & geom,
   LinearVariableChangeParameters params;
   params.deserialize(config);
 
-  if (params.atlasFile.value() != boost::none) {
+  if (params.atlasFile.value()) {
     // Check that input and output variables are present
-    ASSERT(params.inputVariables.value() != boost::none);
-    ASSERT(params.outputVariables.value() != boost::none);
+    ASSERT(params.inputVariables.value());
+    ASSERT(params.outputVariables.value());
 
     // Define output to input variables map
     ASSERT(params.inputVariables.value()->size() == params.outputVariables.value()->size());

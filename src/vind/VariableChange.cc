@@ -35,7 +35,7 @@ VariableChange::VariableChange(const eckit::Configuration & config,
   params.deserialize(config);
 
   const boost::optional<vader::VaderParameters> &vaderParam = params.vaderParam.value();
-  if (vaderParam != boost::none) {
+  if (vaderParam) {
     // Pass model data parameters to vader configuration
     ModelData modelData(geom);
 
