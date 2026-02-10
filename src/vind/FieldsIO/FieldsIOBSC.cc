@@ -222,14 +222,17 @@ void FieldsIOBSC::read(const oops::Variables & vars,
       // Get variable view
       auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar].name()]);
 
+      // Get variable in code
+      const std::string var_in_code = geom.params().codeAlias(vars[jvar].name());
+
       // Get transformation parameters (for states only)
       double scalingFactor = 1.0;
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        scalingFactor = geom.params().scalingFactor(vars[jvar].name());
-        logTransf = geom.params().logTransf(vars[jvar].name());
-        addConst = geom.params().addConst(vars[jvar].name());
+        scalingFactor = geom.params().scalingFactor(var_in_code);
+        logTransf = geom.params().logTransf(var_in_code);
+        addConst = geom.params().addConst(var_in_code);
       }
 
       if (vars[jvar].getLevels() == 1) {
@@ -253,7 +256,6 @@ void FieldsIOBSC::read(const oops::Variables & vars,
           }
         }
       } else {
-        const std::string var_in_code = geom.params().codeAlias(vars[jvar].name());
         size_t loopMax = geom.vertCoordAvg(var_in_code).size();
         for (size_t k = 0; k < loopMax; ++k) {
           // Read level
@@ -728,8 +730,8 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
     const eckit::LocalConfiguration gridAttr(attributes_, geom.grid().uid());
 
     for (size_t jvar = 0; jvar < vars.size(); ++jvar) {
-      const std::string var_in_code = geom.params().codeAlias(vars[jvar]);
       // Check whether this variable exists
+      const std::string var_in_code = geom.params().codeAlias(vars[jvar]);
       if (nc_inq_varid(ncid, vars[jvar].c_str(), &var_id[jvar]) != NC_NOERR) {
         // Define variable
         if (fields.fieldSet()[vars[jvar]].shape(1) > 1) {
@@ -881,14 +883,17 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       // Get variable view
       const auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar]]);
 
+      // Get variable in code
+      const std::string var_in_code = geom.params().codeAlias(vars[jvar]);
+
       // Get transformation parameters (for states only)
       double scalingFactor = 1.0;
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        scalingFactor = geom.params().scalingFactor(vars[jvar]);
-        logTransf = geom.params().logTransf(vars[jvar]);
-        addConst = geom.params().addConst(vars[jvar]);
+        scalingFactor = geom.params().scalingFactor(var_in_code);
+        logTransf = geom.params().logTransf(var_in_code);
+        addConst = geom.params().addConst(var_in_code);
       }
 
       if (fields.fieldSet()[vars[jvar]].shape(1) == 1) {
@@ -915,7 +920,6 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
         if ((retval = nc_put_vars_float(ncid, var_id[jvar], startp.data(), countp.data(), NULL,
                                         zvar.data()))) ERR(retval, vars[jvar]);
       } else {
-        const std::string var_in_code = geom.params().codeAlias(vars[jvar]);
         auto levels = geom.vertCoordAvg(var_in_code);
         for (size_t k = 0; k < levels.size(); ++k) {
           // Copy data

@@ -79,22 +79,22 @@ cost function:
     - in code: pm2p5
       in file: dry_pm2p5_mass
     transform:
-    - variable: O3
+    - variable: ozone
       <<: *scalegas
       <<: *logtransform
       additive constant: *o3addconst
-    - variable: CO
+    - variable: carbon_monoxide
       <<: *scalegas
       <<: *logtransform
-    - variable: NO2
+    - variable: nitrogen_dioxide
       <<: *scalegas
       <<: *logtransform
-    - variable: SO2
+    - variable: sulfur_dioxide
       <<: *scalegas
       <<: *logtransform
-    - variable: dry_pm10_mass
+    - variable: pm10
       <<: *logtransform
-    - variable: dry_pm2p5_mass
+    - variable: pm2p5
       <<: *logtransform
     io:
       total number of levels: 24
