@@ -980,13 +980,7 @@ void Fields::read(const eckit::Configuration & config) {
   // Update variables names
   oops::Variables vars_in_file;
   for (const auto & var : vars_) {
-    std::string newVar = var.name();
-    for (const auto & item : geom_.alias()) {
-      if (item.getString("in code") == var.name()) {
-        newVar = item.getString("in file");
-      }
-    }
-    vars_in_file.push_back({newVar, var.metaData(), var.getLevels()});
+    vars_in_file.push_back({geom_.params().fileAlias(var.name()), var.metaData(), var.getLevels()});
   }
 
   // Get input format
@@ -1009,11 +1003,7 @@ void Fields::read(const eckit::Configuration & config) {
 
   // Rename fields
   for (auto & field : fset_) {
-    for (const auto & item : geom_.alias()) {
-      if (item.getString("in file") == field.name()) {
-        field.rename(item.getString("in code"));
-      }
-    }
+    field.rename(geom_.params().codeAlias(field.name()));
   }
 
   // Set fields metadata
@@ -1071,11 +1061,7 @@ void Fields::write(const eckit::Configuration & config) const {
 
   // Rename fields
   for (auto & field : fset_) {
-    for (const auto & item : geom_.alias()) {
-      if (item.getString("in code") == field.name()) {
-        field.rename(item.getString("in file"));
-      }
-    }
+    field.rename(geom_.params().fileAlias(field.name()));
   }
 
   // Get output formats
@@ -1101,11 +1087,7 @@ void Fields::write(const eckit::Configuration & config) const {
 
   // Rename fields
   for (auto & field : fset_) {
-    for (const auto & item : geom_.alias()) {
-      if (item.getString("in file") == field.name()) {
-        field.rename(item.getString("in code"));
-      }
-    }
+    field.rename(geom_.params().codeAlias(field.name()));
   }
 
   // Wait

@@ -207,19 +207,13 @@ void FieldsIOAQ::read(const oops::Variables & vars,
       auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar].name()]);
 
       // Get transformation parameters (for states only)
-      double scaleFactor = 1.0;
+      double scalingFactor = 1.0;
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom.alias()) {
-          if (item.getString("in file") == vars[jvar].name()) {
-            scaleFactor = item.getDouble("scaling factor", 1.0);
-            logTransf = item.getBool("log transform", false);
-            if (logTransf) {
-              addConst = item.getDouble("additive constant", 0.0);
-            }
-          }
-        }
+        scalingFactor = geom.params().scalingFactor(vars[jvar].name());
+        logTransf = geom.params().logTransf(vars[jvar].name());
+        addConst = geom.params().addConst(vars[jvar].name());
       }
 
       if (vars[jvar].getLevels() == 1) {
@@ -236,9 +230,9 @@ void FieldsIOAQ::read(const oops::Variables & vars,
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
             if (logTransf) {
-              varView(gidx, 0) = log10((zvar[jj*nx+i] * scaleFactor) + addConst);
+              varView(gidx, 0) = log10((zvar[jj*nx+i] * scalingFactor) + addConst);
             } else {
-              varView(gidx, 0) = zvar[jj*nx+i] * scaleFactor;
+              varView(gidx, 0) = zvar[jj*nx+i] * scalingFactor;
             }
           }
         }
@@ -258,9 +252,9 @@ void FieldsIOAQ::read(const oops::Variables & vars,
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);
               if (logTransf) {
-                varView(gidx, k) = log10((zvar[jj*nx+i] * scaleFactor) + addConst);
+                varView(gidx, k) = log10((zvar[jj*nx+i] * scalingFactor) + addConst);
               } else {
-                varView(gidx, k) = zvar[jj*nx+i] * scaleFactor;
+                varView(gidx, k) = zvar[jj*nx+i] * scalingFactor;
               }
             }
           }
@@ -618,19 +612,13 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
       const auto varView = atlas::array::make_view<double, 2>(globalData[vars[jvar]]);
 
       // Get transformation parameters (for states only)
-      double scaleFactor = 1.0;
+      double scalingFactor = 1.0;
       bool logTransf = false;
       double addConst = 0.0;
       if (isState) {
-        for (const auto & item : geom.alias()) {
-          if (item.getString("in file") == vars[jvar]) {
-            scaleFactor = item.getDouble("scaling factor", 1.0);
-            logTransf = item.getBool("log transform", false);
-            if (logTransf) {
-              addConst = item.getDouble("additive constant", 0.0);
-            }
-          }
-        }
+        scalingFactor = geom.params().scalingFactor(vars[jvar]);
+        logTransf = geom.params().logTransf(vars[jvar]);
+        addConst = geom.params().addConst(vars[jvar]);
       }
 
       if (fields.fieldSet()[vars[jvar]].shape(1) == 1) {
@@ -641,9 +629,9 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
           for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
             atlas::gidx_t gidx = grid.index(i, jj);
             if (logTransf) {
-              zvar[jj*nx+i] = (pow(10, varView(gidx, 0)) - addConst) / scaleFactor;
+              zvar[jj*nx+i] = (pow(10, varView(gidx, 0)) - addConst) / scalingFactor;
             } else {
-              zvar[jj*nx+i] = varView(gidx, 0) / scaleFactor;
+              zvar[jj*nx+i] = varView(gidx, 0) / scalingFactor;
             }
           }
         }
@@ -662,9 +650,9 @@ void FieldsIOAQ::write(const eckit::Configuration & conf,
             for (atlas::idx_t i = 0; i < grid.nx(jj); ++i) {
               atlas::gidx_t gidx = grid.index(i, jj);
               if (logTransf) {
-                zvar[jj*nx+i] = (pow(10, varView(gidx, k)) - addConst) / scaleFactor;
+                zvar[jj*nx+i] = (pow(10, varView(gidx, k)) - addConst) / scalingFactor;
               } else {
-                zvar[jj*nx+i] = varView(gidx, k) / scaleFactor;
+                zvar[jj*nx+i] = varView(gidx, k) / scalingFactor;
               }
             }
           }

@@ -12,6 +12,7 @@
 #include <ostream>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "atlas/field.h"
@@ -88,10 +89,10 @@ class Geometry : public util::Printable,
   size_t groups() const
     {return groups_.size();}
   size_t groupIndex(const std::string &) const;
+  const GeometryParameters & params() const
+    {return params_;}
   const eckit::LocalConfiguration & modelData() const
     {return modelData_;}
-  const std::vector<eckit::LocalConfiguration> & alias() const
-    {return alias_;}
   const eckit::LocalConfiguration & io() const
     {return io_;}
   const eckit::LocalConfiguration & interpolation() const
@@ -121,6 +122,10 @@ class Geometry : public util::Printable,
     {return nnodes_;}
   const size_t & nlevs() const
     {return nlevs_;}
+
+  // Variables alias
+  std::string fileAlias(const std::string &) const;
+  std::string codeAlias(const std::string &) const;
 
  private:
   // Communicator
@@ -157,6 +162,9 @@ class Geometry : public util::Printable,
     double gmaskSize_;
   };
 
+  // Parameters
+  GeometryParameters params_;
+
   // Geometry fields
   atlas::FieldSet fields_;
 
@@ -172,8 +180,11 @@ class Geometry : public util::Printable,
   // Model data configuration
   eckit::LocalConfiguration modelData_;
 
-  // Variables name alias
-  std::vector<eckit::LocalConfiguration> alias_;
+  // Variable alias
+  std::vector<std::pair<std::string, std::string>> alias_;
+
+  // Variable transform
+  std::vector<eckit::LocalConfiguration> transform_;
 
   // IO configuration
   eckit::LocalConfiguration io_;
@@ -204,7 +215,7 @@ class Geometry : public util::Printable,
   void print(std::ostream &) const;
 
   // Setup alias
-  void setupAlias(const GeometryParameters &);
+  void setupAlias();
 
   // Setup group vertical coordinate
   void setupVertCoord(groupData &);
@@ -213,10 +224,10 @@ class Geometry : public util::Printable,
   void setupMask(groupData &);
 
   // Check longitudes/latitudes from file
-  void checkLonLat(const eckit::Configuration &);
+  void checkLonLat();
 
   // Setup iterator
-  void setupIterator(const eckit::Configuration &);
+  void setupIterator();
 };
 
 // -----------------------------------------------------------------------------
