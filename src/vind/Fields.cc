@@ -28,6 +28,7 @@
 #include "eckit/mpi/Comm.h"
 
 #include "oops/util/ConfigFunctions.h"
+#include "oops/util/ConfigHelpers.h"
 #include "oops/util/FieldSetHelpers.h"
 #include "oops/util/FieldSetOperations.h"
 #include "oops/util/FloatCompare.h"
@@ -1061,6 +1062,11 @@ void Fields::write(const eckit::Configuration & config) const {
         util::seekAndReplace(updatedConfig, datePattern, time_.toStringIO());
       }
     }
+  }
+
+  // Update member template
+  if (updatedConfig.has("member")) {
+    util::setMember(updatedConfig, updatedConfig.getInt("member"));
   }
 
   // Rename fields

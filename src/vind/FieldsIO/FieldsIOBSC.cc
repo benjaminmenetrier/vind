@@ -339,7 +339,14 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
   const size_t lmMax = geom.io().getUnsigned("total number of levels");
 
   // Get write time
-  const util::DateTime validTime(conf.getString("date"));
+  util::DateTime validTime;
+  if (conf.has("date")) {
+    validTime = util::DateTime(conf.getString("date"));
+  } else if (conf.has("date pattern")) {
+    validTime = util::DateTime(conf.getString("date pattern"));
+  } else {
+    throw eckit::UserError("Missing date or date pattern", Here());
+  }
 
   // Get timeseries mode
   const bool singleDate = conf.getBool("single date", true);
