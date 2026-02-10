@@ -89,6 +89,6 @@ final:
 output:
   filepath: testdata/4dvar_analysis__MPI___DATE_
   date pattern: _DATE_
-  frequency: PT06H
+  frequency: PT6H
 test:
   reference filename: testref/4dvar.ref
