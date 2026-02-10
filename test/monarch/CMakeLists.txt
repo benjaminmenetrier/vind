@@ -49,6 +49,7 @@ if( ENABLE_OBS )
     create_test( monarch hofx3d_constant ${3DCORES} hofx3d )
     create_test( monarch hofx3d_air_pressure ${3DCORES} hofx3d )
     create_test( monarch hofx3d_logarithm ${3DCORES} hofx3d )
+    create_test( monarch hofx4d_logarithm ${3DCORES} hofx4d )
 endif()
   
 if( ENABLE_SABER )
