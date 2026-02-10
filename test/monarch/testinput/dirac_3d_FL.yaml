@@ -46,20 +46,25 @@ geometry:
   alias:
   - in code: ozone
     in file: O3
-    <<: *scalegas
   - in code: carbon_monoxide
     in file: CO
-    <<: *scalegas
   - in code: nitrogen_dioxide
     in file: NO2
-    <<: *scalegas
   - in code: sulfur_dioxide
     in file: SO2
-    <<: *scalegas
   - in code: pm10
     in file: dry_pm10_mass
   - in code: pm2p5
     in file: dry_pm2p5_mass
+  transform:
+  - variable: ozone
+    <<: *scalegas
+  - variable: carbon_monoxide
+    <<: *scalegas
+  - variable: nitrogen_dioxide
+    <<: *scalegas
+  - variable: sulfur_dioxide
+    <<: *scalegas
   io:
     total number of levels: 24
     initial date: 2022-06-30T12:00:00Z
