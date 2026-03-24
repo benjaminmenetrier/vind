@@ -369,7 +369,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
     // Reference for time coordinate
     timeOffset =
       static_cast<size_t>((initialTime - util::DateTime(geom.io().getString("initial date")))
-                          .toSeconds())/timeStep;
+			    .toSeconds()) / 3600;
   }
 
   // Get total number of hours
@@ -859,7 +859,7 @@ void FieldsIOBSC::write(const eckit::Configuration & conf,
       // Create time
       std::vector<int> zTime(timeMax);
       for (size_t jTime = 0; jTime < timeMax; ++jTime) {
-        zTime[jTime] = jTime*timeStep/3600 + timeOffset;
+	zTime[jTime] = timeOffset + jTime * (timeStep / 3600);
       }
 
       // Write coordinates
