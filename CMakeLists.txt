@@ -115,7 +115,49 @@ endif()
 
 # Torch
 if( ENABLE_TORCH )
-    find_package( Torch QUIET )
+    message( STATUS "Virtual environment for Torch: " ${VENV_DIR} )
+
+    # Find Python3 for venv creation
+    if( NOT Python3_EXECUTABLE )
+        find_package( Python3 COMPONENTS Interpreter REQUIRED )
+    endif()
+
+    # Create virtual environment only during CMake configuration
+    set( VENV_PYTHON ${VENV_DIR}/bin/python )
+
+    if( NOT EXISTS ${VENV_PYTHON} )
+        message( STATUS "Creating virtual environment for Torch in: " ${VENV_DIR} )
+        execute_process(
+            COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+            RESULT_VARIABLE VENV_RESULT
+        )
+        if( NOT VENV_RESULT EQUAL 0 )
+            message( FATAL_ERROR "Failed to create virtual environment" )
+        endif()
+
+        execute_process(
+            COMMAND ${VENV_DIR}/bin/pip install torch
+            RESULT_VARIABLE PIP_RESULT
+        )
+        if( NOT PIP_RESULT EQUAL 0 )
+            message( FATAL_ERROR "Failed to install PyTorch in virtual environment" )
+        endif()
+    endif()
+
+    # Find Python version to define Torch root directory
+    file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
+    set( Torch_ROOT ${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages/torch CACHE PATH "Torch directory" )
+    message( STATUS "Torch directory: " ${Torch_ROOT} )
+
+    # Temporary fix until Torch is properly installed as a cmake package
+    include_directories( ${Torch_ROOT}/include )
+    include_directories( ${Torch_ROOT}/include/torch/csrc/api/include )
+
+    # Use full paths to libraries instead of link_directories
+    set( TORCH_LIBRARIES
+           ${Torch_ROOT}/lib/libtorch.so
+           ${Torch_ROOT}/lib/libtorch_cpu.so
+           ${Torch_ROOT}/lib/libc10.so )
 endif()
 
 ################################################################################

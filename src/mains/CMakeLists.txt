@@ -53,3 +53,25 @@ if( ENABLE_SABER AND ENABLE_OBS )
                             SOURCES vindVariational.cc
                             LIBS    ${LIBS} )
 endif()
+
+# Add RPATH for Torch libraries if found
+if( ENABLE_TORCH )
+    foreach( target vind_convertstate.x vind_error_covariance_toolbox.x vind_process_perts.x vind_variational.x )
+        get_target_property(EXISTING_RPATH ${target} BUILD_RPATH)
+        if(EXISTING_RPATH)
+            set_target_properties( ${target} PROPERTIES
+                BUILD_RPATH "${EXISTING_RPATH};${Torch_ROOT}/lib" )
+        else()
+            set_target_properties( ${target} PROPERTIES
+                BUILD_RPATH "${Torch_ROOT}/lib" )
+        endif()
+        get_target_property(EXISTING_INSTALL_RPATH ${target} INSTALL_RPATH)
+        if(EXISTING_INSTALL_RPATH)
+            set_target_properties( ${target} PROPERTIES
+                INSTALL_RPATH "${EXISTING_INSTALL_RPATH};${Torch_ROOT}/lib" )
+        else()
+            set_target_properties( ${target} PROPERTIES
+                INSTALL_RPATH "${Torch_ROOT}/lib" )
+        endif()
+    endforeach()
+endif()

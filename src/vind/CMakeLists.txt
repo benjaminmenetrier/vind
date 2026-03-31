@@ -163,9 +163,25 @@ if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS ) AND falfilfa_FOUND )
 endif()
 if( pybind11_FOUND )
     target_link_libraries( vind PUBLIC pybind11::embed )
-    if( Torch_FOUND )
-        find_library( TORCH_PYTHON_LIBRARY torch_python PATH "${TORCH_INSTALL_PREFIX}/lib")
-        target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} ${TORCH_PYTHON_LIBRARY} )
+    if( ENABLE_TORCH )
+        target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} )
+        # Add RPATH so the runtime linker can find Torch libraries
+        get_target_property(EXISTING_RPATH vind BUILD_RPATH)
+        if(EXISTING_RPATH)
+            set_target_properties( vind PROPERTIES
+                BUILD_RPATH "${EXISTING_RPATH};${Torch_ROOT}/lib" )
+        else()
+            set_target_properties( vind PROPERTIES
+                BUILD_RPATH "${Torch_ROOT}/lib" )
+        endif()
+        get_target_property(EXISTING_INSTALL_RPATH vind INSTALL_RPATH)
+        if(EXISTING_INSTALL_RPATH)
+            set_target_properties( vind PROPERTIES
+                INSTALL_RPATH "${EXISTING_INSTALL_RPATH};${Torch_ROOT}/lib" )
+        else()
+            set_target_properties( vind PROPERTIES
+                INSTALL_RPATH "${Torch_ROOT}/lib" )
+        endif()
     endif()
     foreach( pyMod ${python_modules} )
         execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
