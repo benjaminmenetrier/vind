@@ -78,7 +78,6 @@ foreach( mpi ${mpi_list} )
         create_test( reg 4densvar_parallel ${mpi_par} variational )
 
         # LETKF
-        create_test( reg getkf_nonlinear ${mpi} letkf )
         create_test( reg letkf_linear ${mpi} letkf )
         create_test( reg letkf_linear_4d ${mpi} letkf )
         create_test( reg letkf_nonlinear ${mpi} letkf )

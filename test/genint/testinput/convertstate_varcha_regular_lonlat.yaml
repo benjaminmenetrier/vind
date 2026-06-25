@@ -33,6 +33,8 @@ output geometry:
     levels: 73
   model data:
     air_pressure_at_top_of_atmosphere_model: 0.01
+    nLevels: 72
+    levels_are_top_down: true
 variable change:
   input variables: [air_pressure_thickness]
   output variables: [air_pressure_levels]

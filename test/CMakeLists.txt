@@ -27,7 +27,7 @@ macro( create_test model name mpi exec )
     link_file( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} testref/${name}.ref )
 
     # Add test
-    ecbuild_add_test( TARGET   vind_test_${model}_${name}_${mpi}
+    ecbuild_add_test( TARGET   vind_${model}_${name}_${mpi}
                       MPI      ${mpi}
                       COMMAND  vind_${exec}.x
                       ARGS     testinput/${name}.yaml

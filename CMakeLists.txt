@@ -108,14 +108,14 @@ endif()
 # MPI
 ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 
-# Pybind11
-if( ENABLE_PYBIND11 )
-    find_package( pybind11 CONFIG QUIET )
-endif()
-
 # Torch
-if( ENABLE_TORCH )
-    message( STATUS "Virtual environment for Torch: " ${VENV_DIR} )
+if( DEFINED Torch_ROOT AND NOT Torch_ROOT STREQUAL "")
+    # Torch root defined by the user at configure time, enable Torch
+    set( ENABLE_TORCH ON )
+endif()
+if( ENABLE_TORCH OR ENABLE_PYBIND11 )
+    # Create virtual environment
+    message( STATUS "Virtual environment for Python/Pybind11/Torch: " ${VENV_DIR} )
 
     # Find Python3 for venv creation
     if( NOT Python3_EXECUTABLE )
@@ -134,6 +134,26 @@ if( ENABLE_TORCH )
         if( NOT VENV_RESULT EQUAL 0 )
             message( FATAL_ERROR "Failed to create virtual environment" )
         endif()
+    endif()
+
+    if( ENABLE_PYBIND11 )
+        execute_process(
+            COMMAND ${VENV_DIR}/bin/pip install pybind11
+            RESULT_VARIABLE PIP_RESULT
+        )
+        if( NOT PIP_RESULT EQUAL 0 )
+            message( FATAL_ERROR "Failed to install Pybind11 in virtual environment" )
+        endif()
+    endif()
+
+    if( ENABLE_TORCH )
+        execute_process(
+            COMMAND ${VENV_DIR}/bin/pip install torch
+            RESULT_VARIABLE PIP_RESULT
+        )
+        if( NOT PIP_RESULT EQUAL 0 )
+            message( FATAL_ERROR "Failed to install PyTorch in virtual environment" )
+        endif()
 
         execute_process(
             COMMAND ${VENV_DIR}/bin/pip install torch
@@ -142,22 +162,27 @@ if( ENABLE_TORCH )
         if( NOT PIP_RESULT EQUAL 0 )
             message( FATAL_ERROR "Failed to install PyTorch in virtual environment" )
         endif()
-    endif()
 
-    # Find Python version to define Torch root directory
-    file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
-    set( Torch_ROOT ${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages/torch CACHE PATH "Torch directory" )
-    message( STATUS "Torch directory: " ${Torch_ROOT} )
+        if( DEFINED Torch_ROOT AND NOT Torch_ROOT STREQUAL "")
+            # Torch root defined by the user at configure time
+            message( STATUS "Torch root defined by user: " ${Torch_ROOT} )
+        else()
+            # Find Python version to define Torch root directory
+            file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
+            set( Torch_ROOT ${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages/torch )
+            message( STATUS "Torch root in the virtual environment: " ${Torch_ROOT} )
+        endif()
 
-    # Temporary fix until Torch is properly installed as a cmake package
-    include_directories( ${Torch_ROOT}/include )
-    include_directories( ${Torch_ROOT}/include/torch/csrc/api/include )
+        # Temporary fix until Torch is properly installed as a cmake package
+        include_directories( ${Torch_ROOT}/include )
+        include_directories( ${Torch_ROOT}/include/torch/csrc/api/include )
 
-    # Use full paths to libraries instead of link_directories
-    set( TORCH_LIBRARIES
-           ${Torch_ROOT}/lib/libtorch.so
-           ${Torch_ROOT}/lib/libtorch_cpu.so
-           ${Torch_ROOT}/lib/libc10.so )
+        # Use full paths to libraries instead of link_directories
+        set( TORCH_LIBRARIES
+               ${Torch_ROOT}/lib/libtorch.so
+               ${Torch_ROOT}/lib/libtorch_cpu.so
+               ${Torch_ROOT}/lib/libc10.so )
+  endif()
 endif()
 
 ################################################################################

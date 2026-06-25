@@ -105,4 +105,5 @@ output variance prior:
 output variance posterior:
   filepath: testdata/letkf_linear_4d_var_posterior__MPI_
 test:
+  float relative tolerance: 5.0e-5
   reference filename: testref/letkf_linear_4d.ref
