@@ -101,7 +101,7 @@ endif()
 message( STATUS "Found vind models:" )
 message( STATUS "- DDL95" )
 
-if( pybind11_FOUND )
+if( ENABLE_PYBIND11 )
     # Python-based models
 
     # Python interpreter
@@ -127,24 +127,24 @@ if( pybind11_FOUND )
     NumPyDDL95.py
 
     )
+endif()
 
-    # PyTorch-based model
-    if( Torch_FOUND )
-        message( STATUS "- PyTorchDDL95" )
-        list( APPEND vind_src_files
+# PyTorch-based model
+if( ENABLE_TORCH )
+    message( STATUS "- PyTorchDDL95" )
+    list( APPEND vind_src_files
 
-        LinearModel/LinearModelPyTorchDDL95.cc
-        LinearModel/LinearModelPyTorchDDL95.h
-        Model/ModelPyTorchDDL95.cc
-        Model/ModelPyTorchDDL95.h
+    LinearModel/LinearModelPyTorchDDL95.cc
+    LinearModel/LinearModelPyTorchDDL95.h
+    Model/ModelPyTorchDDL95.cc
+    Model/ModelPyTorchDDL95.h
 
-        )
-        list( APPEND python_modules
+    )
+    list( APPEND python_modules
 
-        PyTorchDDL95.py
+    PyTorchDDL95.py
 
-        )
-    endif()
+    )
 endif()
 
 ecbuild_add_library( TARGET   vind
@@ -161,33 +161,34 @@ endif()
 if( ( ECTRANS_FOUND AND ectrans_HAVE_ETRANS ) AND falfilfa_FOUND )
     target_link_libraries( vind PUBLIC trans_dp transi_dp etrans_dp fa_dp )
 endif()
-if( pybind11_FOUND )
+if( ENABLE_PYBIND11 )
+    target_include_directories( vind PUBLIC ${Python3_INCLUDE_DIRS} )
     target_link_libraries( vind PUBLIC pybind11::embed )
-    if( Torch_FOUND )
-        find_library( TORCH_PYTHON_LIBRARY torch_python PATH "${TORCH_INSTALL_PREFIX}/lib")
-        target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} ${TORCH_PYTHON_LIBRARY} )
-        # Add RPATH so the runtime linker can find Torch libraries
-        get_target_property(EXISTING_RPATH vind BUILD_RPATH)
-        if(EXISTING_RPATH)
-            set_target_properties( vind PROPERTIES
-                BUILD_RPATH "${EXISTING_RPATH};${Torch_ROOT}/lib" )
-        else()
-            set_target_properties( vind PROPERTIES
-                BUILD_RPATH "${Torch_ROOT}/lib" )
-        endif()
-        get_target_property(EXISTING_INSTALL_RPATH vind INSTALL_RPATH)
-        if(EXISTING_INSTALL_RPATH)
-            set_target_properties( vind PROPERTIES
-                INSTALL_RPATH "${EXISTING_INSTALL_RPATH};${Torch_ROOT}/lib" )
-        else()
-            set_target_properties( vind PROPERTIES
-                INSTALL_RPATH "${Torch_ROOT}/lib" )
-        endif()
-    endif()
-    foreach( pyMod ${python_modules} )
-        execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
-    endforeach()
 endif()
+if( ENABLE_TORCH )
+    find_library( TORCH_PYTHON_LIBRARY torch_python PATH "${Torch_ROOT}/lib")
+    target_link_libraries( vind PUBLIC ${TORCH_LIBRARIES} ${TORCH_PYTHON_LIBRARY} )
+    # Add RPATH so the runtime linker can find Torch libraries
+    get_target_property(EXISTING_RPATH vind BUILD_RPATH)
+    if(EXISTING_RPATH)
+        set_target_properties( vind PROPERTIES
+            BUILD_RPATH "${EXISTING_RPATH};${Torch_ROOT}/lib" )
+    else()
+        set_target_properties( vind PROPERTIES
+            BUILD_RPATH "${Torch_ROOT}/lib" )
+    endif()
+    get_target_property(EXISTING_INSTALL_RPATH vind INSTALL_RPATH)
+    if(EXISTING_INSTALL_RPATH)
+        set_target_properties( vind PROPERTIES
+            INSTALL_RPATH "${EXISTING_INSTALL_RPATH};${Torch_ROOT}/lib" )
+    else()
+        set_target_properties( vind PROPERTIES
+            INSTALL_RPATH "${Torch_ROOT}/lib" )
+    endif()
+endif()
+foreach( pyMod ${python_modules} )
+    execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
+endforeach()
 
 #Configure include directory layout for build-tree to match install-tree
 set(VIND_BUILD_DIR_INCLUDE_PATH ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/include)

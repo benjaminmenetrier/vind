@@ -108,59 +108,38 @@ endif()
 # MPI
 ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 
+if( ENABLE_PYBIND11 )
+    # Pybind11
+    if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
+        add_subdirectory( $ENV{VIND_BUNDLE_SRC_DIR}/pybind11 )
+    else()
+        add_subdirectory( bundle/pybind11 )
+    endif()
+
+    # Virtual environment location
+    add_compile_definitions( VENV_SITE_PACKAGES="${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages" )
+endif()
+
 # Torch
 if( DEFINED Torch_ROOT AND NOT Torch_ROOT STREQUAL "")
     # Torch root defined by the user at configure time, enable Torch
     set( ENABLE_TORCH ON )
 endif()
-if( ENABLE_TORCH OR ENABLE_PYBIND11 )
-    # Create virtual environment
-    message( STATUS "Virtual environment for Python/Pybind11/Torch: " ${VENV_DIR} )
-
-    # Find Python3 for venv creation
-    if( NOT Python3_EXECUTABLE )
-        find_package( Python3 COMPONENTS Interpreter REQUIRED )
-    endif()
-
-    # Create virtual environment only during CMake configuration
-    set( VENV_PYTHON ${VENV_DIR}/bin/python )
-
-    if( NOT EXISTS ${VENV_PYTHON} )
-        message( STATUS "Creating virtual environment for Torch in: " ${VENV_DIR} )
-        execute_process(
-            COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
-            RESULT_VARIABLE VENV_RESULT
-        )
-        if( NOT VENV_RESULT EQUAL 0 )
-            message( FATAL_ERROR "Failed to create virtual environment" )
-        endif()
-    endif()
-
-    if( ENABLE_PYBIND11 )
-        execute_process(
-            COMMAND ${VENV_DIR}/bin/pip install pybind11
-            RESULT_VARIABLE PIP_RESULT
-        )
-        if( NOT PIP_RESULT EQUAL 0 )
-            message( FATAL_ERROR "Failed to install Pybind11 in virtual environment" )
-        endif()
+if( ENABLE_TORCH )
+    # Torch requires pybind11
+    if( NOT ENABLE_PYBIND11 )
+        message( FATAL_ERROR "ENABLE_TORCH requires ENABLE_PYBIND11" )
     endif()
 
     if( ENABLE_TORCH )
         execute_process(
             COMMAND ${VENV_DIR}/bin/pip install torch
             RESULT_VARIABLE PIP_RESULT
+            OUTPUT_VARIABLE PIP_OUTPUT
         )
         if( NOT PIP_RESULT EQUAL 0 )
-            message( FATAL_ERROR "Failed to install PyTorch in virtual environment" )
-        endif()
-
-        execute_process(
-            COMMAND ${VENV_DIR}/bin/pip install torch
-            RESULT_VARIABLE PIP_RESULT
-        )
-        if( NOT PIP_RESULT EQUAL 0 )
-            message( FATAL_ERROR "Failed to install PyTorch in virtual environment" )
+            message( STATUS "Torch installation output: " ${OUTPUT_VARIABLE PIP_OUTPUT} )
+            message( FATAL_ERROR "Failed to install torch in virtual environment" )
         endif()
 
         if( DEFINED Torch_ROOT AND NOT Torch_ROOT STREQUAL "")
@@ -184,27 +163,6 @@ if( ENABLE_TORCH OR ENABLE_PYBIND11 )
                ${Torch_ROOT}/lib/libc10.so )
   endif()
 endif()
-
-################################################################################
-# Export package info
-################################################################################
-
-list( APPEND VIND_TPLS atlas atlas_f oops saber )
-
-set( VIND_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src
-                           ${CMAKE_CURRENT_BINARY_DIR}/src
-                           ${CMAKE_Fortran_MODULE_DIRECTORY} )
-
-set( VIND_LIBRARIES vind )
-
-get_directory_property( VIND_DEFINITIONS COMPILE_DEFINITIONS )
-
-foreach( _tpl ${VIND_TPLS} )
-  string( TOUPPER ${_tpl} TPL )
-  list( APPEND VIND_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS}  ${${TPL}_TPL_DEFINITIONS}  )
-  list( APPEND VIND_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
-  list( APPEND VIND_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES}    ${${TPL}_TPL_LIBRARIES}    )
-endforeach()
 
 ################################################################################
 # Sources

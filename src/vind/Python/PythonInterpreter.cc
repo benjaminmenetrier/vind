@@ -25,6 +25,15 @@ void PythonInterpreter::initialize() const {
   if (instancesCounter == 0) {
     oops::Log::info() << "Initializing Python interpreter" << std::endl;
     pybind11::initialize_interpreter();
+    try {
+      // Import the site module
+      pybind11::module_ site = pybind11::module_::import("site");
+        
+      // Define virtual environment site-packages
+      site.attr("addsitedir")(VENV_SITE_PACKAGES);
+    } catch (pybind11::error_already_set &e) {
+      oops::Log::info() << "Python Error: " << e.what() << std::endl;
+    }
   }
   ++instancesCounter;
 

@@ -13,6 +13,7 @@ ioda-data
 jedicmake
 jedi-model-data
 oops
+pybind11
 saber
 test-data-release
 ufo

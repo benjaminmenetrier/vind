@@ -54,6 +54,37 @@ set( CMAKE_BUILD_WITH_INSTALL_RPATH ON )
 # Initialize bundle
 ecbuild_bundle_initialize()
 
+# Create virtual environment
+message( STATUS "Virtual environment for Python: " ${VENV_DIR} )
+
+# Find system Python3 for venv creation
+if( NOT Python3_EXECUTABLE )
+    find_package( Python3 COMPONENTS Interpreter REQUIRED )
+endif()
+
+# Create virtual environment
+set( VENV_PYTHON ${VENV_DIR}/bin/python )
+
+if( NOT EXISTS ${VENV_PYTHON} )
+    message( STATUS "Creating virtual environment for Python in: " ${VENV_DIR} )
+    execute_process(
+        COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
+        RESULT_VARIABLE VENV_RESULT
+    )
+    if( NOT VENV_RESULT EQUAL 0 )
+        message( FATAL_ERROR "Failed to create virtual environment" )
+    endif()
+endif()
+
+# Reset Python3 to venv
+set( ENV{VIRTUAL_ENV} "${VENV_DIR}" )
+set( Python3_FIND_VIRTUALENV ONLY )
+set( Python3_VIRTUALENV ONLY )
+unset( Python3_EXECUTABLE CACHE )
+find_package( Python3 COMPONENTS Interpreter Development REQUIRED )
+list( APPEND CMAKE_PROGRAM_PATH "${VENV_DIR}/bin" )
+file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
+
 # Use external jedi-cmake or build in bundle
 if( DEFINED ENV{jedi_cmake_ROOT} )
   include( $ENV{jedi_cmake_ROOT}/share/jedicmake/Functions/git_functions.cmake )
@@ -69,18 +100,14 @@ else()
   list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
 endif()
 
-if( ENABLE_FALFILFA )
-  set( ENABLE_AEC OFF )
-  if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
+if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
+  if( ENABLE_FALFILFA )
+    # eccodes and falfilfa
+    set( ENABLE_AEC OFF )
     ecbuild_bundle( PROJECT eccodes SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eccodes )
     ecbuild_bundle( PROJECT falfilfa SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/falfilfa )
-  else()
-    ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG 2.44.0 )
-    ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" BRANCH bugfix/missingCode )
   endif()
-endif()
 
-if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
   # ECMWF tools
   ecbuild_bundle( PROJECT eckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eckit )
   ecbuild_bundle( PROJECT fckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fckit )
@@ -100,7 +127,7 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
   if( ENABLE_SABER )
     # gsibec
     ecbuild_bundle( PROJECT gsibec SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/gsibec )
-
+      
     # saber
     ecbuild_bundle( PROJECT saber SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/saber )
   endif()
@@ -111,6 +138,17 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
   endif()
 
   if( ENABLE_OBS )
+    # Install pycodestyle
+    execute_process(
+        COMMAND ${VENV_DIR}/bin/pip install pycodestyle
+        RESULT_VARIABLE PIP_RESULT
+        OUTPUT_VARIABLE PIP_OUTPUT
+    )
+    if( NOT PIP_RESULT EQUAL 0 )
+        message( STATUS "pycodestyle installation output: " ${OUTPUT_VARIABLE PIP_OUTPUT} )
+        message( FATAL_ERROR "Failed to install pycodestyle in virtual environment" )
+    endif()
+
     # ioda
     ecbuild_bundle( PROJECT ioda SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ioda )
     if( BUILD_IODA_CONVERTERS )
@@ -121,6 +159,18 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
     ecbuild_bundle( PROJECT ufo SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ufo )
   endif()
 else()
+  if( ENABLE_PYBIND11 )
+    # pybind11
+    ecbuild_git( PROJECT pybind11 DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 URL https://github.com/pybind/pybind11.git BRANCH master )
+  endif()
+
+  if( ENABLE_FALFILFA )
+    # eccodes and falfilfa
+    set( ENABLE_AEC OFF )
+    ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG 2.44.0 )
+    ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" BRANCH bugfix/missingCode UPDATE )
+  endif()
+
   # ECMWF tools
   ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.32.2 )
   ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.0 )
@@ -129,8 +179,7 @@ else()
   ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
 
   # oops
-#  ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
-  ecbuild_bundle( PROJECT oops )
+  ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
 
   # jedi-data
   ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" BRANCH feature/nicas_article UPDATE )
@@ -140,16 +189,15 @@ else()
 
   if( ENABLE_SABER )
     # gsibec
-    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/benjaminmenetrier/GSIbec.git" BRANCH bugfix/fortran_line_length UPDATE )
+    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" BRANCH develop UPDATE )
 
     # saber
-#    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" BRANCH feature/nicas_article UPDATE )
-    ecbuild_bundle( PROJECT saber )
+    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" BRANCH feature/nicas_article_latest UPDATE )
   endif()
   
   if( ENABLE_CRTM )
     # crtm
-    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/CRTMv3.git" BRANCH develop UPDATE )
+    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/crtmv3.git" BRANCH develop UPDATE )
   endif()
 
   if( ENABLE_OBS )
