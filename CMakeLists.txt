@@ -110,14 +110,8 @@ ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 
 if( ENABLE_PYBIND11 )
     # Pybind11
-    if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
-        add_subdirectory( $ENV{VIND_BUNDLE_SRC_DIR}/pybind11 )
-    else()
-        add_subdirectory( bundle/pybind11 )
-    endif()
-
-    # Virtual environment location
-    add_compile_definitions( VENV_SITE_PACKAGES="${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages" )
+    message( STATUS "Pybind11 loaded from directory: " ${PYBIND11_DIR} )
+    add_subdirectory( ${PYBIND11_DIR} )
 endif()
 
 # Torch

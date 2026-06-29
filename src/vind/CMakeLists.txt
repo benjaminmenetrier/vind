@@ -104,11 +104,17 @@ message( STATUS "- DDL95" )
 if( ENABLE_PYBIND11 )
     # Python-based models
 
+    # Update file containing virtual environment site-packages absolute path
+    file( READ ${CMAKE_CURRENT_SOURCE_DIR}/Python/VenvSitePackages.h.in TEXT )
+    string(REPLACE "VENV_SITE_PACKAGES" "${VENV_SITE_PACKAGES}" TEXT "${TEXT}")
+    file( GENERATE OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/Python/VenvSitePackages.h CONTENT "${TEXT}" )
+
     # Python interpreter
     list( APPEND vind_src_files
 
     Python/PythonInterpreter.cc
     Python/PythonInterpreter.h
+    Python/VenvSitePackages.h
 
     )
 

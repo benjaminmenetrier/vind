@@ -11,6 +11,8 @@
 
 #include "oops/util/Logger.h"
 
+#include "vind/Python/VenvSitePackages.h"
+
 namespace vind {
 
 // -----------------------------------------------------------------------------
@@ -26,11 +28,11 @@ void PythonInterpreter::initialize() const {
     oops::Log::info() << "Initializing Python interpreter" << std::endl;
     pybind11::initialize_interpreter();
     try {
-      // Import the site module
-      pybind11::module_ site = pybind11::module_::import("site");
-        
-      // Define virtual environment site-packages
-      site.attr("addsitedir")(VENV_SITE_PACKAGES);
+      // Import the sys module
+      pybind11::module_ sys = pybind11::module_::import("sys");
+
+      // Add virtual environment site-packages (should be in first position)
+      sys.attr("path").attr("insert")(0, venvSitePackages());
     } catch (pybind11::error_already_set &e) {
       oops::Log::info() << "Python Error: " << e.what() << std::endl;
     }

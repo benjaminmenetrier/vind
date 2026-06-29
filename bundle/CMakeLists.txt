@@ -54,18 +54,17 @@ set( CMAKE_BUILD_WITH_INSTALL_RPATH ON )
 # Initialize bundle
 ecbuild_bundle_initialize()
 
-# Create virtual environment
-message( STATUS "Virtual environment for Python: " ${VENV_DIR} )
-
 # Find system Python3 for venv creation
 if( NOT Python3_EXECUTABLE )
     find_package( Python3 COMPONENTS Interpreter REQUIRED )
 endif()
 
-# Create virtual environment
+# Virtual environment
+message( STATUS "Virtual environment for Python: " ${VENV_DIR} )
 set( VENV_PYTHON ${VENV_DIR}/bin/python )
 
 if( NOT EXISTS ${VENV_PYTHON} )
+    # Create virtual environment
     message( STATUS "Creating virtual environment for Python in: " ${VENV_DIR} )
     execute_process(
         COMMAND ${Python3_EXECUTABLE} -m venv ${VENV_DIR}
@@ -82,8 +81,13 @@ set( Python3_FIND_VIRTUALENV ONLY )
 set( Python3_VIRTUALENV ONLY )
 unset( Python3_EXECUTABLE CACHE )
 find_package( Python3 COMPONENTS Interpreter Development REQUIRED )
+
+# Add virtual environment binaries to path
 list( APPEND CMAKE_PROGRAM_PATH "${VENV_DIR}/bin" )
+
+# Add site-packages in definitions
 file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
+add_compile_definitions( VENV_SITE_PACKAGES="${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages" )
 
 # Use external jedi-cmake or build in bundle
 if( DEFINED ENV{jedi_cmake_ROOT} )
@@ -101,11 +105,9 @@ else()
 endif()
 
 if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
-  if( ENABLE_FALFILFA )
-    # eccodes and falfilfa
-    set( ENABLE_AEC OFF )
-    ecbuild_bundle( PROJECT eccodes SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eccodes )
-    ecbuild_bundle( PROJECT falfilfa SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/falfilfa )
+  if( ENABLE_PYBIND11 )
+    # pybind11
+    set( PYBIND11_DIR $ENV{VIND_BUNDLE_SRC_DIR}/pybind11 )
   endif()
 
   # ECMWF tools
@@ -114,6 +116,13 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
   ecbuild_bundle( PROJECT fiat SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fiat )
   ecbuild_bundle( PROJECT ectrans SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ectrans )
   ecbuild_bundle( PROJECT atlas SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/atlas )
+
+  if( ENABLE_FALFILFA )
+    # eccodes and falfilfa
+    set( ENABLE_AEC OFF )
+    ecbuild_bundle( PROJECT eccodes SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eccodes )
+    ecbuild_bundle( PROJECT falfilfa SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/falfilfa )
+  endif()
 
   # oops
   ecbuild_bundle( PROJECT oops SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/oops )
@@ -127,7 +136,7 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
   if( ENABLE_SABER )
     # gsibec
     ecbuild_bundle( PROJECT gsibec SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/gsibec )
-      
+
     # saber
     ecbuild_bundle( PROJECT saber SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/saber )
   endif()
@@ -162,13 +171,7 @@ else()
   if( ENABLE_PYBIND11 )
     # pybind11
     ecbuild_git( PROJECT pybind11 DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 URL https://github.com/pybind/pybind11.git BRANCH master )
-  endif()
-
-  if( ENABLE_FALFILFA )
-    # eccodes and falfilfa
-    set( ENABLE_AEC OFF )
-    ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG 2.44.0 )
-    ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" BRANCH bugfix/missingCode UPDATE )
+    set( PYBIND11_DIR bundle/pybind11 )
   endif()
 
   # ECMWF tools
@@ -177,6 +180,13 @@ else()
   ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" TAG 1.6.1 )
   ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" TAG 3094b24ec9c1862772e2b02f4e06c797247d57fc )
   ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
+
+  if( ENABLE_FALFILFA )
+    # eccodes and falfilfa
+    set( ENABLE_AEC OFF )
+    ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG 2.44.0 )
+    ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" BRANCH bugfix/missingCode UPDATE )
+  endif()
 
   # oops
   ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )

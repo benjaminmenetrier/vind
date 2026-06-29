@@ -1,0 +1,16 @@
+/*
+ * (C) Copyright 2026 Meteorologisk Institutt
+ *
+ */
+
+#pragma once
+
+#include <string>
+
+namespace vind {
+
+std::string venvSitePackages() {
+  return"VENV_SITE_PACKAGES";
+}
+
+}
