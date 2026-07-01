@@ -78,7 +78,6 @@ endif()
 # Reset Python3 to venv
 set( ENV{VIRTUAL_ENV} "${VENV_DIR}" )
 set( Python3_FIND_VIRTUALENV ONLY )
-set( Python3_VIRTUALENV ONLY )
 unset( Python3_EXECUTABLE CACHE )
 find_package( Python3 COMPONENTS Interpreter Development REQUIRED )
 
@@ -87,7 +86,7 @@ list( APPEND CMAKE_PROGRAM_PATH "${VENV_DIR}/bin" )
 
 # Add site-packages in definitions
 file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
-add_compile_definitions( VENV_SITE_PACKAGES="${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages" )
+set( VENV_SITE_PACKAGES "${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages" )
 
 # Use external jedi-cmake or build in bundle
 if( DEFINED ENV{jedi_cmake_ROOT} )
