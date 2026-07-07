@@ -226,6 +226,9 @@ class Geometry : public util::Printable,
   // Check longitudes/latitudes from file
   void checkLonLat();
 
+  // Write geometry fields into file
+  void writeGeomFields();
+
   // Setup iterator
   void setupIterator();
 };

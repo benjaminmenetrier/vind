@@ -157,6 +157,9 @@ class GeometryParameters : public oops::Parameters {
   // Check longitudes/latitudes from file
   oops::OptionalParameter<eckit::LocalConfiguration> checkLonLat{"check lon/lat from file", this};
 
+  // Write geometry fields to file
+  oops::OptionalParameter<eckit::LocalConfiguration> geomFieldsConf{"write geometry fields", this};
+
   // IO parameters
   oops::Parameter<eckit::LocalConfiguration> io{"io", eckit::LocalConfiguration(), this};
 

@@ -110,6 +110,9 @@ class Fields : public util::Printable,
   void deserialize(const std::vector<double> &,
                    size_t &);
 
+  // Duplicate points
+  void resetDuplicatePoints();
+
   // Local increment
   oops::LocalIncrement getLocal(const GeometryIterator & geometryIterator) const;
   void setLocal(const oops::LocalIncrement & localIncrement,
@@ -118,9 +121,6 @@ class Fields : public util::Printable,
  private:
   // Print
   void print(std::ostream &) const;
-
-  // Duplicate points
-  void resetDuplicatePoints();
 
   // Check that fields are compatible
   bool checkFieldsCompatible(const Fields &,
