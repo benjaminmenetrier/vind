@@ -88,145 +88,164 @@ list( APPEND CMAKE_PROGRAM_PATH "${VENV_DIR}/bin" )
 file( READ_SYMLINK ${VENV_PYTHON} PYTHON_VERSION )
 set( VENV_SITE_PACKAGES "${VENV_DIR}/lib/${PYTHON_VERSION}/site-packages" )
 
-# Use external jedi-cmake or build in bundle
-if( DEFINED ENV{jedi_cmake_ROOT} )
-  include( $ENV{jedi_cmake_ROOT}/share/jedicmake/Functions/git_functions.cmake )
-  list( APPEND CMAKE_MODULE_PATH $ENV{jedi_cmake_ROOT}/share/jedicmake/Modules )
-  message( INFO "CMAKE_MODULE_PATH" )
-else()
-  if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
-    ecbuild_bundle( PROJECT jedicmake SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/jedicmake )
-  else()
-    ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG 40d521f9a2d796fcbc6234d77abceeffefb8eb7f RECURSIVE )
-  endif()
-  include( jedicmake/cmake/Functions/git_functions.cmake )
-  list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
-endif()
-
 if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
-  if( ENABLE_PYBIND11 )
-    # pybind11
-    set( PYBIND11_DIR $ENV{VIND_BUNDLE_SRC_DIR}/pybind11 )
-  endif()
+    # jedicmake
+    ecbuild_bundle( PROJECT jedicmake SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/jedicmake )
+    include( jedicmake/cmake/Functions/git_functions.cmake )
+    list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
 
-  # ECMWF tools
-  ecbuild_bundle( PROJECT eckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eckit )
-  ecbuild_bundle( PROJECT fckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fckit )
-  ecbuild_bundle( PROJECT fiat SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fiat )
-  ecbuild_bundle( PROJECT ectrans SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ectrans )
-  ecbuild_bundle( PROJECT atlas SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/atlas )
-
-  if( ENABLE_FALFILFA )
-    # eccodes and falfilfa
-    set( ENABLE_AEC OFF )
-    ecbuild_bundle( PROJECT eccodes SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eccodes )
-    ecbuild_bundle( PROJECT falfilfa SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/falfilfa )
-  endif()
-
-  # oops
-  ecbuild_bundle( PROJECT oops SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/oops )
-
-  # jedi-data
-  ecbuild_bundle( PROJECT jedi-model-data SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/jedi-model-data )
-
-  # vader
-  ecbuild_bundle( PROJECT vader SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/vader )
-
-  if( ENABLE_SABER )
-    # gsibec
-    ecbuild_bundle( PROJECT gsibec SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/gsibec )
-
-    # saber
-    ecbuild_bundle( PROJECT saber SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/saber )
-  endif()
-
-  if( ENABLE_CRTM )
-    # crtm
-    ecbuild_bundle( PROJECT crtm SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/crtm )
-  endif()
-
-  if( ENABLE_OBS )
-    # Install pycodestyle
-    execute_process(
-        COMMAND ${VENV_DIR}/bin/pip install pycodestyle
-        RESULT_VARIABLE PIP_RESULT
-        OUTPUT_VARIABLE PIP_OUTPUT
-    )
-    if( NOT PIP_RESULT EQUAL 0 )
-        message( STATUS "pycodestyle installation output: " ${OUTPUT_VARIABLE PIP_OUTPUT} )
-        message( FATAL_ERROR "Failed to install pycodestyle in virtual environment" )
+    if( ENABLE_PYBIND11 )
+        # pybind11
+        set( PYBIND11_DIR $ENV{VIND_BUNDLE_SRC_DIR}/pybind11 )
     endif()
 
-    # ioda
-    ecbuild_bundle( PROJECT ioda SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ioda )
-    if( BUILD_IODA_CONVERTERS )
-        ecbuild_bundle( PROJECT iodaconv GIT SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/iodaconv )
+    # ECMWF tools
+    ecbuild_bundle( PROJECT eckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eckit )
+    ecbuild_bundle( PROJECT fckit SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fckit )
+    ecbuild_bundle( PROJECT fiat SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fiat )
+    ecbuild_bundle( PROJECT ectrans SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ectrans )
+    ecbuild_bundle( PROJECT atlas SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/atlas )
+
+    if( ENABLE_FALFILFA )
+        # eccodes and falfilfa
+        set( ENABLE_AEC OFF )
+        ecbuild_bundle( PROJECT eccodes SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/eccodes )
+        ecbuild_bundle( PROJECT falfilfa SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/falfilfa )
     endif()
 
-    # ufo
-    ecbuild_bundle( PROJECT ufo SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ufo )
-  endif()
+    # oops
+    ecbuild_bundle( PROJECT oops SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/oops )
+
+    # jedi-model-data
+    ecbuild_bundle( PROJECT jedi-model-data SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/jedi-model-data )
+
+    # vader
+    ecbuild_bundle( PROJECT vader SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/vader )
+
+    if( ENABLE_SABER )
+        # gsibec
+        ecbuild_bundle( PROJECT gsibec SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/gsibec )
+
+        # saber
+        ecbuild_bundle( PROJECT saber SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/saber )
+    endif()
+
+    if( ENABLE_CRTM )
+        # crtm
+        ecbuild_bundle( PROJECT crtm SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/crtm )
+    endif()
+
+    if( ENABLE_OBS )
+        # ioda
+        ecbuild_bundle( PROJECT ioda SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ioda )
+        if( BUILD_IODA_CONVERTERS )
+            ecbuild_bundle( PROJECT iodaconv GIT SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/iodaconv )
+        endif()
+
+        # ufo
+        ecbuild_bundle( PROJECT ufo SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ufo )
+    endif()
 else()
-  if( ENABLE_PYBIND11 )
-    # pybind11
-    ecbuild_git( PROJECT pybind11 DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 URL https://github.com/pybind/pybind11.git BRANCH master )
-    set( PYBIND11_DIR bundle/pybind11 )
-  endif()
+    # Set tags
+    # Bash command: for repo in `ls -d */`;do cd $repo;hash=`git show --oneline -s | awk '{print $1}'`;echo "    set( ${repo::-1}_VERSION ${hash} )";cd ..;done
+    set( atlas_VERSION 358bfaf69 )
+    set( crtm_VERSION ee9cc07 )
+    set( eccodes_VERSION aa85928d0 )
+    set( eckit_VERSION 8798f0efa )
+    set( ectrans_VERSION 06ae731b )
+    set( falfilfa_VERSION 5767282 )
+    set( fckit_VERSION 67dd487 )
+    set( fiat_VERSION c09cec3 )
+    set( gsibec_VERSION c85a89a )
+    set( ioda_VERSION 2014b79b )
+    set( iodaconv_VERSION 60ae176e )
+    set( ioda-data_VERSION 86b9275 )
+    set( jedicmake_VERSION 36fc99b )
+    set( jedi-model-data_VERSION 9ef325f )
+    set( oops_VERSION 57b45967e )
+    set( pybind11_VERSION 84da0e25 )
+    set( saber_VERSION 5f0c875f )
+    set( test-data-release_VERSION 8d700f7 )
+    set( ufo_VERSION 9b4ee5c2 )
+    set( ufo-data_VERSION 636e43e )
+    set( vader_VERSION b027535 )
 
-  # ECMWF tools
-  ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG 1.32.2 )
-  ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG 0.14.0 )
-  ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" TAG 1.6.1 )
-  ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" TAG 3094b24ec9c1862772e2b02f4e06c797247d57fc )
-  ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG 0.44.0 )
+    # jedicmake
+    ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG ${jedicmake_VERSION} RECURSIVE )
+    include( jedicmake/cmake/Functions/git_functions.cmake )
+    list( APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/jedicmake/CMakeModules/Modules )
 
-  if( ENABLE_FALFILFA )
-    # eccodes and falfilfa
-    set( ENABLE_AEC OFF )
-    ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG 2.44.0 )
-    ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" TAG 5767282763f5a937cabee61596f751bc044b01d7 )
-  endif()
-
-  # oops
-  ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG 344ee6312e4e4e4dfb8660df3683331177883047 )
-
-  # jedi-data
-  ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG 12e2f5c657757c8305330c99868df070960e7d0d )
-  
-  # vader
-  ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG c4c75e43c54bf8a4edcd83ad6b6b919da1ce58dd )
-
-  if( ENABLE_SABER )
-    # gsibec
-    ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" TAG c9fdaf5eeb8d37bd918f6542af7a413bb343aef9 )
-
-    # saber
-    ecbuild_bundle( PROJECT saber GIT "https://github.com/benjaminmenetrier/saber.git" TAG a51261f65d73382dee055bdace6330c82ed90637 )
-  endif()
-  
-  if( ENABLE_CRTM )
-    # crtm
-    ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/crtmv3.git" TAG 82c746009c27585e5cd323365286d6f57d65db0d )
-  endif()
-
-  if( ENABLE_OBS )
-    # ioda-data
-    ecbuild_bundle( PROJECT ioda-data GIT "https://github.com/jcsda-internal/ioda-data.git" TAG 04b68d277682c121a536ebff75cbdc954cbb129d )
-
-    # ioda
-    ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG aa392a3fc2db3bfe98459e1848cbec0720cd589c )
-
-    # ioda-converters
-    if( BUILD_IODA_CONVERTERS )
-      ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG ed3ec4131fed7d7b8e6a3e1b8dcf2be639bd478d )
+    if( ENABLE_PYBIND11 )
+        # pybind11
+        ecbuild_git( PROJECT pybind11 DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 URL https://github.com/pybind/pybind11.git BRANCH master )
+        set( PYBIND11_DIR bundle/pybind11 )
     endif()
 
-    # ufo-data
-    ecbuild_bundle( PROJECT ufo-data GIT "https://github.com/jcsda-internal/ufo-data.git" TAG d86d921cc67f91453ce6d173c2edac9ca02bbd16 )
+    # ECMWF tools
+    ecbuild_bundle( PROJECT eckit GIT "https://github.com/ecmwf/eckit.git" TAG ${eckit_VERSION} )
+    ecbuild_bundle( PROJECT fckit GIT "https://github.com/ecmwf/fckit.git" TAG ${fckit_VERSION} )
+    ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" TAG ${fiat_VERSION} )
+    ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" TAG ${ectrans_VERSION} )
+    ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG ${atlas_VERSION} )
 
-    # ufo
-    ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" TAG 056bc01dd7e0467c632e6601f2d48e6237f6d11b )
-  endif()
+    if( ENABLE_FALFILFA )
+        # eccodes and falfilfa
+        set( ENABLE_AEC OFF )
+        ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG ${eccodes_VERSION} )
+        ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" TAG ${falfilfa_VERSION} )
+      endif()
+
+    # oops
+    ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG ${oops_VERSION} )
+
+    # jedi-model-data
+    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda/jedi-model-data.git" TAG ${jedi-model-data_VERSION} )
+  
+    # vader
+    ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG ${vader_VERSION} )
+
+    if( ENABLE_SABER )
+        # gsibec
+        ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" TAG ${gsibec_VERSION} )
+
+        # saber
+        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" TAG ${saber_VERSION} )
+    endif()
+  
+    if( ENABLE_CRTM )
+        # crtm
+        ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/crtmv3.git" TAG ${crtm_VERSION} )
+    endif()
+
+    if( ENABLE_OBS )
+        # Install pycodestyle
+        execute_process(
+            COMMAND ${VENV_DIR}/bin/pip install pycodestyle
+            RESULT_VARIABLE PIP_RESULT
+            OUTPUT_VARIABLE PIP_OUTPUT
+        )
+        if( NOT PIP_RESULT EQUAL 0 )
+            message( STATUS "pycodestyle installation output: " ${OUTPUT_VARIABLE PIP_OUTPUT} )
+            message( FATAL_ERROR "Failed to install pycodestyle in virtual environment" )
+        endif()
+
+        # ioda-data
+        ecbuild_bundle( PROJECT ioda-data GIT "https://github.com/jcsda-internal/ioda-data.git" TAG ${ioda-data_VERSION} )
+
+        # ioda
+        ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG ${ioda_VERSION} )
+
+        # ioda-converters
+        if( BUILD_IODA_CONVERTERS )
+            ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG ${iodaconv_VERSION} )
+        endif()
+
+        # ufo-data
+        ecbuild_bundle( PROJECT ufo-data GIT "https://github.com/jcsda-internal/ufo-data.git" TAG ${ufo-data_VERSION} )
+
+        # ufo
+        ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" BRANCH TAG ${ufo_VERSION} )
+    endif()
 endif()
 
 # vind

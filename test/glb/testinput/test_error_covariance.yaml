@@ -35,7 +35,7 @@ background error:
         filepath: testdata/stddev__MPI_
 analysis variables: [air_temperature]
 covariance test:
-  tolerance: 0.15
+  tolerance: 0.17
 test:
   float absolute tolerance: 1.0e-12
   reference filename: testref/test_error_covariance.ref

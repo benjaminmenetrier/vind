@@ -1401,39 +1401,21 @@ bool Fields::checkFieldsCompatible(const Fields & other,
   std::vector<std::string> fieldsToCheck;
 
   if (superset) {
-    // Number of fields check
-    if (fset_.size() < other.fset_.size()) {
+    // Variables check
+    if (!(other.vars_ <= vars_)) {
         oops::Log::warning() << "checkFieldsCompatible: this Fields is not a superset of the other "
         << "Fields" << std::endl;
       return false;
     }
 
-    for (const auto & otherField : other.fset_) {
-      // Variables check
-      if (!fset_.has(otherField.name())) {
-        oops::Log::warning() << "checkFieldsCompatible: this Fields does not contain the other "
-          << "Fields variable:" << otherField.name() << std::endl;
-        return false;
-      }
-    }
-
     // List of fields to check
     fieldsToCheck = other.fset_.field_names();
   } else {
-    // Number of fields check
-    if (fset_.size() > other.fset_.size()) {
+    // Variables check
+    if (!(vars_ <= other.vars_)) {
         oops::Log::warning() << "checkFieldsCompatible: this Fields is not a subset of the other "
         << "Fields" << std::endl;
       return false;
-    }
-
-    for (const auto & field : fset_) {
-      // Variables check
-      if (!other.fset_.has(field.name())) {
-        oops::Log::warning() << "checkFieldsCompatible: the other Fields does not contain the "
-          << "Fields variable:" << field.name() << std::endl;
-        return false;
-      }
     }
 
     // List of fields to check

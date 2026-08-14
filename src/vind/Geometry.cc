@@ -767,7 +767,7 @@ void Geometry::writeGeomFields() {
 
     if (dataType == "real64") {
       // Get geometry field view
-      const auto geomView = atlas::array::make_view<double, 2>(geomField);   
+      const auto geomView = atlas::array::make_view<double, 2>(geomField);
 
       // Copy 3D field
       for (int jnode = 0; jnode < field.shape(0); ++jnode) {
@@ -777,7 +777,7 @@ void Geometry::writeGeomFields() {
       }
     } else if (dataType == "int32") {
       // Get geometry field view
-      const auto geomView = atlas::array::make_view<int, 2>(geomField);   
+      const auto geomView = atlas::array::make_view<int, 2>(geomField);
 
       // Copy 3D field
       for (int jnode = 0; jnode < field.shape(0); ++jnode) {

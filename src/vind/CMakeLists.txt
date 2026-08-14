@@ -193,7 +193,10 @@ if( ENABLE_TORCH )
     endif()
 endif()
 foreach( pyMod ${python_modules} )
-    execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod} ${CMAKE_BINARY_DIR}/bin/${pyMod} )
+    file( CREATE_LINK
+          ${CMAKE_CURRENT_SOURCE_DIR}/Python/${pyMod}
+          ${CMAKE_BINARY_DIR}/bin/${pyMod}
+          SYMBOLIC )
 endforeach()
 
 #Configure include directory layout for build-tree to match install-tree

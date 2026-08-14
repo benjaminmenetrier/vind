@@ -1,17 +1,17 @@
-CostJo   : Nonlinear Jo(air_temperature) = 5.7726742375330623e+01, nobs = 60, Jo/n = 9.6211237292217711e-01, err = 1.0000000149011609e-01
+CostJo   : Nonlinear Jo(air_temperature) = 5.5482484854976683e+01, nobs = 60, Jo/n = 9.2470808091627810e-01, err = 1.0000000149011609e-01
 Norm of input parameter StdDev: 3.9038442591885909e+00
 CostJb   : Nonlinear Jb = 0.0000000000000000e+00
-CostFunction: Nonlinear J = 5.7726742375330623e+01
-PCGMinimizer: reduction in residual norm = 1.1374486331151328e-02
+CostFunction: Nonlinear J = 5.5482484854976683e+01
+PCGMinimizer: reduction in residual norm = 1.0004962556893919e-02
 CostFunction::addIncrement: Analysis: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: L40x21 [840]
   Fields:
   - air_temperature (2 levels):
-    + min    = -2.9410216859986762e+00
-    + max    = 1.0470338268671487e+01
-    + mean   = 2.9005605440000939e+00
-    + stddev = 2.4293505392687185e+00
-CostJo   : Nonlinear Jo(air_temperature) = 2.7980203587538721e+01, nobs = 60, Jo/n = 4.6633672645897867e-01, err = 1.0000000149011609e-01
-CostJb   : Nonlinear Jb = 9.7315176683962754e+00
-CostFunction: Nonlinear J = 3.7711721255934997e+01
+    + min    = -3.1330859973094300e+00
+    + max    = 1.0352695463532127e+01
+    + mean   = 2.9067588344135951e+00
+    + stddev = 2.4292311467059742e+00
+CostJo   : Nonlinear Jo(air_temperature) = 2.9030280049985215e+01, nobs = 60, Jo/n = 4.8383800083308692e-01, err = 1.0000000149011609e-01
+CostJb   : Nonlinear Jb = 8.2244567949788454e+00
+CostFunction: Nonlinear J = 3.7254736844964057e+01

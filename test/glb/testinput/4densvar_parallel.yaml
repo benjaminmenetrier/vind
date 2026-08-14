@@ -30,6 +30,8 @@ cost function:
   background error:
     covariance model: ensemble
     localization:
+      time decay: PT9H
+      communication mode: fast
       localization method: SABER
       saber central block:
         saber block name: BUMP_NICAS
@@ -39,8 +41,9 @@ cost function:
           drivers:
             multivariate strategy: univariate
             compute nicas: true
+            write local nicas: true
           nicas:
-            resolution: 4.0
+            resolution: 8.0
             explicit length-scales: true
             horizontal length-scale:
             - groups: [air_temperature]
