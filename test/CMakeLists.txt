@@ -8,13 +8,19 @@ add_subdirectory( mains )
 
 # Macro to link a file
 macro( link_file src_dir dest_dir )
-    execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${src_dir}/${ARGN} ${dest_dir}/${ARGN} )
+    file( CREATE_LINK
+          ${src_dir}/${ARGN}
+          ${dest_dir}/${ARGN}
+          SYMBOLIC )
 endmacro()
 
 # Macro to link files
 macro( link_files src_dir dest_dir )
     foreach( _f IN ITEMS ${ARGN} )
-        execute_process( COMMAND ${CMAKE_COMMAND} -E create_symlink ${src_dir}/${_f} ${dest_dir}/${_f} )
+        file( CREATE_LINK
+              ${src_dir}/${_f}
+              ${dest_dir}/${_f}
+              SYMBOLIC )
     endforeach()
 endmacro()
 

@@ -180,6 +180,9 @@ Geometry::Geometry(const eckit::Configuration & config,
   // Check lon/lat from files
   checkLonLat();
 
+  // Write geometry fields into file
+  writeGeomFields();
+
   // Setup iterator
   setupIterator();
 
@@ -414,13 +417,13 @@ void Geometry::setupVertCoord(groupData & group) {
       groupIndex_[varName] = group.index_;
 
       // Create field
-      Fields field(*this, vertCoordVars, util::DateTime(), false);
+      Fields fields(*this, vertCoordVars, util::DateTime(), false);
 
       // Read field
-      field.read(*vertCoordConf);
+      fields.read(*vertCoordConf);
 
       // Get view
-      const auto view = atlas::array::make_view<double, 2>(field.fieldSet()[varName]);
+      const auto view = atlas::array::make_view<double, 2>(fields.fieldSet()[varName]);
 
       // Copy 3D field
       for (atlas::idx_t jnode = 0; jnode < group.vertCoord_.shape(0); ++jnode) {
@@ -723,6 +726,78 @@ void Geometry::checkLonLat() {
   }
 
   oops::Log::trace() << classname() << "::checkLonLat starting" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void Geometry::writeGeomFields() {
+  oops::Log::trace() << classname() << "::writeGeomFields starting" << std::endl;
+
+  // Return if configuration is empty
+  if (!params_.geomFieldsConf.value()) {
+    return;
+  }
+
+  // Get configuration
+  const auto & geomFieldsConf = *params_.geomFieldsConf.value();
+
+  // Create variables
+  oops::Variables vars;
+  for (const auto & geomVarName : geomFieldsConf.getStringVector("geometry fields to write")) {
+    eckit::LocalConfiguration conf;
+    conf.set("levels", fields_[geomVarName].levels());
+    vars.push_back(oops::Variable(geomVarName, conf));
+  }
+
+  // Create fields
+  Fields fields(*this, vars, util::DateTime(), true);
+
+  for (const auto & geomVarName : geomFieldsConf.getStringVector("geometry fields to write")) {
+    // Get output field
+    auto field = fields.fieldSet()[geomVarName];
+
+    // Get output field view
+    auto view = atlas::array::make_view<double, 2>(field);
+
+    // Get geometry field
+    const auto & geomField = fields_[geomVarName];
+
+    // Get geometry field data type
+    const std::string dataType = geomField.datatype().str();
+
+    if (dataType == "real64") {
+      // Get geometry field view
+      const auto geomView = atlas::array::make_view<double, 2>(geomField);
+
+      // Copy 3D field
+      for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+        for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+          view(jnode, jlevel) = geomView(jnode, jlevel);
+        }
+      }
+    } else if (dataType == "int32") {
+      // Get geometry field view
+      const auto geomView = atlas::array::make_view<int, 2>(geomField);
+
+      // Copy 3D field
+      for (int jnode = 0; jnode < field.shape(0); ++jnode) {
+        for (int jlevel = 0; jlevel < field.shape(1); ++jlevel) {
+          view(jnode, jlevel) = static_cast<double>(geomView(jnode, jlevel));
+        }
+      }
+    } else {
+      // Not implemented yet
+      throw eckit::Exception("wrong geometry field data type " + dataType, Here());
+    }
+  }
+
+  // Reset duplicate points
+  fields.resetDuplicatePoints();
+
+  // Write field
+  fields.write(geomFieldsConf);
+
+  oops::Log::trace() << classname() << "::writeGeomFields starting" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

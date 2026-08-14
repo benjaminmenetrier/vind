@@ -1167,6 +1167,70 @@ void Fields::deserialize(const std::vector<double> & vect,
 
 // -----------------------------------------------------------------------------
 
+void Fields::resetDuplicatePoints() {
+  oops::Log::trace() << classname() << "::resetDuplicatePoints starting" << std::endl;
+
+  if (geom_.duplicatePoints()) {
+    if ((geom_.gridType() == "structured") || (geom_.gridType() == "regular_lonlat")) {
+      // Deal with poles
+      for (auto field_internal : fset_) {
+        // Get first longitude value
+        atlas::functionspace::StructuredColumns fs(field_internal.functionspace());
+        atlas::StructuredGrid grid = fs.grid();
+        auto view = atlas::array::make_view<double, 2>(field_internal);
+        auto view_i = atlas::array::make_indexview<int, 1>(fs.index_i());
+        auto view_j = atlas::array::make_indexview<int, 1>(fs.index_j());
+        std::vector<double> north(field_internal.shape(1), 0.0);
+        std::vector<double> south(field_internal.shape(1), 0.0);
+        for (atlas::idx_t j = fs.j_begin(); j < fs.j_end(); ++j) {
+          for (atlas::idx_t i = fs.i_begin(j); i < fs.i_end(j); ++i) {
+            atlas::idx_t jnode = fs.index(i, j);
+            if (view_i(jnode) == 0) {
+              if (view_j(jnode) == 0) {
+                for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
+                  north[jlevel] = view(jnode, jlevel);
+                }
+              }
+              if (view_j(jnode) == grid.ny()-1) {
+                for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
+                  south[jlevel] = view(jnode, jlevel);
+                }
+              }
+            }
+          }
+        }
+
+        // Reduce
+        geom_.getComm().allReduceInPlace(north.begin(), north.end(), eckit::mpi::sum());
+        geom_.getComm().allReduceInPlace(south.begin(), south.end(), eckit::mpi::sum());
+
+        // Copy value
+        for (atlas::idx_t j = fs.j_begin_halo(); j < fs.j_end_halo(); ++j) {
+          for (atlas::idx_t i = fs.i_begin_halo(j); i < fs.i_end_halo(j); ++i) {
+            atlas::idx_t jnode = fs.index(i, j);
+            if (view_j(jnode) == 0) {
+              for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
+                view(jnode, jlevel) = north[jlevel];
+              }
+            }
+            if (view_j(jnode) == grid.ny()-1) {
+              for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
+                view(jnode, jlevel) = south[jlevel];
+              }
+            }
+          }
+        }
+      }
+    } else {
+      throw eckit::NotImplemented("duplicate points not supported for this grid", Here());
+    }
+  }
+
+  oops::Log::trace() << classname() << "::resetDuplicatePoints done" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
 oops::LocalIncrement Fields::getLocal(const GeometryIterator & geometryIterator) const {
   int index = 0;
   if (geometry().iteratorDimension() == 2) {
@@ -1331,109 +1395,27 @@ void Fields::print(std::ostream & os) const {
 
 // -----------------------------------------------------------------------------
 
-void Fields::resetDuplicatePoints() {
-  oops::Log::trace() << classname() << "::resetDuplicatePoints starting" << std::endl;
-
-  if (geom_.duplicatePoints()) {
-    if ((geom_.gridType() == "structured") || (geom_.gridType() == "regular_lonlat")) {
-      // Deal with poles
-      for (auto field_internal : fset_) {
-        // Get first longitude value
-        atlas::functionspace::StructuredColumns fs(field_internal.functionspace());
-        atlas::StructuredGrid grid = fs.grid();
-        auto view = atlas::array::make_view<double, 2>(field_internal);
-        auto view_i = atlas::array::make_indexview<int, 1>(fs.index_i());
-        auto view_j = atlas::array::make_indexview<int, 1>(fs.index_j());
-        std::vector<double> north(field_internal.shape(1), 0.0);
-        std::vector<double> south(field_internal.shape(1), 0.0);
-        for (atlas::idx_t j = fs.j_begin(); j < fs.j_end(); ++j) {
-          for (atlas::idx_t i = fs.i_begin(j); i < fs.i_end(j); ++i) {
-            atlas::idx_t jnode = fs.index(i, j);
-            if (view_i(jnode) == 0) {
-              if (view_j(jnode) == 0) {
-                for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
-                  north[jlevel] = view(jnode, jlevel);
-                }
-              }
-              if (view_j(jnode) == grid.ny()-1) {
-                for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
-                  south[jlevel] = view(jnode, jlevel);
-                }
-              }
-            }
-          }
-        }
-
-        // Reduce
-        geom_.getComm().allReduceInPlace(north.begin(), north.end(), eckit::mpi::sum());
-        geom_.getComm().allReduceInPlace(south.begin(), south.end(), eckit::mpi::sum());
-
-        // Copy value
-        for (atlas::idx_t j = fs.j_begin_halo(); j < fs.j_end_halo(); ++j) {
-          for (atlas::idx_t i = fs.i_begin_halo(j); i < fs.i_end_halo(j); ++i) {
-            atlas::idx_t jnode = fs.index(i, j);
-            if (view_j(jnode) == 0) {
-              for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
-                view(jnode, jlevel) = north[jlevel];
-              }
-            }
-            if (view_j(jnode) == grid.ny()-1) {
-              for (atlas::idx_t jlevel = 0; jlevel < field_internal.shape(1); ++jlevel) {
-                view(jnode, jlevel) = south[jlevel];
-              }
-            }
-          }
-        }
-      }
-    } else {
-      throw eckit::NotImplemented("duplicate points not supported for this grid", Here());
-    }
-  }
-
-  oops::Log::trace() << classname() << "::resetDuplicatePoints done" << std::endl;
-}
-
-// -----------------------------------------------------------------------------
-
 bool Fields::checkFieldsCompatible(const Fields & other,
                                    const bool & superset) const {
   // Create vector of fields to check
   std::vector<std::string> fieldsToCheck;
 
   if (superset) {
-    // Number of fields check
-    if (fset_.size() < other.fset_.size()) {
+    // Variables check
+    if (!(other.vars_ <= vars_)) {
         oops::Log::warning() << "checkFieldsCompatible: this Fields is not a superset of the other "
         << "Fields" << std::endl;
       return false;
     }
 
-    for (const auto & otherField : other.fset_) {
-      // Variables check
-      if (!fset_.has(otherField.name())) {
-        oops::Log::warning() << "checkFieldsCompatible: this Fields does not contain the other "
-          << "Fields variable:" << otherField.name() << std::endl;
-        return false;
-      }
-    }
-
     // List of fields to check
     fieldsToCheck = other.fset_.field_names();
   } else {
-    // Number of fields check
-    if (fset_.size() > other.fset_.size()) {
+    // Variables check
+    if (!(vars_ <= other.vars_)) {
         oops::Log::warning() << "checkFieldsCompatible: this Fields is not a subset of the other "
         << "Fields" << std::endl;
       return false;
-    }
-
-    for (const auto & field : fset_) {
-      // Variables check
-      if (!other.fset_.has(field.name())) {
-        oops::Log::warning() << "checkFieldsCompatible: the other Fields does not contain the "
-          << "Fields variable:" << field.name() << std::endl;
-        return false;
-      }
     }
 
     // List of fields to check

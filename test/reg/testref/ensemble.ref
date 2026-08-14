@@ -4,88 +4,88 @@ Member 0:
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.4074790505843716e-01
-    + max    = 3.1560262778684517e-01
-    + mean   = -2.1902513770916536e-04
-    + stddev = 1.0291877355812949e-01
+    + min    = -3.1470005064094830e-01
+    + max    = 3.6740268284662253e-01
+    + mean   = 1.1816474434461267e-03
+    + stddev = 9.8094917616631847e-02
 Member 1: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.1539186649640261e-01
-    + max    = 3.0849313260299155e-01
-    + mean   = 2.2900147267406652e-02
-    + stddev = 9.3220313656939058e-02
+    + min    = -2.9351287232931750e-01
+    + max    = 3.8825768344670081e-01
+    + mean   = 2.0295835639088176e-02
+    + stddev = 9.9869953620183277e-02
 Member 2: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.5661736738657707e-01
-    + max    = 3.3263178452117037e-01
-    + mean   = -8.5929751485330236e-03
-    + stddev = 1.0342767115141917e-01
+    + min    = -2.9674746024609705e-01
+    + max    = 3.0257791631060782e-01
+    + mean   = -6.6410931767004371e-03
+    + stddev = 9.6435276302185000e-02
 Member 3: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.2793652598366341e-01
-    + max    = 4.4304791531024557e-01
-    + mean   = 7.3582287202331323e-03
-    + stddev = 9.4801601640417454e-02
+    + min    = -2.9152290812370940e-01
+    + max    = 3.2254949354850160e-01
+    + mean   = 6.5745010061844548e-03
+    + stddev = 9.1845000875490690e-02
 Member 4: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.8355485099658676e-01
-    + max    = 3.2150258574314572e-01
-    + mean   = -3.0308788315324660e-03
-    + stddev = 9.8034668879093234e-02
+    + min    = -3.2922306126525236e-01
+    + max    = 2.9065972870984147e-01
+    + mean   = -2.3578099428451156e-03
+    + stddev = 9.7862840894281378e-02
 Member 5: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.0634686298696240e-01
-    + max    = 2.8660484994107305e-01
-    + mean   = 6.6596595904758974e-03
-    + stddev = 9.0813112549402428e-02
+    + min    = -2.8879276676958926e-01
+    + max    = 3.0817629932844354e-01
+    + mean   = 9.4528616939951009e-03
+    + stddev = 9.7014142337404047e-02
 Member 6: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.3064580829741974e-01
-    + max    = 3.2133080313553869e-01
-    + mean   = -2.9027221972011418e-04
-    + stddev = 9.5972163001886962e-02
+    + min    = -3.6311428439677246e-01
+    + max    = 3.0353869865543892e-01
+    + mean   = -3.5776132366741984e-03
+    + stddev = 1.0068008875468480e-01
 Member 7: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.0438547864872917e-01
-    + max    = 3.3385735102371616e-01
-    + mean   = -7.5635965058784421e-03
-    + stddev = 1.0216792229757793e-01
+    + min    = -3.5713849539875858e-01
+    + max    = 3.3189422137768021e-01
+    + mean   = -8.5069758915572342e-03
+    + stddev = 1.0082504062539613e-01
 Member 8: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.1225523659854876e-01
-    + max    = 3.2233532969447171e-01
-    + mean   = 2.2520318335832981e-03
-    + stddev = 9.6521411504937274e-02
+    + min    = -3.6130068639535529e-01
+    + max    = 2.7484805014354191e-01
+    + mean   = 1.0489786783140112e-03
+    + stddev = 9.4579284086008991e-02
 Member 9: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.2375980324864156e-01
-    + max    = 4.2781478808650464e-01
-    + mean   = 2.3401772065740779e-03
-    + stddev = 1.0901295055935248e-01
+    + min    = -3.3593619509300066e-01
+    + max    = 3.1004930195200098e-01
+    + mean   = -2.3200938903826271e-04
+    + stddev = 9.9377710667120756e-02
