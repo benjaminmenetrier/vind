@@ -13,7 +13,9 @@
 #include "oops/generic/AtlasInterpolator.h"
 #include "oops/generic/UnstructuredInterpolator.h"
 
+#ifdef ENABLE_OBS
 #include "ufo/obslocalization/ObsLocalization.h"
+#endif
 
 #include "vind/Covariance.h"
 #include "vind/Geometry.h"
@@ -53,9 +55,11 @@ struct Traits {
   typedef vind::ModelAuxCovariance               ModelAuxCovariance;
   typedef vind::ModelAuxIncrement                ModelAuxIncrement;
   typedef vind::ModelData                        ModelData;
-  typedef ufo::ObsLocalization<GeometryIterator> ObsLocalization;
   typedef vind::State                            State;
   typedef vind::VariableChange                   VariableChange;
+#ifdef ENABLE_OBS
+  typedef ufo::ObsLocalization<GeometryIterator> ObsLocalization;
+#endif
 };
 
 }  // namespace vind

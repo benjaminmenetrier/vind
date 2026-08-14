@@ -189,7 +189,7 @@ else()
     ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
 
     # jedi-model-data
-    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda/jedi-model-data.git" BRANCH develop UPDATE )
+    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" BRANCH develop UPDATE )
   
     # vader
     ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" BRANCH develop UPDATE )

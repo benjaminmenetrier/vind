@@ -199,7 +199,7 @@ else()
     ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG ${oops_VERSION} )
 
     # jedi-model-data
-    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda/jedi-model-data.git" TAG ${jedi-model-data_VERSION} )
+    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG ${jedi-model-data_VERSION} )
   
     # vader
     ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG ${vader_VERSION} )

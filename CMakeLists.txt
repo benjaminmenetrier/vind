@@ -162,6 +162,9 @@ endif()
 # Sources
 ################################################################################
 
+if( ENABLE_OBS )
+    add_compile_definitions( ENABLE_OBS )
+endif()
 if( ENABLE_SABER )
     add_compile_definitions( ENABLE_SABER )
 endif()
