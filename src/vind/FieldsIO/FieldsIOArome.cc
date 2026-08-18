@@ -138,26 +138,30 @@ void FieldsIOArome::read(const oops::Variables & vars,
 
   // File variables names
   size_t nVar2D = 0;
-  std::vector<std::string> preVec;
-  std::vector<int> levVec;
-  std::vector<std::string> varVec;
+  std::vector<eckit::LocalConfiguration> aromeVars;
   for (const auto & var : varsToRead) {
-    for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
-      if (var.name() == "SURFPRESSION") {
-        preVec.push_back("SURF");
-        levVec.push_back(0);
-        varVec.push_back("PRESSION");
-      } else if (var.name() == "SPECSURFGEOPOTEN") {
-        preVec.push_back("SPECSURF");
-        levVec.push_back(0);
-        varVec.push_back("GEOPOTENTIEL");
-      } else {
-        preVec.push_back("S");
-        levVec.push_back(jlevel+1);
-        varVec.push_back(var.name());
-      }
+    // Arome variable properties
+    eckit::LocalConfiguration aromeVar;
+    aromeVar.set("name", var.name());
+    if (var.name() == "SURFPRESSION") {
+      aromeVar.set("prefix", "SURF");
+      aromeVar.set("levels", 0);
+      aromeVar.set("suffix", "PRESSION");
       ++nVar2D;
+    } else if (var.name() == "SPECSURFGEOPOTEN") {
+      aromeVar.set("prefix", "SPECSURF");
+      aromeVar.set("levels", 0);
+      aromeVar.set("suffix", "GEOPOTENTIEL");
+      ++nVar2D;
+    } else {
+      aromeVar.set("prefix", "S");
+      aromeVar.set("levels", var.getLevels());
+      aromeVar.set("suffix", var.name());
+      nVar2D += var.getLevels();
     }
+
+    // Add arome variable
+    aromeVars.push_back(aromeVar);
   }
 
   // Get sizes
@@ -174,13 +178,18 @@ void FieldsIOArome::read(const oops::Variables & vars,
 
     // Variable/level name
     std::vector<std::string> var2DName;
-    for (size_t jVar2D = 0; jVar2D < nVar2D; ++jVar2D) {
-      if (levVec[jVar2D] == 0) {
-        var2DName.push_back(preVec[jVar2D] + varVec[jVar2D]);
+    for (const auto & aromeVar : aromeVars) {
+      const std::string prefix = aromeVar.getString("prefix");
+      const size_t levels = aromeVar.getInt("levels");
+      const std::string suffix = aromeVar.getString("suffix");
+      if (levels == 0) {
+        var2DName.push_back(prefix + suffix);
       } else {
-        const std::string level = std::to_string(levVec[jVar2D]);
-        var2DName.push_back(preVec[jVar2D] + std::string(3-level.length(), '0')
-          + level + varVec[jVar2D]);
+        for (size_t jlev = 0; jlev < levels; ++jlev) {
+          const std::string jlevP1Str = std::to_string(jlev+1);
+          var2DName.push_back(prefix + std::string(3-jlevP1Str.length(), '0')
+            + jlevP1Str + suffix);
+        }
       }
     }
 
@@ -276,10 +285,7 @@ void FieldsIOArome::read(const oops::Variables & vars,
     // Update configuration
     eckit::LocalConfiguration updatedConfig(conf);
     updatedConfig.set("filepath", filePath);
-    updatedConfig.set("nvar2d", nVar2D);
-    updatedConfig.set("prefix vector", preVec);
-    updatedConfig.set("level vector", levVec);
-    updatedConfig.set("variable vector", varVec);
+    updatedConfig.set("arome variables", aromeVars);
 
     // Create hybrid coordinates fieldset
     atlas::FieldSet akbkData;
@@ -557,22 +563,25 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
 
   // File variables names
   size_t nVar2D = 0;
-  std::vector<std::string> preVec;
-  std::vector<int> levVec;
-  std::vector<std::string> varVec;
+  std::vector<eckit::LocalConfiguration> aromeVars;
   for (const auto & field : fsetToWrite) {
-    for (int jlevel = 0; jlevel < field.levels(); ++jlevel) {
-      if (field.name() == "SURFPRESSION") {
-        preVec.push_back("SURF");
-        levVec.push_back(0);
-        varVec.push_back("PRESSION");
-      } else {
-        preVec.push_back("S");
-        levVec.push_back(jlevel+1);
-        varVec.push_back(field.name());
-      }
+    // Arome variable properties
+    eckit::LocalConfiguration aromeVar;
+    aromeVar.set("name", field.name());
+    if (field.name() == "SURFPRESSION") {
+      aromeVar.set("prefix", "SURF");
+      aromeVar.set("levels", 0);
+      aromeVar.set("suffix", "PRESSION");
       ++nVar2D;
+    } else {
+      aromeVar.set("prefix", "S");
+      aromeVar.set("levels", field.levels());
+      aromeVar.set("suffix", field.name());
+      nVar2D += field.levels();
     }
+
+    // Add arome variable
+    aromeVars.push_back(aromeVar);
   }
 
   // Get sizes
@@ -614,10 +623,7 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
     // Update configuration
     eckit::LocalConfiguration updatedConfig(conf);
     updatedConfig.set("filepath", filePath);
-    updatedConfig.set("nvar2d", nVar2D);
-    updatedConfig.set("prefix vector", preVec);
-    updatedConfig.set("level vector", levVec);
-    updatedConfig.set("variable vector", varVec);
+    updatedConfig.set("arome variables", aromeVars);
 
     // Copy existing FA file
     if (geom.getComm().rank() == 0) {

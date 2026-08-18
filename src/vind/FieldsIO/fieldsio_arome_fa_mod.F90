@@ -48,11 +48,11 @@ type(atlas_fieldset),intent(inout) :: fset
 ! Local variables
 integer(kind_int),parameter :: ifile = 11
 integer(kind_int) :: irep,imaxlev,imaxtrunc,imaxgl,imaxlon,inbari,ityptr,itronc,kflev
-integer(kind_int) :: nvar2d,ivar2d,nfield,ifield,nlev,ilev,ingrib,inbits,istron,ipuila
+integer(kind_int) :: ifield,nfield,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
 integer(kind_int) :: nlon,ndgl,nmsmax,nsmax,from(1),nproma,ngpblks
 integer(kind_int) :: nprgpew,nprtrv,nprtrw,nprgpns,n_regions_ns,n_regions_ew
 integer(kind_int) :: igpg,ix,iy,inode
-integer(kind_int),allocatable :: inlopa(:),inozpa(:),nloen(:),levvec(:)
+integer(kind_int),allocatable :: inlopa(:),inozpa(:),nloen(:)
 integer(kind_int),allocatable :: i_regions(:)
 real(kind_real) :: dx,dy,zslapo,zclopo,zslopo,zcodil,zref,zeps,zundf
 real(kind_real),allocatable :: zsinla(:),zvalh(:),zvbh(:)
@@ -60,12 +60,13 @@ real(kind_real),allocatable :: zgpg(:,:),zspg(:,:),zgp(:,:,:),zsp(:,:)
 real(kind_real),pointer :: ak_ptr(:),bk_ptr(:),ptr(:,:)
 character(len=256) :: clfile
 character(len=16) :: clframe
-character(len=1024) :: message,varname
-character(len=1024),allocatable :: prevec(:),varvec(:)
-character(len=:),allocatable :: str,str_array(:)
+character(len=1024) :: message,name,prefix,suffix
+character(len=:),allocatable :: str
 logical :: lgard,found,lexist,lcosp,lundf
 !type(atlas_structuredgrid) :: grid
 type(atlas_field) :: ak,bk,field
+type(fckit_configuration) :: arome_var
+type(fckit_configuration),allocatable :: arome_vars(:)
 
 if (comm%rank() == 0) then
   ! Open file
@@ -133,15 +134,7 @@ ngpblks = 1
 
 if (comm%rank() == 0) then
   ! Get variables to read
-  call conf%get_or_die("nvar2d",nvar2d)
-  allocate(prevec(nvar2d))
-  allocate(levvec(nvar2d))
-  allocate(varvec(nvar2d))
-  call conf%get_or_die("prefix vector",str_array)
-  prevec = str_array
-  call conf%get_or_die("level vector",levvec)
-  call conf%get_or_die("variable vector",str_array)
-  varvec = str_array
+  call conf%get_or_die("arome variables",arome_vars)
 
   ! Allocation
   allocate(zgpg(trans%ngptotg,1))
@@ -159,28 +152,48 @@ if (comm%rank() == 0) nfield = fset%size()
 call comm%broadcast(nfield,0)
 
 ! Loop over fields
-ivar2d = 0
-do ifield=1,nfield
+do ifield=1,size(arome_vars)
   if (comm%rank() == 0) then
+    ! Get arome variable properties
+    arome_var = arome_vars(ifield)
+    call arome_var%get_or_die("name",str)
+    name = str
+    call arome_var%get_or_die("prefix",str)
+    prefix = str
+    call arome_var%get_or_die("levels",nlev)
+    call arome_var%get_or_die("suffix",str)
+    suffix = str
+
     ! Get field
-    field = fset%field(ifield)
+    field = fset%field(name)
 
     ! Check horizontal dimension
     if (field%shape(2) /= trans%ngptotg) call abor1_ftn("wrong horizontal dimension")
 
-    ! Get number of levels
-    nlev = field%levels()
+    ! Check number of levels
+    if (nlev == 0) then
+      if (field%levels() /= 1) call abor1_ftn("wrong vertical dimension")
+    else
+      if (field%levels() /= nlev) call abor1_ftn("wrong vertical dimension")
+    end if
   end if
+
+  ! Broadcast number of levels
   call comm%broadcast(nlev,0)
 
   ! Loop over levels
-  do ilev=1,nlev
-    ! Update variable/level index
-    ivar2d = ivar2d+1
+  do ilev=1,max(nlev,1)
+    if (comm%rank() == 0) then
+      ! Get jlev
+      if (nlev == 0) then
+        jlev = 0
+      else
+        jlev = ilev
+      end if
 
-    ! Get 2D field info
-    if (comm%rank() == 0) call fanion(irep,ifile,trim(prevec(ivar2d)),levvec(ivar2d),trim(varvec(ivar2d)), &
-     & lexist,lcosp,ingrib,inbits,istron,ipuila)
+      ! Get 2D field info
+      call fanion(irep,ifile,trim(prefix),jlev,trim(suffix),lexist,lcosp,ingrib,inbits,istron,ipuila)
+    end if
 
     ! Broadcast flags
     call comm%broadcast(lexist,0)
@@ -194,8 +207,7 @@ do ifield=1,nfield
     ! Check 2D field storage (grid-point or spectral)
     if (lcosp) then
       ! Read spectral field
-      if (comm%rank() == 0) call facilo(irep,ifile,trim(prevec(ivar2d)),levvec(ivar2d),trim(varvec(ivar2d)),zspg(:,1),lcosp, &
-       & lundf,zundf)
+      if (comm%rank() == 0) call facilo(irep,ifile,trim(prefix),jlev,trim(suffix),zspg(:,1),lcosp,lundf,zundf)
 
       if (comm%rank() == 0) then
         ! Scatter spectral field (send)
@@ -237,8 +249,7 @@ do ifield=1,nfield
       end if
     else
       ! Read grid-point field
-      if (comm%rank() == 0) call facilo(irep,ifile,trim(prevec(ivar2d)),levvec(ivar2d),trim(varvec(ivar2d)),zgpg(:,1),lcosp, &
-       & lundf,zundf)
+      if (comm%rank() == 0) call facilo(irep,ifile,trim(prefix),jlev,trim(suffix),zgpg(:,1),lcosp,lundf,zundf)
     end if
 
     ! Copy data
@@ -262,9 +273,7 @@ if (comm%rank() == 0) then
   deallocate(zsinla)
   deallocate(zvalh)
   deallocate(zvbh)
-  deallocate(prevec)
-  deallocate(levvec)
-  deallocate(varvec)
+  deallocate(arome_vars)
   deallocate(zgpg)
   deallocate(zspg)
 
@@ -296,11 +305,11 @@ type(atlas_fieldset),intent(inout) :: fset
 ! Local variables
 integer(kind_int),parameter :: ifile = 11
 integer(kind_int) :: irep,imaxlev,imaxtrunc,imaxgl,imaxlon,inbpdg,inbcsp,idmopl,inbari,ityptr,itronc,kflev
-integer(kind_int) :: nvar2d,ivar2d,nfield,ifield,nlev,ilev,ingrib,inbits,istron,ipuila
+integer(kind_int) :: ifield,nfield,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
 integer(kind_int) :: nlon,ndgl,nmsmax,nsmax,from(1),nproma,ngpblks
 integer(kind_int) :: nprgpew,nprtrv,nprtrw,nprgpns,n_regions_ns,n_regions_ew
 integer(kind_int) :: igpg,ix,iy,inode
-integer(kind_int),allocatable :: inlopa(:),inozpa(:),nloen(:),levvec(:)
+integer(kind_int),allocatable :: inlopa(:),inozpa(:),nloen(:)
 integer(kind_int),allocatable :: i_regions(:)
 real(kind_real) :: dx,dy,zslapo,zclopo,zslopo,zcodil,zref,zeps
 real(kind_real),allocatable :: zsinla(:),zvalh(:),zvbh(:)
@@ -308,12 +317,13 @@ real(kind_real),allocatable :: zgpg(:,:),zspg(:,:),zgp(:,:,:),zsp(:,:)
 real(kind_real),pointer :: ak_ptr(:),bk_ptr(:),ptr(:,:)
 character(len=256) :: clfile
 character(len=16) :: clframe
-character(len=1024) :: message,varname
-character(len=1024),allocatable :: prevec(:),varvec(:)
-character(len=:),allocatable :: str,str_array(:)
+character(len=1024) :: message,name,prefix,suffix
+character(len=:),allocatable :: str
 logical :: lgard,found,lexist,lcosp
 !type(atlas_structuredgrid) :: grid
 type(atlas_field) :: ak,bk,field
+type(fckit_configuration) :: arome_var
+type(fckit_configuration),allocatable :: arome_vars(:)
 
 if (comm%rank() == 0) then
   ! Open file
@@ -372,15 +382,7 @@ ngpblks = 1
 
 if (comm%rank() == 0) then
   ! Get variables to write
-  call conf%get_or_die("nvar2d",nvar2d)
-  allocate(prevec(nvar2d))
-  allocate(levvec(nvar2d))
-  allocate(varvec(nvar2d))
-  call conf%get_or_die("prefix vector",str_array)
-  prevec = str_array
-  call conf%get_or_die("level vector",levvec)
-  call conf%get_or_die("variable vector",str_array)
-  varvec = str_array
+  call conf%get_or_die("arome variables",arome_vars)
 
   ! Allocation
   allocate(zgpg(trans%ngptotg,1))
@@ -398,28 +400,48 @@ if (comm%rank() == 0) nfield = fset%size()
 call comm%broadcast(nfield,0)
 
 ! Loop over fields
-ivar2d = 0
-do ifield=1,nfield
+do ifield=1,size(arome_vars)
   if (comm%rank() == 0) then
+    ! Get arome variable properties
+    arome_var = arome_vars(ifield)
+    call arome_var%get_or_die("name",str)
+    name = str
+    call arome_var%get_or_die("prefix",str)
+    prefix = str
+    call arome_var%get_or_die("levels",nlev)
+    call arome_var%get_or_die("suffix",str)
+    suffix = str
+
     ! Get field
-    field = fset%field(ifield)
+    field = fset%field(name)
 
     ! Check horizontal dimension
     if (field%shape(2) /= trans%ngptotg) call abor1_ftn("wrong horizontal dimension")
 
-    ! Get number of levels
-    nlev = field%levels()
+    ! Check number of levels
+    if (nlev == 0) then
+      if (field%levels() /= 1) call abor1_ftn("wrong vertical dimension")
+    else
+      if (field%levels() /= nlev) call abor1_ftn("wrong vertical dimension")
+    end if
   end if
+
+  ! Broadcast number of levels
   call comm%broadcast(nlev,0)
 
   ! Loop over levels
-  do ilev=1,nlev
-    ! Update variable/level index
-    ivar2d = ivar2d+1
+  do ilev=1,max(nlev,1)
+    if (comm%rank() == 0) then
+      ! Get jlev
+      if (nlev == 0) then
+        jlev = 0
+      else
+        jlev = ilev
+      end if
 
-    ! Get 2D field info
-    if (comm%rank() == 0) call fanion(irep,ifile,trim(prevec(ivar2d)),levvec(ivar2d),trim(varvec(ivar2d)), &
-     & lexist,lcosp,ingrib,inbits,istron,ipuila)
+      ! Get 2D field info
+      call fanion(irep,ifile,trim(prefix),jlev,trim(suffix),lexist,lcosp,ingrib,inbits,istron,ipuila)
+    end if
 
     ! Broadcast flags
     call comm%broadcast(lexist,0)
@@ -487,10 +509,10 @@ do ifield=1,nfield
       end if
 
       ! Write spectral field
-      if (comm%rank() == 0) call faienc(irep,ifile,trim(prevec(ivar2d)),levvec(ivar2d),trim(varvec(ivar2d)),zspg(:,1),lcosp)
+      if (comm%rank() == 0) call faienc(irep,ifile,trim(prefix),jlev,trim(suffix),zspg(:,1),lcosp)
     else
       ! Write grid-point field
-      if (comm%rank() == 0) call faienc(irep,ifile,trim(prevec(ivar2d)),levvec(ivar2d),trim(varvec(ivar2d)),zgpg(:,1),lcosp)
+      if (comm%rank() == 0) call faienc(irep,ifile,trim(prefix),jlev,trim(suffix),zgpg(:,1),lcosp)
     end if
   end do
 end do
@@ -502,9 +524,7 @@ if (comm%rank() == 0) then
   deallocate(zsinla)
   deallocate(zvalh)
   deallocate(zvbh)
-  deallocate(prevec)
-  deallocate(levvec)
-  deallocate(varvec)
+  deallocate(arome_vars)
   deallocate(zgpg)
   deallocate(zspg)
 

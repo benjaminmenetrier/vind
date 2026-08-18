@@ -58,11 +58,11 @@ class Geometry : public util::Printable,
   std::vector<size_t> variableSizes(const std::vector<std::string> &) const;
 
   // Levels direction
-  const bool levelsAreTopDown() const
+  bool levelsAreTopDown() const
     {return levelsAreTopDown_;}
 
   // Levels counter origin
-  const bool levelsCountFrom() const
+  bool levelsCountFrom() const
     {return levelsCountFrom_;}
 
   // Accessors
