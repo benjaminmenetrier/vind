@@ -48,7 +48,7 @@ type(atlas_fieldset),intent(inout) :: fset
 ! Local variables
 integer(kind_int),parameter :: ifile = 11
 integer(kind_int) :: irep,imaxlev,imaxtrunc,imaxgl,imaxlon,inbari,ityptr,itronc,kflev
-integer(kind_int) :: ifield,nfield,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
+integer(kind_int) :: ivar,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
 integer(kind_int) :: nlon,ndgl,nmsmax,nsmax,from(1),nproma,ngpblks
 integer(kind_int) :: nprgpew,nprtrv,nprtrw,nprgpns,n_regions_ns,n_regions_ew
 integer(kind_int) :: igpg,ix,iy,inode
@@ -132,11 +132,8 @@ end if
 nproma = trans%ngptot
 ngpblks = 1
 
+! Allocation
 if (comm%rank() == 0) then
-  ! Get variables to read
-  call conf%get_or_die("arome variables",arome_vars)
-
-  ! Allocation
   allocate(zgpg(trans%ngptotg,1))
   allocate(zspg(1,trans%nspec2g))
 end if
@@ -147,15 +144,14 @@ from = 1
 ! Get ATLAS grid
 !grid = fspace%grid()
 
-! Get number of fields
-if (comm%rank() == 0) nfield = fset%size()
-call comm%broadcast(nfield,0)
+! Get variables to read
+call conf%get_or_die("arome variables",arome_vars)
 
 ! Loop over fields
-do ifield=1,size(arome_vars)
+do ivar=1,size(arome_vars)
   if (comm%rank() == 0) then
     ! Get arome variable properties
-    arome_var = arome_vars(ifield)
+    arome_var = arome_vars(ivar)
     call arome_var%get_or_die("name",str)
     name = str
     call arome_var%get_or_die("prefix",str)
@@ -305,7 +301,7 @@ type(atlas_fieldset),intent(inout) :: fset
 ! Local variables
 integer(kind_int),parameter :: ifile = 11
 integer(kind_int) :: irep,imaxlev,imaxtrunc,imaxgl,imaxlon,inbpdg,inbcsp,idmopl,inbari,ityptr,itronc,kflev
-integer(kind_int) :: ifield,nfield,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
+integer(kind_int) :: ivar,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
 integer(kind_int) :: nlon,ndgl,nmsmax,nsmax,from(1),nproma,ngpblks
 integer(kind_int) :: nprgpew,nprtrv,nprtrw,nprgpns,n_regions_ns,n_regions_ew
 integer(kind_int) :: igpg,ix,iy,inode
@@ -380,11 +376,8 @@ end if
 nproma = trans%ngptot
 ngpblks = 1
 
+! Allocation
 if (comm%rank() == 0) then
-  ! Get variables to write
-  call conf%get_or_die("arome variables",arome_vars)
-
-  ! Allocation
   allocate(zgpg(trans%ngptotg,1))
   allocate(zspg(1,trans%nspec2g))
 end if
@@ -395,15 +388,14 @@ from = 1
 ! Get ATLAS grid
 !grid = fspace%grid()
 
-! Get number of fields
-if (comm%rank() == 0) nfield = fset%size()
-call comm%broadcast(nfield,0)
+! Get variables to read
+call conf%get_or_die("arome variables",arome_vars)
 
 ! Loop over fields
-do ifield=1,size(arome_vars)
+do ivar=1,size(arome_vars)
   if (comm%rank() == 0) then
     ! Get arome variable properties
-    arome_var = arome_vars(ifield)
+    arome_var = arome_vars(ivar)
     call arome_var%get_or_die("name",str)
     name = str
     call arome_var%get_or_die("prefix",str)
