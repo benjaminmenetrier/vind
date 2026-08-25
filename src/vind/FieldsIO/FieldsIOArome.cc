@@ -170,6 +170,10 @@ void FieldsIOArome::read(const oops::Variables & vars,
   const size_t nx = xspec.getInt("N");
   const size_t ny = yspec.getInt("N");
 
+  // Get extension zone
+  const size_t nxExt = conf.getInt("x extension", 0);
+  const size_t nyExt = conf.getInt("y extension", 0);
+
   oops::Log::info() << "Info     : Reading file: " << filePath << std::endl;
 
   if (ioFormat_ == "arome netcdf") {
@@ -227,7 +231,7 @@ void FieldsIOArome::read(const oops::Variables & vars,
         auto varView = atlas::array::make_view<double, 2>(varField);
         for (int jlevel = 0; jlevel < var.getLevels(); ++jlevel) {
           // Read data
-          std::vector<double> zvar(ny*nx);
+          std::vector<double> zvar((ny+nyExt)*(nx+nxExt));
           if ((retval = nc_get_var_double(ncid, var_id[iVar2D], zvar.data()))) {
             ERR(retval, var2DName[iVar2D]);
           }
@@ -237,7 +241,7 @@ void FieldsIOArome::read(const oops::Variables & vars,
           for (size_t j = 0; j < ny; ++j) {
             for (int i = 0; i < grid.nx(j); ++i) {
               atlas::gidx_t gidx = grid.index(i, j);
-              varView(gidx, jlevel) = zvar[j*nx+i];
+              varView(gidx, jlevel) = zvar[j*(nx+nxExt)+i];
             }
           }
         }
@@ -276,8 +280,8 @@ void FieldsIOArome::read(const oops::Variables & vars,
 
       // Setup transform structure
       trans_new(&trans);
-      trans_set_resol_lam(&trans, nx, ny, dx, dy);
-      trans_set_trunc_lam(&trans, (nx-1)/2, (ny-1)/2);
+      trans_set_resol_lam(&trans, nx+nxExt, ny+nyExt, dx, dy);
+      trans_set_trunc_lam(&trans, (nx+nxExt-1)/2, (ny+nyExt-1)/2);
       trans_setup(&trans);
       transSetup = true;
     }
@@ -588,6 +592,10 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
   const atlas::util::Config xspec = grid.xspace().spec();
   const atlas::util::Config yspec = grid.yspace().spec();
 
+  // Get extension zone
+  const size_t nxExt = conf.getInt("x extension", 0);
+  const size_t nyExt = conf.getInt("y extension", 0);
+
   oops::Log::info() << "Info     : Writing file: " << filePath << std::endl;
 
   if (ioFormat_ == "arome netcdf") {
@@ -614,8 +622,8 @@ void FieldsIOArome::write(const eckit::Configuration & conf,
 
       // Setup transform structure
       trans_new(&trans);
-      trans_set_resol_lam(&trans, nx, ny, dx, dy);
-      trans_set_trunc_lam(&trans, (nx-1)/2, (ny-1)/2);
+      trans_set_resol_lam(&trans, nx+nxExt, ny+nyExt, dx, dy);
+      trans_set_trunc_lam(&trans, (nx+nxExt-1)/2, (ny+nyExt-1)/2);
       trans_setup(&trans);
       transSetup = true;
     }

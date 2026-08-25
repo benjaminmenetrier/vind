@@ -51,7 +51,7 @@ integer(kind_int) :: irep,imaxlev,imaxtrunc,imaxgl,imaxlon,inbari,ityptr,itronc,
 integer(kind_int) :: ivar,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
 integer(kind_int) :: nlon,ndgl,nmsmax,nsmax,from(1),nproma,ngpblks
 integer(kind_int) :: nprgpew,nprtrv,nprtrw,nprgpns,n_regions_ns,n_regions_ew
-integer(kind_int) :: igpg,ix,iy,inode
+integer(kind_int) :: nxExt,nyExt,nx,ny,igpg,ix,iy,inode
 integer(kind_int),allocatable :: inlopa(:),inozpa(:),nloen(:)
 integer(kind_int),allocatable :: i_regions(:)
 real(kind_real) :: dx,dy,zslapo,zclopo,zslopo,zcodil,zref,zeps,zundf
@@ -63,7 +63,7 @@ character(len=16) :: clframe
 character(len=1024) :: message,name,prefix,suffix
 character(len=:),allocatable :: str
 logical :: lgard,found,lexist,lcosp,lundf
-!type(atlas_structuredgrid) :: grid
+type(atlas_structuredgrid) :: grid
 type(atlas_field) :: ak,bk,field
 type(fckit_configuration) :: arome_var
 type(fckit_configuration),allocatable :: arome_vars(:)
@@ -126,6 +126,12 @@ if (comm%rank() == 0) then
     ak_ptr(ilev+1) = zvalh(ilev)
     bk_ptr(ilev+1) = zvbh(ilev)
   end do
+
+  ! Get extension zone
+  if (.not.conf%get("x extension", nxExt)) nxExt = 0
+  if (.not.conf%get("y extension", nyExt)) nyExt = 0
+  nx = trans%nlon-nxExt
+  ny = trans%ndgl-nyExt
 end if
 
 ! Set nproma/ngpblks
@@ -142,7 +148,7 @@ allocate(zsp(1,trans%nspec2))
 from = 1
 
 ! Get ATLAS grid
-!grid = fspace%grid()
+grid = fspace%grid()
 
 ! Get variables to read
 call conf%get_or_die("arome variables",arome_vars)
@@ -164,7 +170,7 @@ do ivar=1,size(arome_vars)
     field = fset%field(name)
 
     ! Check horizontal dimension
-    if (field%shape(2) /= trans%ngptotg) call abor1_ftn("wrong horizontal dimension")
+    if (field%shape(2) /= nx*ny) call abor1_ftn("wrong horizontal dimension")
 
     ! Check number of levels
     if (nlev == 0) then
@@ -252,11 +258,12 @@ do ivar=1,size(arome_vars)
     if (comm%rank() == 0) then
       call field%data(ptr)
       do igpg=1,trans%ngptotg
-!        iy = (igpg-1)/trans%nlon+1
-!        ix = igpg-(iy-1)*trans%nlon
-!        inode = grid%index(ix,iy)
-!        ptr(ilev,inode) = zgpg(igpg,1)
-        ptr(ilev,igpg) = zgpg(igpg,1)
+        iy = (igpg-1)/trans%nlon+1
+        ix = igpg-(iy-1)*trans%nlon
+        if ((ix <= nx).and.(iy <= ny)) then
+          inode = grid%index(ix,iy)
+          ptr(ilev,inode) = zgpg(igpg,1)
+        end if
       end do
     end if
   end do
@@ -316,7 +323,7 @@ character(len=16) :: clframe
 character(len=1024) :: message,name,prefix,suffix
 character(len=:),allocatable :: str
 logical :: lgard,found,lexist,lcosp
-!type(atlas_structuredgrid) :: grid
+type(atlas_structuredgrid) :: grid
 type(atlas_field) :: ak,bk,field
 type(fckit_configuration) :: arome_var
 type(fckit_configuration),allocatable :: arome_vars(:)
@@ -370,6 +377,12 @@ if (comm%rank() == 0) then
   if (ndgl /= trans%ndgl) call abor1_ftn("inconsistent ndgl")
   if (nsmax /= trans%nsmax) call abor1_ftn("inconsistent nsmax")
   if (nmsmax /= trans%nmsmax) call abor1_ftn("inconsistent nmsmax")
+
+  ! Get extension zone
+  if (.not.conf%get("x extension", nxExt)) nxExt = 0
+  if (.not.conf%get("y extension", nyExt)) nyExt = 0
+  nx = trans%nlon-nxExt
+  ny = trans%ndgl-nyExt
 end if
 
 ! Set nproma/ngpblks
@@ -448,11 +461,12 @@ do ivar=1,size(arome_vars)
     if (comm%rank() == 0) then
       call field%data(ptr)
       do igpg=1,trans%ngptotg
-!        iy = (igpg-1)/trans%nlon+1
-!        ix = igpg-(iy-1)*trans%nlon
-!        inode = grid%index(ix,iy)
-!        ptr(ilev,inode) = zgpg(igpg,1)
-        zgpg(igpg,1) = ptr(ilev,igpg)
+        iy = (igpg-1)/trans%nlon+1
+        ix = igpg-(iy-1)*trans%nlon
+        if ((ix <= nx).and.(iy <= ny)) then
+          inode = grid%index(ix,iy)
+          zgpg(igpg,1) = ptr(ilev,inode)
+        end if
       end do
     end if
 
