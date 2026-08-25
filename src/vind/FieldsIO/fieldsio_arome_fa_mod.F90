@@ -311,7 +311,7 @@ integer(kind_int) :: irep,imaxlev,imaxtrunc,imaxgl,imaxlon,inbpdg,inbcsp,idmopl,
 integer(kind_int) :: ivar,nlev,ilev,jlev,ingrib,inbits,istron,ipuila
 integer(kind_int) :: nlon,ndgl,nmsmax,nsmax,from(1),nproma,ngpblks
 integer(kind_int) :: nprgpew,nprtrv,nprtrw,nprgpns,n_regions_ns,n_regions_ew
-integer(kind_int) :: igpg,ix,iy,inode
+integer(kind_int) :: nxExt,nyExt,nx,ny,igpg,ix,iy,inode
 integer(kind_int),allocatable :: inlopa(:),inozpa(:),nloen(:)
 integer(kind_int),allocatable :: i_regions(:)
 real(kind_real) :: dx,dy,zslapo,zclopo,zslopo,zcodil,zref,zeps

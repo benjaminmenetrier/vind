@@ -199,7 +199,8 @@ else()
         ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" BRANCH develop UPDATE )
 
         # saber
-        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
+#        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
+        ecbuild_bundle( PROJECT saber )
     endif()
   
     if( ENABLE_CRTM )
