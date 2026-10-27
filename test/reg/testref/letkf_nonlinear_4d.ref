@@ -249,7 +249,7 @@ Initial state for member 10:
     + mean   = 2.1266658052661551e+00
     + stddev = 2.5088521637117127e+00
 H(x) for member 1:
-air_temperature nobs= 50 Min=-1.4665207397024891e+00, Max=5.1491226040568510e+00, RMS=2.3848185716918104e+00
+air_temperature nobs= 50 Min=-1.4665207397024889e+00, Max=5.1491226040568510e+00, RMS=2.3848185716918104e+00
 H(x) for member 2:
 air_temperature nobs= 50 Min=-1.4295553586623928e+00, Max=5.3168660478969452e+00, RMS=2.4061391698267736e+00
 H(x) for member 3:
@@ -272,6 +272,7 @@ H(x) ensemble background mean:
 air_temperature nobs= 50 Min=-1.3632888601932276e+00, Max=5.2098723509422253e+00, RMS=2.3917846088835097e+00
 background y - H(x): 
 air_temperature nobs= 50 Min=-2.4144698307643053e-01, Max=3.3521450971451294e-01, RMS=1.4462534253795981e-01
+ombg RMS: 1.4462534253795981e-01
 Background mean :
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
@@ -302,53 +303,53 @@ Analysis mean :
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.0340858803644467e+01
-    + max    = 1.9692439521211593e+01
-    + mean   = 2.4536570368510677e+00
-    + stddev = 3.1965740833688607e+00
+    + min    = -1.0340858864828494e+01
+    + max    = 1.9692439478467435e+01
+    + mean   = 2.4536570315805837e+00
+    + stddev = 3.1965740816606942e+00
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.0340858803644467e+01
-    + max    = 1.8755075655137315e+01
-    + mean   = 2.1889311450505349e+00
-    + stddev = 2.8453485552185724e+00
+    + min    = -1.0340858864828494e+01
+    + max    = 1.8755075612393156e+01
+    + mean   = 2.1889311397800375e+00
+    + stddev = 2.8453485525390909e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -1.0340858803644467e+01
-    + max    = 1.7558388889671889e+01
-    + mean   = 2.1181090861187428e+00
-    + stddev = 2.5097465532757948e+00
+    + min    = -1.0340858864828494e+01
+    + max    = 1.7558388846927730e+01
+    + mean   = 2.1181090808482477e+00
+    + stddev = 2.5097465531675316e+00
 Analysis mean increment :
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.7627939653521736e-01
-    + max    = 3.6815694743427141e-01
-    + mean   = -1.0512560818869875e-02
-    + stddev = 1.0535223753563640e-01
+    + min    = -3.7627929984609132e-01
+    + max    = 3.6815695573922547e-01
+    + mean   = -1.0512566089367797e-02
+    + stddev = 1.0535222934503510e-01
 Analysis mean increment :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.7627939653521802e-01
-    + max    = 3.6815694743427163e-01
-    + mean   = -1.0512560818869835e-02
-    + stddev = 1.0535223753563643e-01
+    + min    = -3.7627929984609154e-01
+    + max    = 3.6815695573922658e-01
+    + mean   = -1.0512566089367840e-02
+    + stddev = 1.0535222934503508e-01
 Analysis mean increment :
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = -3.7627939653521780e-01
-    + max    = 3.6815694743427119e-01
-    + mean   = -1.0512560818869863e-02
-    + stddev = 1.0535223753563641e-01
+    + min    = -3.7627929984609154e-01
+    + max    = 3.6815695573922608e-01
+    + mean   = -1.0512566089367778e-02
+    + stddev = 1.0535222934503509e-01
 Forecast variance :
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
@@ -375,57 +376,56 @@ Forecast variance :
     + min    = 8.4416161113491466e-04
     + max    = 3.4670676752122868e-02
     + mean   = 9.6684499157751302e-03
-    + stddev = 4.3576604438256387e-03
+    + stddev = 4.3576604438256396e-03
 Analysis variance :
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = 6.3238506217314658e-04
-    + max    = 2.6601859175237687e-02
-    + mean   = 7.5794415778387093e-03
-    + stddev = 3.4071716893312389e-03
+    + min    = 6.3238508480850013e-04
+    + max    = 2.6601861831097869e-02
+    + mean   = 7.5794416598004080e-03
+    + stddev = 3.4071717597575833e-03
 Analysis variance :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = 6.3238506217314495e-04
-    + max    = 2.6601859175237687e-02
-    + mean   = 7.5794415778387119e-03
-    + stddev = 3.4071716893312406e-03
+    + min    = 6.3238508480849894e-04
+    + max    = 2.6601861831097869e-02
+    + mean   = 7.5794416598004089e-03
+    + stddev = 3.4071717597575816e-03
 Analysis variance :
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: structured [1855]
   Fields:
   - air_temperature (2 levels):
-    + min    = 6.3238506217314484e-04
-    + max    = 2.6601859175237687e-02
-    + mean   = 7.5794415778387084e-03
-    + stddev = 3.4071716893312389e-03
+    + min    = 6.3238508480849894e-04
+    + max    = 2.6601861831097869e-02
+    + mean   = 7.5794416598004071e-03
+    + stddev = 3.4071717597575829e-03
 H(x) for member 1:
-air_temperature nobs= 50 Min=-1.4107307759205241e+00, Max=5.3144642097186185e+00, RMS=2.3942717156058859e+00
+air_temperature nobs= 50 Min=-1.4107307724986162e+00, Max=5.3144642621639528e+00, RMS=2.3942717152764881e+00
 H(x) for member 2:
-air_temperature nobs= 50 Min=-1.3679136700518455e+00, Max=5.4391381329579911e+00, RMS=2.4163856689038417e+00
+air_temperature nobs= 50 Min=-1.3679136712117403e+00, Max=5.4391381857797905e+00, RMS=2.4163856701900155e+00
 H(x) for member 3:
-air_temperature nobs= 50 Min=-1.2541851565567321e+00, Max=5.5132555863594215e+00, RMS=2.4128652912602884e+00
+air_temperature nobs= 50 Min=-1.2541851640819357e+00, Max=5.5132556599728737e+00, RMS=2.4128652943491455e+00
 H(x) for member 4:
-air_temperature nobs= 50 Min=-1.2850245108277241e+00, Max=5.2657411240348413e+00, RMS=2.4008496374684571e+00
+air_temperature nobs= 50 Min=-1.2850245096477053e+00, Max=5.2657411704406911e+00, RMS=2.4008496365812282e+00
 H(x) for member 5:
-air_temperature nobs= 50 Min=-1.2519228334520578e+00, Max=5.2611066576516103e+00, RMS=2.4070174111269824e+00
+air_temperature nobs= 50 Min=-1.2519228280457415e+00, Max=5.2611067078515656e+00, RMS=2.4070174136001588e+00
 H(x) for member 6:
-air_temperature nobs= 50 Min=-1.2813960509482811e+00, Max=5.4205034112051091e+00, RMS=2.4132083027383318e+00
+air_temperature nobs= 50 Min=-1.2813960282779637e+00, Max=5.4205034607730820e+00, RMS=2.4132083020411290e+00
 H(x) for member 7:
-air_temperature nobs= 50 Min=-1.3968268050075345e+00, Max=5.4934083862566503e+00, RMS=2.3954415413261132e+00
+air_temperature nobs= 50 Min=-1.3968268062560187e+00, Max=5.4934084474895126e+00, RMS=2.3954415399505025e+00
 H(x) for member 8:
-air_temperature nobs= 50 Min=-1.3408156862471408e+00, Max=5.3264891146880693e+00, RMS=2.3936566053330481e+00
+air_temperature nobs= 50 Min=-1.3408156625869201e+00, Max=5.3264891869002007e+00, RMS=2.3936566060632147e+00
 H(x) for member 9:
-air_temperature nobs= 50 Min=-1.2023378359945598e+00, Max=5.1808227787613452e+00, RMS=2.3888367755958719e+00
+air_temperature nobs= 50 Min=-1.2023378298573293e+00, Max=5.1808228485258265e+00, RMS=2.3888367765400966e+00
 H(x) for member 10:
-air_temperature nobs= 50 Min=-1.3472748708153530e+00, Max=5.4120492914195140e+00, RMS=2.4226810366841649e+00
+air_temperature nobs= 50 Min=-1.3472748788052660e+00, Max=5.4120493505563196e+00, RMS=2.4226810377997241e+00
 H(x) ensemble analysis mean: 
-air_temperature nobs= 50 Min=-1.3138428195821752e+00, Max=5.3626978693053182e+00, RMS=2.4036416257748727e+00
+air_temperature nobs= 50 Min=-1.3138428151269237e+00, Max=5.3626979280453826e+00, RMS=2.4036416263917868e+00
 analysis y - H(x): 
-air_temperature nobs= 50 Min=-1.7280775042671515e-01, Max=2.4321641605693500e-01, RMS=9.5925729393661105e-02
-ombg RMS: 1.4462534253795981e-01
-oman RMS: 9.5925729393661105e-02
+air_temperature nobs= 50 Min=-1.7280791573793941e-01, Max=2.4321640195964767e-01, RMS=9.5925728747767100e-02
+oman RMS: 9.5925728747767100e-02

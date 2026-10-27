@@ -88,30 +88,6 @@ Initial state for member 10:
     + max    = 1.8674301790401351e+01
     + mean   = 2.1974878641979472e+00
     + stddev = 2.8487948578775235e+00
-H(x) for member 1:
-air_temperature nobs= 25 Min=-8.2229185104370117e-01, Max=4.6209564208984375e+00, RMS=2.4182231366309712e+00
-H(x) for member 2:
-air_temperature nobs= 25 Min=-8.4404587745666504e-01, Max=4.5198984146118164e+00, RMS=2.4254191276791888e+00
-H(x) for member 3:
-air_temperature nobs= 25 Min=-8.6331510543823242e-01, Max=4.5882511138916016e+00, RMS=2.4352515822040171e+00
-H(x) for member 4:
-air_temperature nobs= 25 Min=-6.8525952100753784e-01, Max=4.6042194366455078e+00, RMS=2.4291587717048539e+00
-H(x) for member 5:
-air_temperature nobs= 25 Min=-6.9450241327285767e-01, Max=4.6981754302978516e+00, RMS=2.4366145035498370e+00
-H(x) for member 6:
-air_temperature nobs= 25 Min=-7.9364162683486938e-01, Max=4.6202387809753418e+00, RMS=2.4354719494213608e+00
-H(x) for member 7:
-air_temperature nobs= 25 Min=-8.2219630479812622e-01, Max=4.6537384986877441e+00, RMS=2.4010180779061980e+00
-H(x) for member 8:
-air_temperature nobs= 25 Min=-8.4425985813140869e-01, Max=4.5760974884033203e+00, RMS=2.4086044784563376e+00
-H(x) for member 9:
-air_temperature nobs= 25 Min=-8.0845355987548828e-01, Max=4.5460171699523926e+00, RMS=2.4147514302471338e+00
-H(x) for member 10:
-air_temperature nobs= 25 Min=-7.8040969371795654e-01, Max=4.7162938117980957e+00, RMS=2.4409895371423289e+00
-H(x) ensemble background mean: 
-air_temperature nobs= 25 Min=-7.9583758115768433e-01, Max=4.6143886566162111e+00, RMS=2.4233574774773725e+00
-background y - H(x): 
-air_temperature nobs= 25 Min=-3.0774903297424316e-01, Max=2.7794361114501953e-01, RMS=1.4012691415442757e-01
 Background mean :
 - Valid time: 2010-01-01T03:00:00Z
   Geometry: structured [1855]
@@ -137,7 +113,7 @@ Analysis mean increment :
   - air_temperature (2 levels):
     + min    = -2.7353282549646263e-01
     + max    = 2.4919775420308188e-01
-    + mean   = 5.2618763456105649e-03
+    + mean   = 5.2618763456105631e-03
     + stddev = 7.2387044302258424e-02
 Forecast variance :
 - Valid time: 2010-01-01T03:00:00Z
