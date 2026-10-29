@@ -1,0 +1,12 @@
+pybind11_add_module(pyatlas api.cpp)
+target_link_libraries(pyatlas PUBLIC atlas)
+
+string(REPLACE "." ";" VERSION_LIST ${atlas_VERSION})
+list(GET VERSION_LIST 0 ATLAS_VERSION_MAJOR)
+list(GET VERSION_LIST 1 ATLAS_VERSION_MINOR)
+list(GET VERSION_LIST 2 ATLAS_VERSION_PATCH)
+math(EXPR ATLAS_VERSION_INT "${ATLAS_VERSION_MAJOR} * 10000 + ${ATLAS_VERSION_MINOR} * 100 + ${ATLAS_VERSION_PATCH}")
+target_compile_definitions(pyatlas PRIVATE ATLAS_VERSION=${ATLAS_VERSION_INT})
+
+set_target_properties(pyatlas PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
+install( TARGETS pyatlas LIBRARY DESTINATION . )

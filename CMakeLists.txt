@@ -108,12 +108,6 @@ endif()
 # MPI
 ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
 
-if( ENABLE_PYBIND11 )
-    # Pybind11
-    message( STATUS "Pybind11 loaded from directory: " ${PYBIND11_DIR} )
-    add_subdirectory( ${PYBIND11_DIR} )
-endif()
-
 # Torch
 if( DEFINED Torch_ROOT AND NOT Torch_ROOT STREQUAL "")
     # Torch root defined by the user at configure time, enable Torch

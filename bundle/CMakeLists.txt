@@ -22,14 +22,14 @@ option( ENABLE_ETRANS "Include Limited-Area-Model Transforms" ON )
 option( ENABLE_JEDI_MODEL_DATA "Obtain saber/vader test data from jedi-model-data repository (vs tarball)" ON )
 option( ENABLE_PYBIND11 "Compile with pybind11" OFF )
 option( ENABLE_TORCH "Use Torch" OFF )
-option( VENV_DIR "Virtual environment directory" ${CMAKE_CURRENT_BINARY_DIR}/torch_env )
 option( ENABLE_IODA_DATA "Obtain ioda test data from ioda-data repository (vs tarball)" ON )
 option( ENABLE_UFO_DATA "Obtain ufo test data from ufo-data repository (vs tarball)" ON )
 option( BUILD_IODA_CONVERTERS "Build IODA Converters" OFF )
 
 # What to compile?
 option( ENABLE_SABER "Compile SABER" ON )
-option( ENABLE_OBS "Compile IODA/UFO" ON )
+#option( ENABLE_OBS "Compile IODA/UFO" ON )
+set( ENABLE_OBS OFF )
 option( ENABLE_CRTM "Compile CRTM" OFF )
 
 # What tests to run?
@@ -60,6 +60,9 @@ if( NOT Python3_EXECUTABLE )
 endif()
 
 # Virtual environment
+if ( NOT DEFINED VENV_DIR )
+    set( VENV_DIR ${CMAKE_CURRENT_BINARY_DIR}/torch_env )
+endif()
 message( STATUS "Virtual environment for Python: " ${VENV_DIR} )
 set( VENV_PYTHON ${VENV_DIR}/bin/python )
 
@@ -97,6 +100,8 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
     if( ENABLE_PYBIND11 )
         # pybind11
         set( PYBIND11_DIR $ENV{VIND_BUNDLE_SRC_DIR}/pybind11 )
+        message( STATUS "Pybind11 loaded from directory: " ${PYBIND11_DIR} )
+        add_subdirectory( ${PYBIND11_DIR} )
     endif()
 
     # ECMWF tools
@@ -105,6 +110,9 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
     ecbuild_bundle( PROJECT fiat SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/fiat )
     ecbuild_bundle( PROJECT ectrans SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ectrans )
     ecbuild_bundle( PROJECT atlas SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/atlas )
+    if( ENABLE_PYBIND11 )
+        ecbuild_bundle( PROJECT pyatlas SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/pyatlas )
+    endif()
 
     if( ENABLE_FALFILFA )
         # eccodes and falfilfa
@@ -167,8 +175,10 @@ else()
 
     if( ENABLE_PYBIND11 )
         # pybind11
-        ecbuild_git( PROJECT pybind11 DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 URL https://github.com/pybind/pybind11.git BRANCH master )
-        set( PYBIND11_DIR bundle/pybind11 )
+        set( PYBIND11_DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 )
+        message( STATUS "Pybind11 loaded from directory: " ${PYBIND11_DIR} )
+        ecbuild_git( PROJECT pybind11 DIR ${PYBIND11_DIR} URL https://github.com/pybind/pybind11.git BRANCH master )
+        add_subdirectory( ${PYBIND11_DIR} )
     endif()
 
     # ECMWF tools
@@ -177,6 +187,9 @@ else()
     ecbuild_bundle( PROJECT fiat GIT "https://github.com/ecmwf-ifs/fiat.git" TAG ${fiat_VERSION} )
     ecbuild_bundle( PROJECT ectrans GIT "https://github.com/ecmwf-ifs/ectrans.git" TAG ${ectrans_VERSION} )
     ecbuild_bundle( PROJECT atlas GIT "https://github.com/ecmwf/atlas.git" TAG ${ecmwf-atlas_VERSION} )
+    if( ENABLE_PYBIND11 )
+        ecbuild_bundle( PROJECT pyatlas )
+    endif()
 
     if( ENABLE_FALFILFA )
         # eccodes and falfilfa

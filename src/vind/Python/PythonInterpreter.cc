@@ -11,7 +11,7 @@
 
 #include "oops/util/Logger.h"
 
-#include "vind/Python/VenvSitePackages.h"
+#include "vind/Python/PythonPath.h"
 
 namespace vind {
 
@@ -31,7 +31,10 @@ void PythonInterpreter::initialize() const {
       // Import the sys module
       pybind11::module_ sys = pybind11::module_::import("sys");
 
-      // Add virtual environment site-packages (should be in first position)
+      // Add pyatlas library directory
+      sys.attr("path").attr("insert")(0, pyAtlasLibDir());
+
+      // Add virtual environment site-packages (should be in first position, so inserted last)
       sys.attr("path").attr("insert")(0, venvSitePackages());
     } catch (pybind11::error_already_set &e) {
       oops::Log::info() << "Python Error: " << e.what() << std::endl;

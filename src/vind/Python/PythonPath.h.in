@@ -1,0 +1,22 @@
+/*
+ * (C) Copyright 2026 Meteorologisk Institutt
+ *
+ */
+
+#pragma once
+
+#include <string>
+
+namespace vind {
+
+// Pyatlas library directory
+std::string pyAtlasLibDir() {
+  return "PYATLAS_LIB_DIR";
+}
+
+// Virtual environment site packages
+std::string venvSitePackages() {
+  return "VENV_SITE_PACKAGES";
+}
+
+}
