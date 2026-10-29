@@ -7,6 +7,8 @@
 
 #include <filesystem>
 
+#include "atlas/util/Constants.h"
+
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
@@ -68,12 +70,11 @@ LinearModelNumPyDDL95::LinearModelNumPyDDL95(const Geometry & geom,
   latNArray_.reset(new pybind11::array_t<double>({ny, nx}));
   auto lonNView = lonNArray_->mutable_unchecked<2>();
   auto latNView = latNArray_->mutable_unchecked<2>();
-  const double deg2rad = M_PI/180.0;
   for (int jx = 0; jx < nx; ++jx) {
     for (int jy = 0; jy < ny; ++jy) {
       const atlas::PointLonLat pointLonLat = grid.lonlat(jx, jy);
-      lonNView(jy, jx) = pointLonLat.lon()*deg2rad;
-      latNView(jy, jx) = pointLonLat.lat()*deg2rad;
+      lonNView(jy, jx) = pointLonLat.lon()*atlas::util::Constants::degreesToRadians();
+      latNView(jy, jx) = pointLonLat.lat()*atlas::util::Constants::degreesToRadians();
     }
   }
 

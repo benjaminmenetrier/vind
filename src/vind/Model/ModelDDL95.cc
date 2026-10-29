@@ -5,6 +5,8 @@
 
 #include "vind/Model/ModelDDL95.h"
 
+#include "atlas/util/Constants.h"
+
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
@@ -38,10 +40,9 @@ ModelDDL95::ModelDDL95(const Geometry & geom,
   const atlas::functionspace::StructuredColumns fs(geom.functionSpace());
   lonLatField_ = fs.xy().clone();
   auto lonlatView = atlas::array::make_view<double, 2>(lonLatField_);
-  const double deg2rad = M_PI/180.0;
   for (int jnode = 0; jnode < lonLatField_.shape(0); ++jnode) {
-    lonlatView(jnode, 0) *= deg2rad;
-    lonlatView(jnode, 1) *= deg2rad;
+    lonlatView(jnode, 0) *= atlas::util::Constants::degreesToRadians();
+    lonlatView(jnode, 1) *= atlas::util::Constants::degreesToRadians();
   }
 
   // Get mask boundaries

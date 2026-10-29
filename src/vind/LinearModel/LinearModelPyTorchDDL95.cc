@@ -7,6 +7,8 @@
 
 #include <filesystem>
 
+#include "atlas/util/Constants.h"
+
 #include "oops/util/Logger.h"
 
 #include "vind/Fields.h"
@@ -75,12 +77,11 @@ LinearModelTorchPyDDL95::LinearModelTorchPyDDL95(const Geometry & geom,
   latTTensor_ = torch::empty({ny, nx}, opts_);
   auto lonTView = lonTTensor_.accessor<double, 2>();
   auto latTView = latTTensor_.accessor<double, 2>();
-  const double deg2rad = M_PI/180.0;
   for (int jx = 0; jx < nx; ++jx) {
     for (int jy = 0; jy < ny; ++jy) {
       const atlas::PointLonLat pointLonLat = grid.lonlat(jx, jy);
-      lonTView[jy][jx] = pointLonLat.lon()*deg2rad;
-      latTView[jy][jx] = pointLonLat.lat()*deg2rad;
+      lonTView[jy][jx] = pointLonLat.lon()*atlas::util::Constants::degreesToRadians();
+      latTView[jy][jx] = pointLonLat.lat()*atlas::util::Constants::degreesToRadians();
     }
   }
 
