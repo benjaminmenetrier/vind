@@ -28,8 +28,7 @@ option( BUILD_IODA_CONVERTERS "Build IODA Converters" OFF )
 
 # What to compile?
 option( ENABLE_SABER "Compile SABER" ON )
-#option( ENABLE_OBS "Compile IODA/UFO" ON )
-set( ENABLE_OBS OFF )
+option( ENABLE_OBS "Compile IODA/UFO" ON )
 option( ENABLE_CRTM "Compile CRTM" OFF )
 
 # What tests to run?
@@ -212,8 +211,7 @@ else()
         ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" BRANCH develop UPDATE )
 
         # saber
-#        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
-        ecbuild_bundle( PROJECT saber )
+        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
     endif()
   
     if( ENABLE_CRTM )
