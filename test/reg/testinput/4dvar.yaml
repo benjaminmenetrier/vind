@@ -88,14 +88,6 @@ variational:
     linear model:
       name: DDL95
       time step: PT12M
-final:
-  diagnostics:
-    departures: oman
-  increment:
-    geometry: *geom
-    output:
-      state component:
-        filepath: testdata/4dvar_incr__MPI_
 output:
   filepath: testdata/4dvar_analysis__MPI___DATE_
   date pattern: _DATE_

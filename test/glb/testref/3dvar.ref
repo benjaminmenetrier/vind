@@ -12,6 +12,6 @@ CostFunction::addIncrement: Analysis:
     + max    = 1.1885576639268349e+01
     + mean   = 2.9264147398559963e+00
     + stddev = 2.4803807972762137e+00
-CostJo   : Nonlinear Jo(air_temperature) = 1.0204076612983037e+01, nobs = 30, Jo/n = 3.4013588709943460e-01, err = 1.0000000149011612e-01
-CostJb   : Nonlinear Jb = 7.3346128665480732e+00
-CostFunction: Nonlinear J = 1.7538689479531111e+01
+CostJo   : Nonlinear Jo(air_temperature) = 1.0204076612983012e+01, nobs = 30, Jo/n = 3.4013588709943376e-01, err = 1.0000000149011612e-01
+CostJb   : Nonlinear Jb = 7.3346128665480919e+00
+CostFunction: Nonlinear J = 1.7538689479531104e+01

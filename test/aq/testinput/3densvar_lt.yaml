@@ -248,9 +248,6 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 20
     geometry: *geom
-final:
-  diagnostics:
-    departures: oman
         
 output:
   date: 2022-07-01T12:00:00Z

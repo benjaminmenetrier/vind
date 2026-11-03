@@ -95,20 +95,6 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 10
     geometry: *geom
-final:
-  diagnostics:
-    departures: oman
-  increment:
-    geometry: *geom
-    output:
-      state component:
-        states:
-        - date: 2010-01-01T00:00:00Z
-          filepath: testdata/4densvar_parallel_incr__MPI__PT0S
-        - date: 2010-01-01T03:00:00Z
-          filepath: testdata/4densvar_parallel_incr__MPI__PT3H
-        - date: 2010-01-01T06:00:00Z
-          filepath: testdata/4densvar_parallel_incr__MPI__PT6H
 output:
   states:
   - date: 2010-01-01T00:00:00Z

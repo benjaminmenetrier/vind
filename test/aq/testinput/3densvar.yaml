@@ -179,16 +179,6 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 20
     geometry: *geom
-final:
-  diagnostics:
-    departures: oman
-  increment:
-    geometry: *geom
-    output:
-      state component:
-        date: 2022-07-01T12:00:00Z
-        filepath: testdata/3densvar_incr_2022070112.nc
-        formats: [aq]
         
 output:
   date: 2022-07-01T12:00:00Z

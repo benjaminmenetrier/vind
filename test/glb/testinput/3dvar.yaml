@@ -72,14 +72,6 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 10
     geometry: *geom
-final:
-  diagnostics:
-    departures: oman
-  increment:
-    geometry: *geom
-    output:
-      state component:
-        filepath: testdata/3dvar_incr__MPI_
 output:
   filepath: testdata/3dvar_analysis__MPI_
 test:

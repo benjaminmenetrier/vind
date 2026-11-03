@@ -303,10 +303,7 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 20
     geometry: *geom
-final:
-  diagnostics:
-    departures: oman
-        
+
 output:
   states:
     - <<: *out_ref

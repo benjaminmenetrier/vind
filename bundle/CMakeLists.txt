@@ -193,7 +193,7 @@ else()
     if( ENABLE_FALFILFA )
         # eccodes and falfilfa
         set( ENABLE_AEC OFF )
-        ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG 2.44.0 )
+        ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG ${eccodes_VERSION} )
         ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" BRANCH bugfix/missingCode UPDATE )
       endif()
 
@@ -208,7 +208,7 @@ else()
 
     if( ENABLE_SABER )
         # gsibec
-        ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" BRANCH develop UPDATE )
+        ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" TAG ${gsibec_VERSION} )
 
         # saber
         ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )

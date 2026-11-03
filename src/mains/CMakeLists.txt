@@ -7,51 +7,63 @@
 # Libraries
 set( LIBS ${VIND_PUBLIC_LIBS} )
 list( APPEND LIBS "vind" )
+if( ENABLE_PYBIND11 )
+    list( APPEND DEPS "pyatlas" )
+endif()
 
 # OOPS-only executables
 ecbuild_add_executable( TARGET  vind_forecast.x
                         SOURCES vindForecast.cc
-                        LIBS    ${LIBS} )
+                        LIBS    ${LIBS}
+                        DEPENDS ${DEPS} )
 
 ecbuild_add_executable( TARGET  vind_convertstate.x
                         SOURCES vindConvertState.cc
-                        LIBS    ${LIBS} )
+                        LIBS    ${LIBS}
+                        DEPENDS ${DEPS} )
 
 ecbuild_add_executable( TARGET  vind_ens_mean_variance.x
                         SOURCES vindEnsMeanVariance.cc
-                        LIBS    ${LIBS} )
+                        LIBS    ${LIBS}
+                        DEPENDS ${DEPS} )
 
 # SABER-only executables
 if( ENABLE_SABER )
     ecbuild_add_executable( TARGET  vind_error_covariance_toolbox.x
                             SOURCES vindErrorCovarianceToolbox.cc
-                            LIBS    ${LIBS} )
+                            LIBS    ${LIBS}
+                            DEPENDS ${DEPS} )
 
     ecbuild_add_executable( TARGET  vind_process_perts.x
                             SOURCES vindProcessPerts.cc
-                            LIBS    ${LIBS} )
+                            LIBS    ${LIBS}
+                            DEPENDS ${DEPS} )
 endif()
 
 # OBS executables
 if( ENABLE_OBS )
     ecbuild_add_executable( TARGET  vind_hofx3d.x
                             SOURCES vindHofX3D.cc
-                            LIBS    ${LIBS} )
+                            LIBS    ${LIBS}
+                            DEPENDS ${DEPS} )
 
     ecbuild_add_executable( TARGET  vind_hofx4d.x
                             SOURCES vindHofX4D.cc
-                            LIBS    ${LIBS} )
+                            LIBS    ${LIBS}
+                            DEPENDS ${DEPS} )
 
     ecbuild_add_executable( TARGET  vind_letkf.x
                             SOURCES vindLETKF.cc
-                            LIBS    ${LIBS} )
+                            LIBS    ${LIBS}
+                            DEPENDS ${DEPS} )
 endif()
 
 # SABER+OBS executable
 if( ENABLE_SABER AND ENABLE_OBS )
     ecbuild_add_executable( TARGET  vind_variational.x
                             SOURCES vindVariational.cc
-                            LIBS    ${LIBS} )
+                            LIBS    ${LIBS}
+                            DEPENDS ${DEPS} )
 endif()
 
 # Add RPATH for Torch libraries if found
