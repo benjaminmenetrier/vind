@@ -153,31 +153,19 @@ if (DEFINED ENV{VIND_BUNDLE_SRC_DIR})
         ecbuild_bundle( PROJECT ufo SOURCE $ENV{VIND_BUNDLE_SRC_DIR}/ufo )
     endif()
 else()
-    # Set tags
-    # Bash command: for repo in `ls -d */`;do cd $repo;hash=`git show --oneline -s | awk '{print $1}'`;echo "    set( ${repo::-1}_VERSION ${hash} )";cd ..;done
-    set( atlas_VERSION 358bfaf69 )
-    set( crtm_VERSION 79ea2e6 )
-    set( eccodes_VERSION aa85928d0 )
-    set( eckit_VERSION 8798f0efa )
-    set( ectrans_VERSION 06ae731b )
-    set( falfilfa_VERSION 5767282 )
-    set( fckit_VERSION 67dd487 )
-    set( fiat_VERSION c09cec3 )
-    set( gsibec_VERSION e8c22d1 )
-    set( ioda_VERSION ba8e8ccb )
-    set( iodaconv_VERSION dad9cc09 )
-    set( ioda-data_VERSION b247b1a )
-    set( jedicmake_VERSION 36fc99b )
-    set( jedi-model-data_VERSION 25af47d )
-    set( oops_VERSION 26cd71651 )
-    set( pyatlas_VERSION 251065d )
-    set( pybind11_VERSION 84da0e25 )
-    set( saber_VERSION 0ca194f9 )
-    set( test-data-release_VERSION 251065d )
-    set( ufo_VERSION 47934177 )
-    set( ufo-data_VERSION e742d3d )
-    set( vader_VERSION 1555dbf )
-    set( vind_VERSION 251065d )
+    # Update jedi-ci.yaml
+    file( DOWNLOAD https://raw.githubusercontent.com/JCSDA/spack-stack/refs/heads/develop/configs/containers/specs/jedi-ci.yaml ${CMAKE_SOURCE_DIR}/../tools/jedi-ci.yaml )
+
+    # Find package versions from jedi-ci
+    set( PACKAGE_LIST eckit;ecmwf-atlas;ectrans;fckit;fiat;jedi-cmake )
+    message( STATUS "Package versions found in jedi-ci.yaml:" )
+    foreach( PACKAGE ${PACKAGE_LIST} )
+        execute_process(
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/../tools/find_version.py ${PACKAGE} ${CMAKE_SOURCE_DIR}/../tools/jedi-ci.yaml
+          OUTPUT_VARIABLE ${PACKAGE}_VERSION
+        )
+        message( STATUS "- ${PACKAGE}: ${${PACKAGE}_VERSION}" )
+    endforeach()
 
     # jedicmake
     ecbuild_bundle( PROJECT jedicmake GIT "https://github.com/jcsda/jedi-cmake.git" TAG ${jedi-cmake_VERSION} RECURSIVE )
@@ -188,7 +176,7 @@ else()
         # pybind11
         set( PYBIND11_DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind11 )
         message( STATUS "Pybind11 loaded from directory: " ${PYBIND11_DIR} )
-        ecbuild_git( PROJECT pybind11 DIR ${PYBIND11_DIR} URL https://github.com/pybind/pybind11.git TAG  ${pybind11_VERSION} )
+        ecbuild_git( PROJECT pybind11 DIR ${PYBIND11_DIR} URL https://github.com/pybind/pybind11.git BRANCH master )
         add_subdirectory( ${PYBIND11_DIR} )
     endif()
 
@@ -206,29 +194,29 @@ else()
         # eccodes and falfilfa
         set( ENABLE_AEC OFF )
         ecbuild_bundle( PROJECT eccodes GIT "https://github.com/ecmwf/eccodes.git" TAG ${eccodes_VERSION} )
-        ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" TAG ${falfilfa_VERSION} )
+        ecbuild_bundle( PROJECT falfilfa GIT "https://github.com/benjaminmenetrier/falfilfa.git" BRANCH bugfix/missingCode UPDATE )
       endif()
 
     # oops
-    ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" TAG ${oops_VERSION} )
+    ecbuild_bundle( PROJECT oops GIT "https://github.com/jcsda/oops.git" BRANCH develop UPDATE )
 
     # jedi-model-data
-    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" TAG ${jedi-model-data_VERSION} )
+    ecbuild_bundle( PROJECT jedi-model-data GIT "https://github.com/jcsda-internal/jedi-model-data.git" BRANCH develop UPDATE )
   
     # vader
-    ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" TAG ${vader_VERSION} )
+    ecbuild_bundle( PROJECT vader GIT "https://github.com/jcsda/vader.git" BRANCH develop UPDATE )
 
     if( ENABLE_SABER )
         # gsibec
         ecbuild_bundle( PROJECT gsibec GIT "https://github.com/geos-esm/gsibec.git" TAG ${gsibec_VERSION} )
 
         # saber
-        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" TAG ${saber_VERSION} )
+        ecbuild_bundle( PROJECT saber GIT "https://github.com/jcsda/saber.git" BRANCH develop UPDATE )
     endif()
   
     if( ENABLE_CRTM )
         # crtm
-        ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/crtmv3.git" TAG ${crtm_VERSION} )
+        ecbuild_bundle( PROJECT crtm GIT "https://github.com/jcsda/crtmv3.git" BRANCH develop UPDATE )
     endif()
 
     if( ENABLE_OBS )
@@ -244,21 +232,21 @@ else()
         endif()
 
         # ioda-data
-        ecbuild_bundle( PROJECT ioda-data GIT "https://github.com/jcsda-internal/ioda-data.git" TAG ${ioda-data_VERSION} )
+        ecbuild_bundle( PROJECT ioda-data GIT "https://github.com/jcsda-internal/ioda-data.git" BRANCH develop UPDATE )
 
         # ioda
-        ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" TAG ${ioda_VERSION} )
+        ecbuild_bundle( PROJECT ioda GIT "https://github.com/jcsda/ioda.git" BRANCH develop UPDATE )
 
         # ioda-converters
         if( BUILD_IODA_CONVERTERS )
-            ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" TAG ${iodaconv_VERSION} )
+            ecbuild_bundle( PROJECT iodaconv GIT "https://github.com/jcsda/ioda-converters.git" BRANCH develop UPDATE )
         endif()
 
         # ufo-data
-        ecbuild_bundle( PROJECT ufo-data GIT "https://github.com/jcsda-internal/ufo-data.git" TAG ${ufo-data_VERSION} )
+        ecbuild_bundle( PROJECT ufo-data GIT "https://github.com/jcsda-internal/ufo-data.git" BRANCH develop UPDATE )
 
         # ufo
-        ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" BRANCH TAG ${ufo_VERSION} )
+        ecbuild_bundle( PROJECT ufo GIT "https://github.com/jcsda/ufo.git" BRANCH develop UPDATE )
     endif()
 endif()
 

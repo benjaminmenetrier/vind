@@ -192,14 +192,17 @@ variational:
       departures: ombg0
     gradient norm reduction: 1.0e-10
     ninner: 20
-    geometry: *geom
-        
+    geometry: *geom 
 output:
-  date: 2022-07-01T12:00:00Z
-  filepath: testdata/3densvar_analysis_2022070112.nc
-  formats: [bsc]
+  analysis:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/3densvar_analysis_2022070112.nc
+    formats: [bsc]
+  increment:
+    date: 2022-07-01T12:00:00Z
+    filepath: testdata/3densvar_incr_2022070112.nc
+    formats: [bsc]
 test:
   reference filename: testref/3densvar.ref
   test output filename: testdata/3densvar.log
-  float absolute tolerance: 1.e-15  
-
+  float absolute tolerance: 1.e-15

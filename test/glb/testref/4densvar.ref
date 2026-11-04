@@ -1,7 +1,7 @@
 CostJo   : Nonlinear Jo(air_temperature) = 4.4458318874309811e+01, nobs = 60, Jo/n = 7.4097198123849684e-01, err = 1.0000000149011609e-01
 CostJb   : Nonlinear Jb = 0.0000000000000000e+00
 CostFunction: Nonlinear J = 4.4458318874309811e+01
-PCGMinimizer: reduction in residual norm = 1.8986088864239397e-02
+PCGMinimizer: reduction in residual norm = 1.8986088864239584e-02
 CostFunction::addIncrement: Analysis: 
 - Valid time: 2010-01-01T00:00:00Z
   Geometry: L40x21 [840]
@@ -17,7 +17,7 @@ CostFunction::addIncrement: Analysis:
   - air_temperature (2 levels):
     + min    = -3.6247665218448790e+00
     + max    = 1.1876497632123732e+01
-    + mean   = 2.9246400515687889e+00
+    + mean   = 2.9246400515687894e+00
     + stddev = 2.4787963182495187e+00
 - Valid time: 2010-01-01T06:00:00Z
   Geometry: L40x21 [840]
@@ -27,6 +27,60 @@ CostFunction::addIncrement: Analysis:
     + max    = 1.1844503968583194e+01
     + mean   = 2.9003654498682403e+00
     + stddev = 2.5235593831147698e+00
-CostJo   : Nonlinear Jo(air_temperature) = 2.4996564686208359e+01, nobs = 60, Jo/n = 4.1660941143680597e-01, err = 1.0000000149011609e-01
-CostJb   : Nonlinear Jb = 6.4062018929145790e+00
-CostFunction: Nonlinear J = 3.1402766579122940e+01
+Writing Increment:
+- Valid time: 2010-01-01T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.2328934468074060e-01
+    + max    = 1.6005291020082116e-01
+    + mean   = 1.6895704672624111e-03
+    + stddev = 2.1080475352957248e-02
+Writing State:
+- Valid time: 2010-01-01T00:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -3.1777021975692654e+00
+    + max    = 1.0322782131757517e+01
+    + mean   = 2.9101615596891812e+00
+    + stddev = 2.4288708585523811e+00
+Writing Increment:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.2328934468074071e-01
+    + max    = 1.6005291020082116e-01
+    + mean   = 1.6895704672624157e-03
+    + stddev = 2.1080475352957245e-02
+Writing State:
+- Valid time: 2010-01-01T03:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -3.6247665218448790e+00
+    + max    = 1.1876497632123732e+01
+    + mean   = 2.9246400515687894e+00
+    + stddev = 2.4787963182495187e+00
+Writing Increment:
+- Valid time: 2010-01-01T06:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -1.2328934468074071e-01
+    + max    = 1.6005291020082102e-01
+    + mean   = 1.6895704672624241e-03
+    + stddev = 2.1080475352957241e-02
+Writing State:
+- Valid time: 2010-01-01T06:00:00Z
+  Geometry: L40x21 [840]
+  Fields:
+  - air_temperature (2 levels):
+    + min    = -3.1160622057459664e+00
+    + max    = 1.1844503968583194e+01
+    + mean   = 2.9003654498682403e+00
+    + stddev = 2.5235593831147698e+00
+CostJo   : Nonlinear Jo(air_temperature) = 2.4996564686208284e+01, nobs = 60, Jo/n = 4.1660941143680474e-01, err = 1.0000000149011609e-01
+CostJb   : Nonlinear Jb = 6.4062018929146367e+00
+CostFunction: Nonlinear J = 3.1402766579122922e+01

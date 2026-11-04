@@ -73,6 +73,9 @@ variational:
     ninner: 10
     geometry: *geom
 output:
-  filepath: testdata/3dvar_analysis__MPI_
+  analysis:
+    filepath: testdata/3dvar_analysis__MPI_
+  increment:
+    filepath: testdata/3dvar_incr__MPI_
 test:
   reference filename: testref/3dvar.ref

@@ -303,9 +303,9 @@ variational:
     gradient norm reduction: 1.0e-10
     ninner: 20
     geometry: *geom
-
 output:
-  states:
+  analysis:
+    states:
     - <<: *out_ref
       date: 2022-07-01T09:00:00Z
       filepath: testdata/4densvar_lt_analysis_2022070109.nc
@@ -324,10 +324,27 @@ output:
     - <<: *out_ref
       date: 2022-07-01T14:00:00Z
       filepath: testdata/4densvar_lt_analysis_2022070114.nc
-
+  increment:
+    states:
+    - <<: *out_ref
+      date: 2022-07-01T09:00:00Z
+      filepath: testdata/4densvar_lt_incr_2022070109.nc
+    - <<: *out_ref
+      date: 2022-07-01T10:00:00Z
+      filepath: testdata/4densvar_lt_incr_2022070110.nc
+    - <<: *out_ref
+      date: 2022-07-01T11:00:00Z
+      filepath: testdata/4densvar_lt_incr_2022070111.nc
+    - <<: *out_ref
+      date: 2022-07-01T12:00:00Z
+      filepath: testdata/4densvar_lt_incr_2022070112.nc
+    - <<: *out_ref
+      date: 2022-07-01T13:00:00Z
+      filepath: testdata/4densvar_lt_incr_2022070113.nc
+    - <<: *out_ref
+      date: 2022-07-01T14:00:00Z
+      filepath: testdata/4densvar_lt_incr_2022070114.nc
 test:
   reference filename: testref/4densvar_lt.ref
   test output filename: testdata/4densvar_lt.log
   float absolute tolerance: 1.e-15
-    
-

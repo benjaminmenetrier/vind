@@ -104,12 +104,21 @@ variational:
     ninner: 10
     geometry: *geom
 output:
-  states:
-  - date: 2010-01-01T00:00:00Z
-    filepath: testdata/4densvar_analysis__MPI__PT0S
-  - date: 2010-01-01T03:00:00Z
-    filepath: testdata/4densvar_analysis__MPI__PT3H
-  - date: 2010-01-01T06:00:00Z
-    filepath: testdata/4densvar_analysis__MPI__PT6H
+  analysis:
+    states:
+    - date: 2010-01-01T00:00:00Z
+      filepath: testdata/4densvar_analysis__MPI__PT0S
+    - date: 2010-01-01T03:00:00Z
+      filepath: testdata/4densvar_analysis__MPI__PT3H
+    - date: 2010-01-01T06:00:00Z
+      filepath: testdata/4densvar_analysis__MPI__PT6H
+  increment:
+    states:
+    - date: 2010-01-01T00:00:00Z
+      filepath: testdata/4densvar_incr__MPI__PT0S
+    - date: 2010-01-01T03:00:00Z
+      filepath: testdata/4densvar_incr__MPI__PT3H
+    - date: 2010-01-01T06:00:00Z
+      filepath: testdata/4densvar_incr__MPI__PT6H
 test:
   reference filename: testref/4densvar.ref

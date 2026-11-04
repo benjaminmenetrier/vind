@@ -79,8 +79,13 @@ variational:
       name: DDL95
       time step: PT12M
 output:
-  filepath: testdata/4dvar_analysis__MPI___DATE_
-  date pattern: _DATE_
-  frequency: PT6H
+  analysis:
+    filepath: testdata/4dvar_analysis__MPI___DATE_
+    date pattern: _DATE_
+    frequency: PT6H
+  increment:
+    filepath: testdata/4dvar_incr__MPI___DATE_
+    date pattern: _DATE_
+    frequency: PT6H
 test:
   reference filename: testref/4dvar.ref
